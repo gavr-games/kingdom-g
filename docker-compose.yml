@@ -1,0 +1,23 @@
+version: '3.5'
+
+services:
+  caddy:
+    image: abiosoft/caddy:0.10.14
+    volumes:
+      - ./caddy/Caddyfile:/etc/Caddyfile:cached
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      - ACME_AGREE=true
+    restart: always
+  
+  ui:
+    build:
+      context: ui
+      dockerfile: Dockerfile
+    ports:
+      - 80
+    volumes:
+      - ./ui:/usr/src/app:cached
+    command: npm run serve

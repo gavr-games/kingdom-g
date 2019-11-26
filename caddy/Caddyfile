@@ -1,0 +1,15 @@
+kingdom-g.localhost:443 {
+  proxy /api api:80 {
+    websocket
+  }
+  proxy /sockjs-node ui:80 {
+    websocket
+  }
+  proxy / ui:80 {
+    transparent
+  }
+  
+	log stdout
+	errors stdout
+  tls self_signed
+}
