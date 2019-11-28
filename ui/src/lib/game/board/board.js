@@ -1,5 +1,4 @@
 import * as BABYLON from "babylonjs";
-import "babylonjs-loaders";
 
 class Board {
   constructor(scene) {
@@ -14,9 +13,10 @@ class Board {
       this.scene,
       function(container) {
         console.log(container);
-        // eslint-disable-next-line no-unused-vars
-        container.meshes.forEach((mesh, index) => {
-          mesh.position.x += 3;
+        container.meshes.forEach((mesh) => {
+          mesh.position.x = 2.5;
+          mesh.position.y = -2;
+          mesh.position.z = 2.5;
         });
         container.addAllToScene();
       }
@@ -26,7 +26,11 @@ class Board {
       "solid.obj",
       this.scene,
       function(container) {
-        console.log(container);
+        container.meshes.forEach((mesh) => {
+          mesh.position.x = 0;
+          mesh.position.y = -2;
+          mesh.position.z = 2.5;
+        });
         container.addAllToScene();
       }
     );

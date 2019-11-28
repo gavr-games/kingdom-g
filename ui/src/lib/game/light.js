@@ -7,9 +7,9 @@ class Light {
   }
 
   create() {
-    this.light = new BABYLON.PointLight(
-      "pointLight",
-      new BABYLON.Vector3(1, 10, 1),
+    this.light = new BABYLON.HemisphericLight(
+      "HemiLight",
+      new BABYLON.Vector3(0, 1, 0),
       this.scene
     );
   }

@@ -1,8 +1,10 @@
 import * as BABYLON from "babylonjs";
+import * as Loaders from "babylonjs-loaders";
 import { EventBus } from "@/lib/event_bus";
 import Camera from "./camera";
 import Light from "./light";
-import Board from "./board";
+import Board from "./board/board";
+import Grid from "./grid";
 
 class Game {
   constructor() {
@@ -24,7 +26,7 @@ class Game {
 
     //this.registerActions(scene)
 
-    this.camera = new Camera(scene);
+    this.camera = new Camera(scene, this.canvas);
     this.camera.create();
 
     this.board = new Board(scene);
@@ -32,6 +34,11 @@ class Game {
 
     this.light = new Light(scene);
     this.light.create();
+
+    if (process.env.NODE_ENV === "development") {
+      let grid = new Grid(scene);
+      grid.create();
+    }
 
     return scene;
   }
@@ -43,6 +50,7 @@ class Game {
       preserveDrawingBuffer: true,
       stencil: true
     });
+    Loaders.OBJFileLoader.OPTIMIZE_WITH_UV = true;
     this.scene = this.createScene();
     this.engine.runRenderLoop(() => {
       this.scene.render();

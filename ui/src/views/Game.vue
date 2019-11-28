@@ -1,6 +1,7 @@
 <template>
   <div id="game-cont">
     <canvas id="game-canvas" width="800" height="600"></canvas>
+    <a href="#" @click="enterFullscreen">Fullscreen</a>
   </div>
 </template>
 
@@ -18,6 +19,11 @@ export default {
   },
   mounted: function() {
     this.gameController.init()
+  },
+  methods: {
+    enterFullscreen() {
+      this.gameController.enterFullscreen()
+    }
   }
 };
 </script>
