@@ -13,7 +13,7 @@ class Camera {
       Math.PI + Math.PI / 4,
       Math.PI / 4,
       40,
-      new BABYLON.Vector3(0, 0, 0),
+      new BABYLON.Vector3(25, 0, 25),
       this.scene
     );
     this.camera.attachControl(this.canvas, true);
