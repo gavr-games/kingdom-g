@@ -6,7 +6,6 @@ class Unit {
   constructor(scene, payload) {
     this.scene = scene;
     this.payload = payload;
-    console.log(payload);
   }
 
   create() {

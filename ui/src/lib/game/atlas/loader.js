@@ -1,4 +1,5 @@
 import * as BABYLON from "babylonjs";
+import boardConfig from "../board/config";
 import Atlas from "./atlas";
 
 class Loader {
@@ -20,8 +21,42 @@ class Loader {
       task.loadedMeshes[0].setEnabled(false);
       Atlas.set("solidFill", task.loadedMeshes[0]);
     };
-    this.loadUnits()
+    this.loadUnits();
+    this.loadBuildings();
     this.assetsManager.load();
+  }
+
+  loadBuildings() {
+    let buildings = [
+      "barracks",
+      "bridge",
+      "castle",
+      "coin_factory",
+      "healing_temple",
+      "magic_tower",
+      "mountains",
+      "scarecrow",
+      "teleport",
+      "wall_closed",
+      "wall_opened"
+    ];
+    buildings.forEach(building => {
+      let task = this.assetsManager.addMeshTask(
+        building,
+        building,
+        "/game_assets/buildings/",
+        building + ".obj"
+      );
+      task.onSuccess = function(task) {
+        let mesh = task.loadedMeshes[0];
+        let pivotDiff = boardConfig.cellSize;
+        mesh.setPivotPoint(
+          new BABYLON.Vector3(pivotDiff + pivotDiff / 2, 0, -pivotDiff / 2)
+        );
+        mesh.setEnabled(false);
+        Atlas.set(building + "Building", mesh);
+      };
+    });
   }
 
   loadUnits() {
@@ -45,7 +80,8 @@ class Loader {
       );
       task.onSuccess = function(task) {
         task.loadedMeshes[0].setEnabled(false);
-        Atlas.set(unit + "Unit", task.loadedMeshes[0]);
+        let mesh = task.loadedMeshes[0];
+        Atlas.set(unit + "Unit", mesh);
       };
     });
   }

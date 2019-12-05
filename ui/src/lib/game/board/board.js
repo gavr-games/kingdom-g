@@ -2,12 +2,14 @@ import Coords from "../../utils/coords";
 import boardConfig from "./config";
 import Atlas from "../atlas/atlas";
 import Unit from "../units/unit";
+import Building from "../buildings/building";
 
 class Board {
   constructor(scene, gamePayload) {
     this.scene = scene;
     this.cells = [];
     this.units = [];
+    this.buildings = [];
     this.gamePayload = gamePayload;
   }
 
@@ -33,6 +35,11 @@ class Board {
         let unit = new Unit(this.scene, this.gamePayload.objects[objId]);
         unit.create();
         this.units.push(unit);
+      }
+      if (this.gamePayload.objects[objId]["class"] == "building") {
+        let building = new Building(this.scene, this.gamePayload.objects[objId]);
+        building.create();
+        this.buildings.push(building);
       }
     }
   }
