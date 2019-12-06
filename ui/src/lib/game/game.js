@@ -23,16 +23,35 @@ class Game {
 
   createScene(gamePayload) {
     let scene = new BABYLON.Scene(this.engine);
-    //scene.actionManager = new BABYLON.ActionManager(scene);
-    //scene.clearColor = new BABYLON.Color3(0, 0, 0);
 
-    //this.registerActions(scene)
+    scene.actionManager = new BABYLON.ActionManager(scene);
+    this.registerActions(scene);
+
     this.loader = new Loader(scene, () => {
       this.createObjects(gamePayload);
     });
     this.loader.load();
 
     return scene;
+  }
+
+  registerActions(scene) {
+    scene.actionManager.registerAction(
+      new BABYLON.ExecuteCodeAction(
+        BABYLON.ActionManager.OnKeyDownTrigger,
+        evt => {
+          EventBus.$emit("keydown", evt.sourceEvent.key);
+        }
+      )
+    );
+    scene.actionManager.registerAction(
+      new BABYLON.ExecuteCodeAction(
+        BABYLON.ActionManager.OnKeyUpTrigger,
+        evt => {
+          EventBus.$emit("keyup", evt.sourceEvent.key);
+        }
+      )
+    );
   }
 
   createObjects(gamePayload) {
@@ -52,6 +71,7 @@ class Game {
 
     this.engine.runRenderLoop(() => {
       this.scene.render();
+      //this.camera.update();
     });
     window.addEventListener("resize", () => {
       this.engine.resize();
