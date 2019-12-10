@@ -1,6 +1,4 @@
-import Coords from "../../utils/coords";
-import boardConfig from "./config";
-import Atlas from "../atlas/atlas";
+import Cell from "../cells/cell";
 import Unit from "../units/unit";
 import Building from "../buildings/building";
 
@@ -16,28 +14,28 @@ class Board {
   create() {
     // Add cells
     for (const coordsKey in this.gamePayload.board) {
-      let coords = Coords.parse(coordsKey);
-      let mesh = Atlas.get("solidFill").clone();
-      mesh.visibility = 1;
-      mesh.position.x = coords.x * boardConfig.cellSize;
-      mesh.position.y = -2 + coords.y * boardConfig.cellSize;
-      mesh.position.z = boardConfig.cellSize + coords.z * boardConfig.cellSize;
-      mesh.metadata = {
-        type: "cell",
-        fill: "solid",
-        originalCoords: coordsKey
-      };
-      this.cells.push(mesh);
+      let cell = new Cell(
+        this.scene,
+        coordsKey,
+        this.gamePayload.board[coordsKey]
+      );
+      cell.create();
+      this.cells.push(cell);
     }
     // Add objects
     for (const objId in this.gamePayload.objects) {
+      // units
       if (this.gamePayload.objects[objId]["class"] == "unit") {
         let unit = new Unit(this.scene, this.gamePayload.objects[objId]);
         unit.create();
         this.units.push(unit);
       }
+      // buildings
       if (this.gamePayload.objects[objId]["class"] == "building") {
-        let building = new Building(this.scene, this.gamePayload.objects[objId]);
+        let building = new Building(
+          this.scene,
+          this.gamePayload.objects[objId]
+        );
         building.create();
         this.buildings.push(building);
       }

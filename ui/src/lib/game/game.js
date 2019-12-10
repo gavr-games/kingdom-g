@@ -5,10 +5,12 @@ import Camera from "./camera";
 import Light from "./light";
 import Board from "./board/board";
 import Grid from "./grid";
+import GameState from "./game_state";
 import Loader from "./atlas/loader";
 
 class Game {
   constructor() {
+    this.selectHighlight = null;
     this.canvas = null;
     this.engine = null;
     this.scene = null;
@@ -18,6 +20,18 @@ class Game {
     this.board = null;
     EventBus.$on("init-game", gamePayload => {
       this.init(gamePayload);
+    });
+    EventBus.$on("selected-unit", unit => {
+      this.selectHighlight.addMesh(unit.mesh, BABYLON.Color3.Green());
+    });
+    EventBus.$on("deselected-unit", unit => {
+      this.selectHighlight.removeMesh(unit.mesh, BABYLON.Color3.Green());
+    });
+    EventBus.$on("pointer-over-cell", cell => {
+      this.selectHighlight.addMesh(cell.mesh, BABYLON.Color3.Green());
+    });
+    EventBus.$on("pointer-out-cell", cell => {
+      this.selectHighlight.removeMesh(cell.mesh, BABYLON.Color3.Green());
     });
   }
 
@@ -87,6 +101,11 @@ class Game {
     });
     Loaders.OBJFileLoader.OPTIMIZE_WITH_UV = true;
     this.scene = this.createScene(gamePayload);
+    this.selectHighlight = new BABYLON.HighlightLayer(
+      "selectHighlight",
+      this.scene
+    );
+    GameState.init(gamePayload);
   }
 }
 

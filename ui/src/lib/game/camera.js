@@ -44,6 +44,7 @@ class Camera {
     bottomP.position.y = CameraZ - CameraSize - CameraSize;
     bottomP.rotate(BABYLON.Axis.X, Math.PI / 2, BABYLON.Space.WORLD);
     bottomP.checkCollisions = true;
+    bottomP.isPickable = false;
 
     let northP = BABYLON.MeshBuilder.CreatePlane(
       "cameraPlane",
