@@ -14,15 +14,12 @@ export default {
     return {
     }
   },
-  created: function() {
-    this.gameController = new GameController()
-  },
   mounted: function() {
-    this.gameController.init()
+    GameController.init()
   },
   methods: {
     enterFullscreen() {
-      this.gameController.enterFullscreen()
+      GameController.enterFullscreen()
     }
   }
 };

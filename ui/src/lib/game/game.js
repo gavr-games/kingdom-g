@@ -33,6 +33,10 @@ class Game {
     EventBus.$on("pointer-out-cell", cell => {
       this.selectHighlight.removeMesh(cell.mesh, BABYLON.Color3.Green());
     });
+    EventBus.$on("unit-moved", (unit, cell) => {
+      this.selectHighlight.removeMesh(unit.mesh, BABYLON.Color3.Green());
+      this.selectHighlight.removeMesh(cell.mesh, BABYLON.Color3.Green());
+    });
   }
 
   createScene(gamePayload) {

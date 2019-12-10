@@ -1,4 +1,5 @@
 import { EventBus } from "@/lib/event_bus";
+import GameController from "@/lib/game/game_controller";
 
 const IDLE = 0,
   MY_TURN = 1,
@@ -18,6 +19,13 @@ class GameState {
       this.selectedUnit = null;
       //TODO: what state it should be?
       this.state = MY_TURN;
+    });
+    EventBus.$on("selected-cell", cell => {
+      if (this.state == UNIT_SELECTED) {
+        GameController.moveUnit(this.selectedUnit, cell);
+        this.selectedUnit = null;
+        this.state = MY_TURN;
+      }
     });
   }
 

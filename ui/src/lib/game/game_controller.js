@@ -1,5 +1,6 @@
 import { EventBus } from "@/lib/event_bus";
 import Game from "./game";
+import boardConfig from "./board/config";
 
 class GameController {
   constructor() {
@@ -14,6 +15,13 @@ class GameController {
   enterFullscreen() {
     this.game.engine.enterFullscreen();
   }
-}
 
-export default GameController;
+  moveUnit(unit, cell) {
+    unit.mesh.position.x = cell.mesh.position.x + boardConfig.cellSize / 2;
+    unit.mesh.position.z = cell.mesh.position.z - boardConfig.cellSize / 2;
+    EventBus.$emit("unit-moved", unit, cell);
+  }
+}
+const gameController = new GameController();
+
+export default gameController;

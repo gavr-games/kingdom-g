@@ -11,6 +11,11 @@ class Unit {
     this.payload = payload;
     this.selected = false;
     this.mesh = null;
+    EventBus.$on("unit-moved", unit => {
+      if (unit === this) {
+        this.selected = false;
+      }
+    });
   }
 
   create() {

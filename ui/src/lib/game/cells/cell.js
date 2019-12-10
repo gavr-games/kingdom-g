@@ -49,12 +49,9 @@ class Cell {
       )
     );
     mesh.actionManager.registerAction(
-      new BABYLON.ExecuteCodeAction(
-        BABYLON.ActionManager.OnPickTrigger,
-        evt => {
-          console.log(evt);
-        }
-      )
+      new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, () => {
+        EventBus.$emit("selected-cell", this);
+      })
     );
     this.mesh = mesh;
   }
