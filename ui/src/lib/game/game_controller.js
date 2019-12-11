@@ -17,8 +17,12 @@ class GameController {
   }
 
   moveUnit(unit, cell) {
-    unit.mesh.position.x = cell.mesh.position.x + boardConfig.cellSize / 2;
-    unit.mesh.position.z = cell.mesh.position.z - boardConfig.cellSize / 2;
+    let coords = {
+      x: cell.mesh.position.x + boardConfig.cellSize / 2,
+      z: cell.mesh.position.z - boardConfig.cellSize / 2,
+      y: 0
+    };
+    unit.moveToCoords(coords);
     EventBus.$emit("unit-moved", unit, cell);
   }
 }

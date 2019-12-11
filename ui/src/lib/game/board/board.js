@@ -41,6 +41,12 @@ class Board {
       }
     }
   }
+
+  update() {
+    for (const i in this.units) {
+      this.units[i].update();
+    }
+  }
 }
 
 export default Board;

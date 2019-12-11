@@ -89,7 +89,7 @@ class Game {
 
     this.engine.runRenderLoop(() => {
       this.scene.render();
-      //this.camera.update();
+      this.board.update();
     });
     window.addEventListener("resize", () => {
       this.engine.resize();
