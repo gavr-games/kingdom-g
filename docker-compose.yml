@@ -21,3 +21,9 @@ services:
     volumes:
       - ./ui:/usr/src/app:cached
     command: npm run serve
+
+  engine:
+    build: ./engine
+    ports:
+      - "3000:3000"
+
