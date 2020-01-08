@@ -20,10 +20,24 @@ services:
       - 80
     volumes:
       - ./ui:/usr/src/app:cached
-    command: npm run serve
+    command: /bin/sh -c "yarn install && npm run serve"
 
   engine:
     build: ./engine
     ports:
-      - "3000:3000"
+      - 3000:3000
 
+  rabbitmq:
+    image: rabbitmq:3.7.15-management-alpine
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=password
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq:cached
+    ports:
+      - 5671:5671
+      - 5672:5672
+      - 15672:15672
+
+volumes:
+  rabbitmq-data: null
