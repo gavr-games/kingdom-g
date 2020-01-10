@@ -24,6 +24,8 @@ services:
     build: ./engine
     ports:
       - 3000:3000
+    depends_on:
+      - rabbitmq
   
   site:
     build: ./site
@@ -35,6 +37,7 @@ services:
       - ./site:/app:cached
     depends_on:
       - sitedb
+      - rabbitmq
   
   sitedb:
     image: postgres:11.1
