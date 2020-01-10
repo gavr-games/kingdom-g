@@ -13,9 +13,7 @@ services:
     restart: always
   
   ui:
-    build:
-      context: ui
-      dockerfile: Dockerfile
+    build: ./ui
     ports:
       - 80
     volumes:
@@ -26,6 +24,25 @@ services:
     build: ./engine
     ports:
       - 3000:3000
+  
+  site:
+    build: ./site
+    command: ./bin/start.sh
+    ports:
+      - "4000:4000"
+    env_file: ./site/.env
+    volumes:
+      - ./site:/app:cached
+    depends_on:
+      - sitedb
+  
+  sitedb:
+    image: postgres:11.1
+    volumes:
+      - pg-data:/var/lib/postgresql/data:cached
+    env_file: ./site/.env
+    ports:
+      - "5432:5432"
 
   rabbitmq:
     image: rabbitmq:3.7.15-management-alpine
@@ -41,3 +58,4 @@ services:
 
 volumes:
   rabbitmq-data: null
+  pg-data: null
