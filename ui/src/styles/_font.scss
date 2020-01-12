@@ -1,0 +1,5 @@
+@import '../../node_modules/lato-font/scss/public-api';
+
+$lato-font-path: '../node_modules/lato-font/fonts';
+
+@include lato-include-font('light');

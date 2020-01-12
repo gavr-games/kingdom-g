@@ -1,5 +1,5 @@
 kingdom-g.localhost:443 {
-  proxy /site site:4000 {
+  proxy /socket site:4000 {
     websocket
   }
   proxy /sockjs-node ui:80 {

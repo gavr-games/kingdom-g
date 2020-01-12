@@ -1,5 +1,6 @@
 defmodule SiteWeb.UserSocket do
   use Phoenix.Socket
+  require Logger
 
   ## Channels
   # channel "room:*", SiteWeb.RoomChannel
@@ -15,8 +16,21 @@ defmodule SiteWeb.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
-  def connect(_params, socket, _connect_info) do
+  
+  channel "base", SiteWeb.BaseChannel
+  channel "user:*", SiteWeb.UserChannel
+
+  def connect(%{}, socket) do
+    Logger.info "New anonymous socket"
     {:ok, socket}
+  end
+
+  def socket_id(socket) do
+    if Map.has_key?(socket.assigns, :user_id) do
+      "users_socket:#{socket.assigns.user_id}"
+    else
+      nil
+    end
   end
 
   # Socket id's are topics that allow you to identify all sockets for a given user:
@@ -29,5 +43,5 @@ defmodule SiteWeb.UserSocket do
   #     SiteWeb.Endpoint.broadcast("user_socket:#{user.id}", "disconnect", %{})
   #
   # Returning `nil` makes this socket anonymous.
-  def id(_socket), do: nil
+  def id(socket), do: socket_id(socket)
 end

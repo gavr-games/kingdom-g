@@ -1,0 +1,34 @@
+.portal-link {
+  display: block;
+  text-decoration: none;
+  text-align: center;
+  color: #000000;
+  font-size: 16px;
+  line-height: 35px;
+  font-weight: 900;
+  &:hover {
+    span {
+      box-shadow: inset 0px 0px 6px 4px #965834;
+      border-radius: 13px;
+    }
+  }
+  span {
+    padding: 10px 15px;
+  }
+  &.line {
+    display: inline;
+    font-weight: 500;
+  }
+  &.green-button {
+    height: 48px;
+    line-height: 48px;
+    opacity: 0.9;
+    background: center url('assets/button_green.png') no-repeat;
+    &:hover {
+      opacity: 1;
+    }
+    &:active {
+      background: center url('assets/button_green_pressed.png') no-repeat;
+    }
+  }
+}

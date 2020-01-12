@@ -1,0 +1,9 @@
+.portal-error {
+  color: red;
+  text-align: center;
+  margin: 0px;
+  visibility: hidden;
+  &.show {
+    visibility: visible;
+  }
+}

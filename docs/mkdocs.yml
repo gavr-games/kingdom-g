@@ -1,0 +1,7 @@
+site_name: KingdomGDocs
+repo_url: https://github.com/gavr-games/kingdom-g/
+nav:
+    - Home: index.md
+    - Site: site.md
+theme: readthedocs
+dev_addr: '0.0.0.0:8080'

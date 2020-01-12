@@ -1,6 +1,5 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Game from "../views/Game.vue";
 
 Vue.use(VueRouter);
 
@@ -8,7 +7,24 @@ const routes = [
   {
     path: "/",
     name: "home",
-    component: Game
+    component: () => {
+      return import("../views/Login.vue");
+    }
+  },
+  {
+    path: "/signup",
+    name: "signup",
+    component: () => {
+      return import("../views/Signup.vue");
+    }
+  },
+  {
+    path: "/game",
+    name: "game",
+    component: () => {
+      return import("../views/Game.vue");
+    },
+    meta: { requiresAuth: true }
   }
 ];
 

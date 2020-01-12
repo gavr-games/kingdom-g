@@ -27,6 +27,7 @@ Once you have all of those installed you should:
 - run `docker-compose up -d` to start all services.
 - Now you should have a running set of docker containers. Check all of them are working using `docker-compose ps` command. The game should be available via https://kingdom-g.localhost
 - RabbitMQ admin panel [http://localhost:15672](http://localhost:15672) user/password
+- Docs [http://localhost:8080](http://localhost:8080)
 
 Everyday Usage
 ---------------
