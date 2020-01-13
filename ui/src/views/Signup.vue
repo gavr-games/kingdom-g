@@ -64,7 +64,7 @@
 
 <script>
 import { EventBus } from "../lib/event_bus";
-//import Errors from '../lib/utils/errors'
+import setLanguage from "../lib/concepts/lang/operations/set_lang";
 
 export default {
   data() {
@@ -80,9 +80,11 @@ export default {
   created() {
     this.$WSClient.joinChannel("base");
     EventBus.$on("received-base-msg", this.handleMsg);
+    EventBus.$on("received-base-error", this.handleError);
   },
   beforeDestroy() {
     EventBus.$off("received-base-msg", this.handleMsg);
+    EventBus.$off("received-base-error", this.handleError);
   },
   methods: {
     doSignup() {
@@ -108,6 +110,12 @@ export default {
     handleMsg(payload) {
       console.log(payload);
     },
+    handleError(payload) {
+      if (payload["action"] == "signup") {
+        this.error = this.$t(`errors.${payload["code"]}`);
+        this.showError = true;
+      }
+    },
     setEn() {
       this.setLang("en");
     },
@@ -116,6 +124,7 @@ export default {
     },
     setLang(language) {
       this.$root.$i18n.locale = language;
+      setLanguage(language);
       this.showError = false;
       this.$forceUpdate();
     },

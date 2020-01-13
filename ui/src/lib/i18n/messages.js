@@ -24,6 +24,11 @@ const messages = {
     },
     rules: {
       rules: "Rules"
+    },
+    errors: {
+      1: "Server error",
+      1001: "Please fill in all fields",
+      1002: "Email is already taken"
     }
   },
   ru: {
@@ -51,6 +56,11 @@ const messages = {
     },
     rules: {
       rules: "Правила"
+    },
+    errors: {
+      1: "Ошибка сервера",
+      1001: "Заполните все поля",
+      1002: "Email уже занят"
     }
   }
 };

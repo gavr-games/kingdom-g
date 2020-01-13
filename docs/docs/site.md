@@ -52,3 +52,5 @@ In case of error a `error` message will be sent back with the next payload:
 | Code | Description |
 |------|-------------|
 | 1    | Internal Server Error |
+| 1001 | Required fields are blank |
+| 1002 | Email is already taken |

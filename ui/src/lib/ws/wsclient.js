@@ -54,10 +54,16 @@ export class WSClient {
     let channel = this.socket.channel(channelName, {});
 
     channel.on("msg", payload => {
+      if (this.debug) {
+        console.log(channelName, "msg", payload);
+      }
       EventBus.$emit(`received-${channelName}-msg`, payload);
     });
 
     channel.on("error", payload => {
+      if (this.debug) {
+        console.log(channelName, "error", payload);
+      }
       EventBus.$emit(`received-${channelName}-error`, payload);
     });
 
