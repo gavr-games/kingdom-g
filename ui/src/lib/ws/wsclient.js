@@ -1,8 +1,9 @@
 "use strict";
 import { Socket } from "phoenix";
 import { EventBus } from "../event_bus";
+import getToken from "../concepts/token/operations/get_token";
 
-export class WSClient {
+class WSClient {
   constructor() {
     this.channels = [];
     this.socket = null;
@@ -14,7 +15,7 @@ export class WSClient {
     let wsUrl = "wss://" + window.location.hostname + "/socket";
     this.socket = new Socket(wsUrl, {
       params: {
-        token: this.getToken()
+        token: getToken()
       }
     });
     if (this.debug) {
@@ -22,12 +23,6 @@ export class WSClient {
     }
     this.socket.connect();
     this.connected = true;
-  }
-
-  getToken() {
-    let localStorage = window.localStorage;
-    let token = localStorage.getItem("token");
-    return token;
   }
 
   disconnect() {
@@ -96,6 +91,9 @@ export class WSClient {
   }
 
   sendMsg(channelName, msg) {
+    this.joinChannel(channelName);
     this.channels[channelName].push("msg", msg);
   }
 }
+const client = new WSClient();
+export default client;

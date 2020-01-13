@@ -18,7 +18,21 @@ defmodule SiteWeb.UserSocket do
   # performing token verification on connect.
   
   channel "base", SiteWeb.BaseChannel
-  channel "user:*", SiteWeb.UserChannel
+  channel "user", SiteWeb.UserChannel
+
+  def connect(params = %{"token" => token}, socket) do
+    Logger.info "New socket with token " <> token
+    result = Site.User.Operations.VerifyToken.call(token)
+    case result do
+      {:ok, user_id} ->
+        socket = socket 
+          |> assign(:token, params["token"])
+          |> assign(:user_id, user_id)
+        {:ok, socket}
+      _ ->
+        :error
+    end
+  end
 
   def connect(%{}, socket) do
     Logger.info "New anonymous socket"

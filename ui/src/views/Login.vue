@@ -64,6 +64,8 @@
 
 <script>
 import { EventBus } from "../lib/event_bus";
+import checkUserLocation from "../lib/concepts/user/operations/check_location";
+import redirectUser from "../lib/concepts/user/operations/redirect_user";
 
 export default {
   data() {
@@ -78,11 +80,13 @@ export default {
     };
   },
   created() {
-    this.$WSClient.joinChannel("base");
+    checkUserLocation();
     EventBus.$on("received-base-msg", this.handleMsg);
+    EventBus.$on("received-user-msg", this.handleUserMsg);
   },
   beforeDestroy() {
     EventBus.$off("received-base-msg", this.handleMsg);
+    EventBus.$off("received-user-msg", this.handleUserMsg);
   },
   methods: {
     doLogin() {
@@ -103,35 +107,11 @@ export default {
         })*/
     },
     handleMsg(payload) {
-      switch (payload["action"]) {
-        case "user_authorize":
-          if (parseInt(payload.header_result.success) == 1) {
-            this.handleSuccesfullLogin(payload);
-          } else {
-            /*this.loginError = Errors.getMsg(
-              payload.header_result.error_code,
-              payload.header_result.error_params
-            );*/
-            this.showLoginError = true;
-          }
-          break;
-        case "guest_user_authorize":
-          if (parseInt(payload.header_result.success) == 1) {
-            this.handleSuccesfullLogin(payload);
-          } else {
-            /*this.guestLoginError = Errors.getMsg(
-              payload.header_result.error_code,
-              payload.header_result.error_params
-            );*/
-            this.showGuestLoginError = true;
-          }
-          break;
-        case "arena_enter":
-          this.$router.push("arena");
-          break;
-        case "get_my_location":
-          //redirectUser(this, payload.data_result);
-          break;
+      console.log(payload);
+    },
+    handleUserMsg(payload) {
+      if (payload["action"] == "check_location") {
+        redirectUser(this, payload["data"]);
       }
     },
     setEn() {

@@ -65,6 +65,9 @@
 <script>
 import { EventBus } from "../lib/event_bus";
 import setLanguage from "../lib/concepts/lang/operations/set_lang";
+import loginUser from "../lib/concepts/user/operations/login";
+import checkUserLocation from "../lib/concepts/user/operations/check_location";
+import redirectUser from "../lib/concepts/user/operations/redirect_user";
 
 export default {
   data() {
@@ -78,13 +81,15 @@ export default {
     };
   },
   created() {
-    this.$WSClient.joinChannel("base");
+    checkUserLocation();
     EventBus.$on("received-base-msg", this.handleMsg);
     EventBus.$on("received-base-error", this.handleError);
+    EventBus.$on("received-user-msg", this.handleUserMsg);
   },
   beforeDestroy() {
     EventBus.$off("received-base-msg", this.handleMsg);
     EventBus.$off("received-base-error", this.handleError);
+    EventBus.$off("received-user-msg", this.handleUserMsg);
   },
   methods: {
     doSignup() {
@@ -108,7 +113,16 @@ export default {
       });
     },
     handleMsg(payload) {
-      console.log(payload);
+      if (payload["action"] == "signup") {
+        this.showError = false;
+        loginUser(payload["data"]["token"]);
+        this.$router.push('/');
+      }
+    },
+    handleUserMsg(payload) {
+      if (payload["action"] == "check_location") {
+        redirectUser(this, payload["data"]);
+      }
     },
     handleError(payload) {
       if (payload["action"] == "signup") {
