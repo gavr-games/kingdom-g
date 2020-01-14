@@ -5,6 +5,7 @@ import store from "./store";
 import VueI18n from "vue-i18n";
 import I18nMessages from "./lib/i18n/messages";
 import "@/components/ui/loader";
+import "@/components/arena/loader";
 import WSClient from "./lib/ws/wsclient";
 import getLanguage from "./lib/concepts/lang/operations/get_lang";
 
