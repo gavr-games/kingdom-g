@@ -17,6 +17,7 @@ export default {
   methods: {
     exitArena() {
       logoutUser();
+      this.$router.push("/");
     }
   }
 };

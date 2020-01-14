@@ -116,7 +116,6 @@ export default {
       if (payload["action"] == "signup") {
         this.showError = false;
         loginUser(payload["data"]["token"]);
-        this.$router.push('/');
       }
     },
     handleUserMsg(payload) {

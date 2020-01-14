@@ -5,11 +5,11 @@
         <div class="column">
           <div class="forms-column">
             <div class="portal-input">
-              <label for="login">{{ $t("login.login") }}</label>
+              <label for="login">Email</label>
               <input type="text" name="login" id="login" v-model="login" />
             </div>
             <div class="portal-input">
-              <label for="pass">{{ $t("login.login") }}</label>
+              <label for="pass">{{ $t("login.password") }}</label>
               <input type="password" name="pass" id="pass" v-model="pass" />
             </div>
             <a href="#" class="portal-link green-button" @click="doLogin">
@@ -66,6 +66,7 @@
 import { EventBus } from "../lib/event_bus";
 import checkUserLocation from "../lib/concepts/user/operations/check_location";
 import redirectUser from "../lib/concepts/user/operations/redirect_user";
+import loginUser from "../lib/concepts/user/operations/login";
 
 export default {
   data() {
@@ -82,32 +83,46 @@ export default {
   created() {
     checkUserLocation();
     EventBus.$on("received-base-msg", this.handleMsg);
+    EventBus.$on("received-base-error", this.handleError);
     EventBus.$on("received-user-msg", this.handleUserMsg);
   },
   beforeDestroy() {
     EventBus.$off("received-base-msg", this.handleMsg);
+    EventBus.$off("received-base-error", this.handleError);
     EventBus.$off("received-user-msg", this.handleUserMsg);
   },
   methods: {
     doLogin() {
-      /*this.$WSClient.sendBaseProtocolCmd({
-          action: 'user_authorize',
-          params: {
-            login: '"' + Chars.convertChars(this.login) + '"',
-            pass: '"' + this.pass.replace(new RegExp('"', 'g'), '\\"') + '"'
-          }
-        })*/
+      this.showLoginError = false;
+      this.showGuestLoginError = false;
+      if (this.pass == "" || this.login == "") {
+        this.loginError = this.$t("login.fields_blank");
+        this.showLoginError = true;
+        return;
+      }
+      this.$WSClient.sendMsg("base", {
+        action: "login",
+        data: {
+          password: this.pass,
+          email: this.login
+        }
+      });
     },
     doGuestLogin() {
-      /*this.$WSClient.sendBaseProtocolCmd({
-          action: 'guest_user_authorize',
-          params: {
-            name: '"' + Chars.convertChars(this.name) + '"'
-          }
-        })*/
+      // Send guest login
     },
     handleMsg(payload) {
-      console.log(payload);
+      if (payload["action"] == "login") {
+        this.showLoginError = false;
+        this.showGuestLoginError = false;
+        loginUser(payload["data"]["token"]);
+      }
+    },
+    handleError(payload) {
+      if (payload["action"] == "login") {
+        this.loginError = this.$t(`errors.${payload["code"]}`);
+        this.showLoginError = true;
+      }
     },
     handleUserMsg(payload) {
       if (payload["action"] == "check_location") {
@@ -125,13 +140,6 @@ export default {
       this.showLoginError = false;
       this.showGuestLoginError = false;
       this.$forceUpdate();
-    },
-    handleSuccesfullLogin(payload) {
-      this.showLoginError = false;
-      this.showGuestLoginError = false;
-      console.log(payload);
-      //authenticateUser(this, payload.data_result);
-      //redirectUser(this, payload.data_result);
     },
     showRules() {
       EventBus.$emit("show-rules");
