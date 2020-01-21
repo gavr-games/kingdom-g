@@ -19,6 +19,7 @@ defmodule SiteWeb.UserSocket do
   
   channel "base", SiteWeb.BaseChannel
   channel "user", SiteWeb.UserChannel
+  channel "arena", SiteWeb.ArenaChannel
 
   def connect(params = %{"token" => token}, socket) do
     Logger.info "New socket with token " <> token

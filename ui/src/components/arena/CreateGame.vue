@@ -47,7 +47,7 @@
 export default {
   data() {
     return {
-      gameModes: [],
+      gameModes: [{ name: "Fake mode", id: 1 }],
       name: "",
       modeId: null,
       turnTime: "0",
@@ -72,12 +72,15 @@ export default {
         this.showError = true;
         return;
       }
-      let pass = "null";
-      if (this.password != "") {
-        pass = '"' + this.password.replace(new RegExp('"', "g"), '\\"') + '"';
-      }
-      // Send create game
-      console.log(pass);
+      this.$WSClient.sendMsg("arena", {
+        action: "create_game",
+        data: {
+          title: this.name,
+          password: this.password,
+          mode_id: this.modeId,
+          time_limit: this.turnTime
+        }
+      });
     }
   }
 };

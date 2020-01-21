@@ -48,72 +48,23 @@ export default {
   },
   created() {
     checkUserLocation(this);
-    /*this.$WSClient.joinArena();
-    EventBus.$on("arena-command", this.executeCmd);
-    EventBus.$on("join-channel-error", this.goToLogin);
-    EventBus.$on("received-protocol-raw", this.handleProtocolRaw);
-    this.$WSClient.sendLoggedProtocolCmd({}, "get_arena_info");*/
+    this.$WSClient.joinChannel("arena");
+    EventBus.$on("received-arena-msg", this.handleArenaMsg);
+    EventBus.$on("received-arena-error", this.handleArenaError);
     EventBus.$on("received-user-msg", this.handleUserMsg);
   },
   beforeDestroy() {
-    /*EventBus.$off("received-protocol-raw", this.handleProtocolRaw);
-    EventBus.$off("join-channel-error", this.goToLogin);
-    EventBus.$off("arena-command", this.executeCmd);*/
+    EventBus.$off("received-arena-msg", this.handleArenaMsg);
+    EventBus.$off("received-arena-error", this.handleArenaError);
     EventBus.$off("received-user-msg", this.handleUserMsg);
   },
   methods: {
-    /*handleProtocolRaw(payload) {
-      processCommands(payload);
-      switch (payload["action"]) {
-        case "get_my_location":
-          redirectUser(this, payload.data_result);
-          if (
-            payload.data_result.game_id &&
-            payload.data_result.game_id != ""
-          ) {
-            this.currentGameId = payload.data_result.game_id;
-            this.currentContentComponent = "arena-game";
-          }
-          break;
-      }
-    },
-    executeCmd(payload) {
-      if (this[payload.cmd] !== undefined) {
-        this[payload.cmd](...payload.params);
-      }
-      let gameId = null;
-      let userId = null;
-      switch (payload.cmd) {
-        case "arena_game_add_player":
-          gameId = payload.params[0];
-          userId = payload.params[1];
-          if (userId == getMyId()) {
-            this.currentGameId = payload.params[0];
-            this.currentContentComponent = "arena-game";
-          }
-          break;
-        case "arena_player_remove":
-          userId = payload.params[0];
-          if (userId == getMyId()) {
-            this.goToLogin();
-          }
-          break;
-        case "arena_game_delete":
-          gameId = payload.params[0];
-          if (this.currentGameId == gameId) {
-            this.currentGameId = null;
-            this.showGamesList();
-          }
-          break;
-      }
+    handleArenaMsg(payload) {
       console.log(payload);
     },
-    arena_game_remove_player(gameId, userId) {
-      if (gameId == this.currentGameId && userId == getMyId()) {
-        this.currentGameId = null;
-        this.showGamesList();
-      }
-    },*/
+    handleArenaError(payload) {
+      console.log(payload);
+    },
     handleUserMsg(payload) {
       if (payload["action"] == "check_location") {
         redirectUser(this, payload["data"]);

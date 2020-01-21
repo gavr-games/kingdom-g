@@ -104,7 +104,8 @@ const messages = {
       1: "Server error",
       1001: "Please fill in all fields",
       1002: "Email is already taken",
-      1003: "Wrong Email or password"
+      1003: "Wrong Email or password",
+      1101: "User already in game"
     }
   },
   ru: {
@@ -214,7 +215,8 @@ const messages = {
       1: "Ошибка сервера",
       1001: "Заполните все поля",
       1002: "Email уже занят",
-      1003: "Неверный Email или пароль"
+      1003: "Неверный Email или пароль",
+      1101: "Пользователь уже в игре"
     }
   }
 };

@@ -7,6 +7,7 @@ defmodule Site.User do
     field :username, :string
     field :email, :string
     field :password, :string
+    has_many :players, Site.Player
 
     timestamps()
   end

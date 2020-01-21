@@ -2,6 +2,13 @@ site_name: KingdomGDocs
 repo_url: https://github.com/gavr-games/kingdom-g/
 nav:
     - Home: index.md
-    - Site: site.md
+    - Site:
+      - 'General': 'site/general.md'
+      - 'Arena Channel': 'site/arena_channel.md'
+      - 'Base Channel': 'site/base_channel.md'
+      - 'Game Channel': 'site/game_channel.md'
+      - 'User Channel': 'site/user_channel.md'
+      - 'Error Codes': 'site/error_codes.md'
+      - 'Todo': 'site/todo.md'
 theme: readthedocs
 dev_addr: '0.0.0.0:8080'
