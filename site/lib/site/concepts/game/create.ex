@@ -9,7 +9,8 @@ defmodule Site.Game.Operations.Create do
   def call(game_params, user_id) do
     result = success(user_id)
             ~>> fn user_id -> check_user_in_game(user_id) end
-            ~>> fn user_id -> create_game(game_params, user_id) end
+            ~>> fn user_id -> encrypt_password_param(game_params) end
+            ~>> fn updated_game_params -> create_game(updated_game_params, user_id) end
             ~>> fn game -> add_player(game, user_id) end
 
     if success?(result) do
@@ -65,6 +66,13 @@ defmodule Site.Game.Operations.Create do
           code
         end
         error(code)
+    end
+  end
+
+  def encrypt_password_param(game_params) do
+    case game_params["password"] do
+      "" -> success(game_params)
+      pass -> success(Map.put(game_params, "password", Comeonin.Argon2.hashpwsalt(pass)))
     end
   end
 end

@@ -17,7 +17,7 @@ defmodule Site.Game do
   @doc false
   def changeset(game, attrs \\ %{}) do
     game
-    |> cast(attrs, [:title, :password, :status, :mode_id, :time_limit])
-    |> validate_required([:title, :status])
+    |> cast(attrs, [:title, :password, :status, :mode_id, :time_limit, :owner_id])
+    |> validate_required([:title, :status, :owner_id])
   end
 end

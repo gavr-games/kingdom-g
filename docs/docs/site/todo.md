@@ -1,7 +1,7 @@
 # Todo
 
-- add password hashing for game create
-- broadcast add_game and add_player commands after game creation
+- handle add_game command in js
+- handle add_user_to_game command in js
 - add create game feature (server, doc, js)
 - add show error window for arena
 - add check user in game to check user location
