@@ -17,6 +17,8 @@
 </template>
 
 <script>
+import { EventBus } from "../../lib/event_bus";
+
 export default {
   data() {
     return {
@@ -27,11 +29,30 @@ export default {
       players: []
     };
   },
-  created() {},
-  beforeDestroy() {},
+  created() {
+    this.$WSClient.sendMsg("user", {
+      action: "get_my_game",
+      data: {}
+    });
+    EventBus.$on("received-arena-msg", this.handleArenaMsg);
+    EventBus.$on("received-user-msg", this.handleUserMsg);
+  },
+  beforeDestroy() {
+    EventBus.$off("received-arena-msg", this.handleArenaMsg);
+    EventBus.$off("received-user-msg", this.handleUserMsg);
+  },
   methods: {
     exitGame() {
       // Send exit game
+    },
+    handleArenaMsg(payload) {
+      console.log(payload);
+    },
+    handleUserMsg(payload) {
+      if (payload["action"] == "get_my_game") {
+        this.game = payload.data;
+        this.currentGameId = payload.data.id;
+      }
     },
     findCreateGameFeature(featureId) {
       return this.createGameFeatures.find(

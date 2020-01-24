@@ -16,9 +16,9 @@
         v-for="game in games"
         v-bind:key="game.game_id"
       >
-        <td>{{ game.owner_name }}</td>
+        <td>{{ game.owner.username }}</td>
         <td>{{ game.title }}</td>
-        <td>{{ game.mode_name }}</td>
+        <td>{{ game.mode_id }}</td>
         <td>{{ game.player_count }}</td>
         <td>{{ game.spectator_count }}</td>
         <td>
@@ -30,7 +30,7 @@
           />
         </td>
         <td>
-          <a href="#" class="join-game" @click="joinGame(game.game_id)"></a>
+          <a href="#" class="join-game" @click="joinGame(game.id)"></a>
         </td>
       </tr>
     </table>
@@ -38,26 +38,42 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import { EventBus } from "../../lib/event_bus";
 
 export default {
-  computed: mapState({
-    games: state => state.games.all
-  }),
   data() {
-    return {};
+    return {
+      games: []
+    };
   },
-  created() {},
-  beforeDestroy() {},
+  created() {
+    this.$WSClient.sendMsg("arena", {
+      action: "get_games",
+      data: {}
+    });
+    EventBus.$on("received-arena-msg", this.handleArenaMsg);
+    EventBus.$on("received-arena-error", this.handleArenaError);
+  },
+  beforeDestroy() {
+    EventBus.$off("received-arena-msg", this.handleArenaMsg);
+    EventBus.$off("received-arena-error", this.handleArenaError);
+  },
   methods: {
-    ...mapActions("games", ["addGame", "removeGame", "updateGame", "setGames"]),
     joinGame(gameId) {
-      let game = this.$store.getters["games/getGame"](gameId);
-      if (parseInt(game.pass_flag) == 0) {
-        // join
-      } else {
-        // ask password
+      this.$WSClient.sendMsg("arena", {
+        action: "join_game",
+        data: {
+          game_id: gameId
+        }
+      });
+    },
+    handleArenaMsg(payload) {
+      if (payload["action"] == "get_games") {
+        this.games = payload.data;
       }
+    },
+    handleArenaError(payload) {
+      console.log(payload);
     }
   }
 };

@@ -4,6 +4,7 @@ nav:
     - Home: index.md
     - Site:
       - 'General': 'site/general.md'
+      - 'API': 'site/api.md'
       - 'Arena Channel': 'site/arena_channel.md'
       - 'Base Channel': 'site/base_channel.md'
       - 'Game Channel': 'site/game_channel.md'

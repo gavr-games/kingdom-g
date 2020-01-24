@@ -3,7 +3,9 @@
 | Code | Description |
 |------|-------------|
 | 1    | Internal Server Error |
+| 2    | Record Not Found |
 | 1001 | Required fields are blank |
 | 1002 | Email is already taken |
 | 1003 | Invalid email or password |
 | 1101 | User already in game |
+| 1102 | Game is already finished |

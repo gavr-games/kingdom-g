@@ -7,5 +7,7 @@ defmodule SiteWeb.Router do
 
   scope "/api", SiteWeb do
     pipe_through :api
+
+    post "/check_auth", AuthController, :check
   end
 end

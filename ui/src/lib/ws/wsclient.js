@@ -2,6 +2,7 @@
 import { Socket } from "phoenix";
 import { EventBus } from "../event_bus";
 import getToken from "../concepts/token/operations/get_token";
+import axios from "axios";
 
 class WSClient {
   constructor() {
@@ -21,8 +22,23 @@ class WSClient {
     if (this.debug) {
       console.log("trying to connect");
     }
+    this.socket.onError(this.checkAuth);
     this.socket.connect();
     this.connected = true;
+  }
+
+  checkAuth() {
+    axios
+      .post("/api/check_auth", {
+        token: getToken()
+      })
+      .then(function(response) {
+        if (response.data.user_id === null) {
+          let localStorage = window.localStorage;
+          localStorage.removeItem("token");
+          window.location.reload();
+        }
+      });
   }
 
   disconnect() {

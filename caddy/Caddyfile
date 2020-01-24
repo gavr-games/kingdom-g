@@ -2,6 +2,9 @@ kingdom-g.localhost:443 {
   proxy /socket site:4000 {
     websocket
   }
+  proxy /api site:4000 {
+    transparent
+  }
   proxy /sockjs-node ui:80 {
     websocket
   }

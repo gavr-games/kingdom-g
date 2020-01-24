@@ -48,7 +48,10 @@ export default {
   },
   created() {
     checkUserLocation(this);
-    this.$WSClient.joinChannel("arena");
+    this.$WSClient.sendMsg("user", {
+      action: "get_my_game",
+      data: {}
+    });
     EventBus.$on("received-arena-msg", this.handleArenaMsg);
     EventBus.$on("received-arena-error", this.handleArenaError);
     EventBus.$on("received-user-msg", this.handleUserMsg);
@@ -60,14 +63,22 @@ export default {
   },
   methods: {
     handleArenaMsg(payload) {
-      console.log(payload);
+      if (
+        payload["action"] == "create_game" ||
+        payload["action"] == "join_game"
+      ) {
+        this.showGame(payload.data.id);
+      }
     },
     handleArenaError(payload) {
-      console.log(payload);
+      alert(this.$t(`errors.${payload["code"]}`));
     },
     handleUserMsg(payload) {
       if (payload["action"] == "check_location") {
         redirectUser(this, payload["data"]);
+      }
+      if (payload["action"] == "get_my_game") {
+        this.showGame(payload.data.id);
       }
     },
     showMyProfile() {
@@ -75,6 +86,12 @@ export default {
     },
     showGamesList() {
       this.currentContentComponent = "arena-games-list";
+    },
+    showGame(game_id) {
+      if (game_id !== undefined) {
+        this.currentGameId = game_id;
+        this.currentContentComponent = "arena-game";
+      }
     },
     showCreateGame() {
       if (this.currentGameId === null) {
