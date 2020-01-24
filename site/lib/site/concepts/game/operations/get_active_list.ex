@@ -5,6 +5,6 @@ defmodule Site.Game.Operations.GetActiveList do
   def call() do
     Repo.all from g in Game,
       where: (g.status != "finished"),
-      preload: [:owner]
+      preload: [:owner, players: :user]
   end
 end

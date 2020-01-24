@@ -4,6 +4,7 @@ defmodule Site.Game.Operations.Join do
   use Monad.Operators
   import Monad.Result
   alias Site.{User, Game, Repo, Player}
+  alias Site.User.Operations.GetCurrentGame
 
   def call(%{"game_id" => game_id}, user_id) do
     result = success(user_id)

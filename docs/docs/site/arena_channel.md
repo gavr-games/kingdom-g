@@ -108,8 +108,63 @@ In case of error a `error` message will be sent back with the next payload:
 
 ### Start game
 
+To start game you should send message with type `msg` and payload:
+```json
+{
+  action: "start_game",
+  data: {
+    game_id: 123
+  }
+}
+```
+
+In case of success a `msg` message will be sent back with the next payload:
+```json
+{
+  action: "start_game",
+  data: {
+    id: 123
+  }
+}
+```
+
+In case of error a `error` message will be sent back with the next payload:
+```json
+{
+  action: "start_game",
+  code: 1102 //See the list of error codes in the end of the doc
+}
+```
+
 ### Exit game
 
+To exit game you should send message with type `msg` and payload:
+```json
+{
+  action: "exit_game",
+  data: {
+    game_id: 123
+  }
+}
+```
+
+In case of success a `msg` message will be sent back with the next payload:
+```json
+{
+  action: "exit_game",
+  data: {
+    id: 123
+  }
+}
+```
+
+In case of error a `error` message will be sent back with the next payload:
+```json
+{
+  action: "exit_game",
+  code: 1102 //See the list of error codes in the end of the doc
+}
+```
 
 ## Commands from server
 
@@ -149,5 +204,30 @@ Received when a user joins game
 ```
 
 ### Change game status
+Received when a game changes the status
+```json
+{
+  action: "command",
+  data: {
+    command: "change_game_status",
+    params: {
+      game_id: 7,
+      status: "started"
+    }
+  }
+}
+```
 
 ### Remove game
+Received when the game is removed or finished
+```json
+{
+  action: "command",
+  data: {
+    command: "remove_game",
+    params: {
+      game_id: 7
+    }
+  }
+}
+```

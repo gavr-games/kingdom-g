@@ -7,6 +7,6 @@ defmodule Site.User.Operations.GetCurrentGame do
       join: p in assoc(g, :players),
       where: (g.status != "finished") and
              (p.user_id == ^user_id),
-      preload: [:owner]
+      preload: [:owner, players: :user]
   end
 end

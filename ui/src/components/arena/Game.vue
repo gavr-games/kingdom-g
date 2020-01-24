@@ -2,14 +2,20 @@
   <div id="arena-game">
     <div class="heading">- {{ game.title }} -</div>
     <div class="cols">
-      <div id="features">
-        <div class="feature" v-for="feature in features" v-bind:key="feature.feature_id">
-          <div v-if="feature.feature_type == 'bool'">
-            {{ findCreateGameFeature(feature.feature_id).name }}
-          </div>
+      <div id="players">
+        Players:
+        <div
+          class="player"
+          v-for="player in game.players"
+          v-bind:key="player.id"
+        >
+          {{ player.username }}
         </div>
       </div>
     </div>
+    <a href="#" class="green-button" @click="startGame">
+      {{ $t("arena.game.start") }}
+    </a>
     <a href="#" class="red-button" @click="exitGame">
       {{ $t("arena.game.exit") }}
     </a>
@@ -30,10 +36,7 @@ export default {
     };
   },
   created() {
-    this.$WSClient.sendMsg("user", {
-      action: "get_my_game",
-      data: {}
-    });
+    this.getGame();
     EventBus.$on("received-arena-msg", this.handleArenaMsg);
     EventBus.$on("received-user-msg", this.handleUserMsg);
   },
@@ -42,22 +45,44 @@ export default {
     EventBus.$off("received-user-msg", this.handleUserMsg);
   },
   methods: {
+    getGame() {
+      this.$WSClient.sendMsg("user", {
+        action: "get_my_game",
+        data: {}
+      });
+    },
+    startGame() {
+      this.$WSClient.sendMsg("arena", {
+        action: "start_game",
+        data: {
+          game_id: this.currentGameId
+        }
+      });
+    },
     exitGame() {
-      // Send exit game
+      this.$WSClient.sendMsg("arena", {
+        action: "exit_game",
+        data: {
+          game_id: this.currentGameId
+        }
+      });
     },
     handleArenaMsg(payload) {
-      console.log(payload);
+      //TODO: refactor this not to refresh the whole game but just add player or remove
+      if (
+        payload.action == "command" &&
+        (payload.data.command == "add_user_to_game" ||
+          payload.data.command == "remove_user_from_game") &&
+        payload.data.params.game_id == this.currentGameId
+      ) {
+        this.getGame();
+      }
     },
     handleUserMsg(payload) {
       if (payload["action"] == "get_my_game") {
         this.game = payload.data;
         this.currentGameId = payload.data.id;
       }
-    },
-    findCreateGameFeature(featureId) {
-      return this.createGameFeatures.find(
-        f => parseInt(f.id) === parseInt(featureId)
-      );
     }
   }
 };
@@ -71,6 +96,9 @@ export default {
   }
   .red-button {
     margin-top: 20px;
+  }
+  #players {
+    color: white;
   }
 }
 </style>

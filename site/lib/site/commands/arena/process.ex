@@ -2,6 +2,7 @@ defmodule Site.Commands.Arena.Process do
   import Monad.Result
   alias Site.Game.Operations.{Create, GetActiveList, Join}
   alias Site.Commands.Arena.Representers.{AddGameRepresenter, AddUserToGameRepresenter, GameRepresenter}
+  alias Site.User.Operations.GetCurrentGame
 
   def call(%{"action" => action, "data" => data}, user_id) do
     case action do
@@ -15,7 +16,7 @@ defmodule Site.Commands.Arena.Process do
           {:error, %{code: result.error}}
         end
       "join_game" ->
-        result = Create.call(data, user_id)
+        result = Join.call(data, user_id)
         if success?(result) do
           game = unwrap!(result)
           SiteWeb.Endpoint.broadcast "arena", "msg", AddGameRepresenter.call(GetCurrentGame.call(user_id))
