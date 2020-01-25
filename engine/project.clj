@@ -7,4 +7,21 @@
   :java-source-paths ["src/java"]
   :test-paths ["test/clojure"]
   :target-path "target/%s"
-  :profiles {:uberjar {:aot :all}})
+
+  :profiles {:uberjar {:aot :all}
+             :js-library {
+                          :dependencies [[org.clojure/clojurescript "1.10.520"]]
+                          :plugins [[lein-cljsbuild "1.1.7"]
+                                    [lein-doo "0.1.11"]]
+
+                          :cljsbuild {
+                                      :builds {:compile {:source-paths ["src/clojure"]
+                                                         :compiler {:output-to
+                                                                    "resources/engine.js"
+                                                                    :optimizations :advanced}}
+                                               :js-test {:source-paths ["src" "test"]
+                                                         :compiler {:output-to "out/tests.js"
+                                                                    :main client.testrunner
+                                                                    :optimizations :whitespace}}}}
+                          :doo {:build "js-test"
+                                :alias {:default [:nashorn]}}}})

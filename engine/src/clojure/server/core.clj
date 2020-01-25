@@ -1,7 +1,10 @@
 (ns server.core
   (:gen-class))
 
+
 (defn -main
-  "I don't do a whole lot ... yet."
   [& args]
-  (println "Hello, World!"))
+  (println "Started game engine server")
+  (println "TODO connect to rabbitmq and subscribe to game management queue")
+  (while true
+    (Thread/sleep 60000)))
