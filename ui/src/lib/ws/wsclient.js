@@ -44,7 +44,7 @@ class WSClient {
   disconnect() {
     if (this.connected) {
       this.socket.disconnect();
-      this.channels = []
+      this.channels = [];
       this.connected = false;
       if (this.debug) {
         console.log("disconnected");

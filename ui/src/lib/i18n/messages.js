@@ -106,8 +106,10 @@ const messages = {
       1001: "Please fill in all fields",
       1002: "Email is already taken",
       1003: "Wrong Email or password",
-      1101: "User already in game",
-      1102: "Game is already finished"
+      1101: "Player already in game",
+      1102: "Game is already finished",
+      1103: "Player is not in game",
+      1104: "Game is already started"
     }
   },
   ru: {
@@ -220,7 +222,9 @@ const messages = {
       1002: "Email уже занят",
       1003: "Неверный Email или пароль",
       1101: "Пользователь уже в игре",
-      1102: "Игра уже завершена"
+      1102: "Игра уже завершена",
+      1103: "Пользователь не в игре",
+      1104: "Игра уже начата"
     }
   }
 };

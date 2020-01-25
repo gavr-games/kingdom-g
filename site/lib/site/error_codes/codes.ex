@@ -8,4 +8,6 @@ defmodule Site.ErrorCodes do
   define invalid_email_or_password, 1003
   define user_already_in_game, 1101
   define game_is_already_finished, 1102
+  define user_not_in_game, 1103
+  define game_is_already_started, 1104
 end

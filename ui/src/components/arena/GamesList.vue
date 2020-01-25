@@ -19,8 +19,8 @@
         <td>{{ game.owner.username }}</td>
         <td>{{ game.title }}</td>
         <td>{{ game.mode_id }}</td>
-        <td>{{ game.player_count }}</td>
-        <td>{{ game.spectator_count }}</td>
+        <td>{{ game.players.filter(p => !p.is_observer).length }}</td>
+        <td>{{ game.players.filter(p => p.is_observer).length }}</td>
         <td>
           <div
             v-bind:class="[
@@ -68,8 +68,11 @@ export default {
       });
     },
     handleArenaMsg(payload) {
-      if (payload["action"] == "get_games") {
+      if (payload.action == "get_games") {
         this.games = payload.data;
+      }
+      if (payload.action == "command" && payload.data.command == "add_game") {
+        this.games.push(payload.data.params);
       }
     },
     handleArenaError(payload) {

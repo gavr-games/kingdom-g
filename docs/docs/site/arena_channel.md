@@ -203,6 +203,21 @@ Received when a user joins game
 }
 ```
 
+### Remove user from game
+Received when a user exits game
+```json
+{
+  action: "command",
+  data: {
+    command: "remove_user_from_game",
+    params: {
+      game_id: 7,
+      user_id: 32
+    }
+  }
+}
+```
+
 ### Change game status
 Received when a game changes the status
 ```json

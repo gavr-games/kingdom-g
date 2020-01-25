@@ -69,6 +69,13 @@ export default {
       ) {
         this.showGame(payload.data.id);
       }
+      if (
+        payload["action"] == "exit_game" &&
+        payload.data.id == this.currentGameId
+      ) {
+        this.currentGameId = null;
+        this.showGamesList();
+      }
     },
     handleArenaError(payload) {
       alert(this.$t(`errors.${payload["code"]}`));

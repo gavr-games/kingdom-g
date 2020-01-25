@@ -10,7 +10,7 @@ defmodule Site.Game.Operations.Join do
     result = success(user_id)
             ~>> fn user_id -> check_user_in_game(user_id) end
             ~>> fn user_id -> check_game_exists(game_id) end
-            ~>> fn game -> check_game_finished(user_id, game) end
+            ~>> fn game -> check_game_finished(game) end
             ~>> fn game -> add_player(game, user_id) end
 
     if success?(result) do
@@ -29,7 +29,7 @@ defmodule Site.Game.Operations.Join do
     end
   end
 
-  def check_game_finished(user_id, game) do
+  def check_game_finished(game) do
     case game.status do
       "finished" ->
         error(ErrCodes.game_is_already_finished)
