@@ -49,9 +49,6 @@ services:
 
   rabbitmq:
     image: rabbitmq:3.7.15-management-alpine
-    environment:
-      - RABBITMQ_DEFAULT_USER=user
-      - RABBITMQ_DEFAULT_PASS=password
     volumes:
       - rabbitmq-data:/var/lib/rabbitmq:cached
     ports:
