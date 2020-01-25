@@ -1,0 +1,23 @@
+name: Engine Tests
+
+on:
+  push:
+    paths:
+      - 'engine/*'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      working-directory: ./engine
+      run: lein deps
+    - name: Run server tests
+      working-directory: ./engine
+      run: lein test
+    - name: Run js tests
+      working-directory: ./engine
+      run: lein with-profile js-library doo once
