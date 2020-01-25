@@ -6,7 +6,8 @@ defmodule Site.Commands.Arena.Process do
     AddUserToGameRepresenter,
     RemoveGameRepresenter,
     RemoveUserFromGameRepresenter,
-    GameRepresenter
+    GameRepresenter,
+    ChangeGameStatusRepresenter
   }
   alias Site.User.Operations.GetCurrentGame
 
@@ -46,10 +47,9 @@ defmodule Site.Commands.Arena.Process do
       "start_game" ->
         result = Start.call(data, user_id)
         if success?(result) do
-          #game = unwrap!(result)
-          #SiteWeb.Endpoint.broadcast "arena", "msg", AddGameRepresenter.call(GetCurrentGame.call(user_id))
-          #SiteWeb.Endpoint.broadcast "arena", "msg", AddUserToGameRepresenter.call(game, user_id)
-          #{:ok, %{data: %{id: game.id}}}
+          game = unwrap!(result)
+          SiteWeb.Endpoint.broadcast "arena", "msg", ChangeGameStatusRepresenter.call(game)
+          {:ok, %{data: %{id: game.id}}}
         else
           {:error, %{code: result.error}}
         end

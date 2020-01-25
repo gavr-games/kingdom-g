@@ -23,10 +23,7 @@
         <td>{{ game.players.filter(p => p.is_observer).length }}</td>
         <td>
           <div
-            v-bind:class="[
-              'pass-flag',
-              parseInt(game.pass_flag) == 1 ? 'closed' : 'open'
-            ]"
+            v-bind:class="['pass-flag', game.has_password ? 'closed' : 'open']"
           />
         </td>
         <td>
@@ -73,6 +70,14 @@ export default {
       }
       if (payload.action == "command" && payload.data.command == "add_game") {
         this.games.push(payload.data.params);
+      }
+      if (
+        payload.action == "command" &&
+        payload.data.command == "remove_game"
+      ) {
+        this.games = this.games.filter(
+          game => game.id !== payload.data.params.game_id
+        );
       }
     },
     handleArenaError(payload) {

@@ -11,5 +11,8 @@ nav:
       - 'User Channel': 'site/user_channel.md'
       - 'Error Codes': 'site/error_codes.md'
       - 'Todo': 'site/todo.md'
+    - RabbitMQ:
+      - 'General': 'rabbitmq/general.md'
+      - 'Game Management': 'rabbitmq/game_management_queue.md'
 theme: readthedocs
 dev_addr: '0.0.0.0:8080'

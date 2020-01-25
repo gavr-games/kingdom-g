@@ -10,4 +10,5 @@ defmodule Site.ErrorCodes do
   define game_is_already_finished, 1102
   define user_not_in_game, 1103
   define game_is_already_started, 1104
+  define only_owner_can_start_the_game, 1105
 end

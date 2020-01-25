@@ -63,28 +63,35 @@ export default {
   },
   methods: {
     handleArenaMsg(payload) {
-      if (
-        payload["action"] == "create_game" ||
-        payload["action"] == "join_game"
-      ) {
+      if (payload.action == "create_game" || payload.action == "join_game") {
         this.showGame(payload.data.id);
       }
+      // Exit game
       if (
-        payload["action"] == "exit_game" &&
+        payload.action == "exit_game" &&
         payload.data.id == this.currentGameId
       ) {
         this.currentGameId = null;
         this.showGamesList();
       }
+      // Game started
+      if (
+        payload.action == "command" &&
+        payload.data.command == "change_game_status" &&
+        payload.data.params.status == "started" &&
+        payload.data.params.game_id == this.currentGameId
+      ) {
+        this.$router.push("game");
+      }
     },
     handleArenaError(payload) {
-      alert(this.$t(`errors.${payload["code"]}`));
+      alert(this.$t(`errors.${payload.code}`));
     },
     handleUserMsg(payload) {
-      if (payload["action"] == "check_location") {
-        redirectUser(this, payload["data"]);
+      if (payload.action == "check_location") {
+        redirectUser(this, payload.data);
       }
-      if (payload["action"] == "get_my_game") {
+      if (payload.action == "get_my_game") {
         this.showGame(payload.data.id);
       }
     },

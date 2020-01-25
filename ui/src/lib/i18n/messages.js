@@ -109,7 +109,8 @@ const messages = {
       1101: "Player already in game",
       1102: "Game is already finished",
       1103: "Player is not in game",
-      1104: "Game is already started"
+      1104: "Game is already started",
+      1105: "Only owner can start the game"
     }
   },
   ru: {
@@ -224,7 +225,8 @@ const messages = {
       1101: "Пользователь уже в игре",
       1102: "Игра уже завершена",
       1103: "Пользователь не в игре",
-      1104: "Игра уже начата"
+      1104: "Игра уже начата",
+      1105: "Только создатель может начать игру"
     }
   }
 };

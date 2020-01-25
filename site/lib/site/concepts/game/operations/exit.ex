@@ -51,7 +51,7 @@ defmodule Site.Game.Operations.Exit do
 
   def check_last_player(game) do
     case game.status do
-      "waitting" ->
+      "waiting" ->
         query = from(p in Player, where: p.game_id == ^game.id)
         case Repo.exists?(query) do
           true ->

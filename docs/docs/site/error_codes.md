@@ -11,3 +11,4 @@
 | 1102 | Game is already finished |
 | 1103 | User is not in game |
 | 1104 | Game is already started |
+| 1105 | Only owner can start the game |
