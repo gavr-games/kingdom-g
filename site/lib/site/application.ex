@@ -11,9 +11,10 @@ defmodule Site.Application do
       # Start the Ecto repository
       Site.Repo,
       # Start the endpoint when the application starts
-      SiteWeb.Endpoint
+      SiteWeb.Endpoint,
       # Starts a worker by calling: Site.Worker.start_link(arg)
       # {Site.Worker, arg},
+      Site.Rabbitmq.GameManagement
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

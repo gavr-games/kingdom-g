@@ -43,7 +43,8 @@ defmodule Site.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:monadex, "~> 1.1"},
       {:comeonin, "~> 4.1"},
-      {:argon2_elixir, "~> 1.3"}
+      {:argon2_elixir, "~> 1.3"},
+      {:amqp, "~> 1.4.0"}
     ]
   end
 

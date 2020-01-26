@@ -21,10 +21,11 @@ defmodule Site.Game.Operations.Start do
   end
 
   def check_game_exists(game_id) do
-    case Site.Repo.get(Game, game_id) do
+    case Repo.get(Game, game_id) do
       nil ->
         error(ErrCodes.record_not_found)
       game ->
+        game = Repo.preload game, [:owner, players: :user]
         success(game)
     end
   end

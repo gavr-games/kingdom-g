@@ -21,10 +21,10 @@
 (defn -main
   [& args]
   (println "Game engine server starting")
-  (let [conn (rmq/connect)
+  (let [conn (rmq/connect {:uri (System/getenv "RABBITMQ_URL")})
         ch (lch/open conn)]
     (println "Connected to RabbitMQ. Channel id: " (.getChannelNumber ch))
-    (lq/declare ch management-q-name)
+    (lq/declare ch management-q-name {:auto-delete false})
     (lc/subscribe ch management-q-name management-handler)
 
     (while true

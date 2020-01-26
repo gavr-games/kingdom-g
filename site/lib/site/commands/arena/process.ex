@@ -10,6 +10,7 @@ defmodule Site.Commands.Arena.Process do
     ChangeGameStatusRepresenter
   }
   alias Site.User.Operations.GetCurrentGame
+  alias Site.Rabbitmq.GameManagement
 
   def call(%{"action" => action, "data" => data}, user_id) do
     case action do
@@ -49,6 +50,7 @@ defmodule Site.Commands.Arena.Process do
         if success?(result) do
           game = unwrap!(result)
           SiteWeb.Endpoint.broadcast "arena", "msg", ChangeGameStatusRepresenter.call(game)
+          GameManagement.publish(Jason.encode!(%{action: "create_game", data: GameRepresenter.call(game)}))
           {:ok, %{data: %{id: game.id}}}
         else
           {:error, %{code: result.error}}

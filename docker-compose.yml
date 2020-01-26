@@ -22,8 +22,12 @@ services:
 
   engine:
     build: ./engine
+    command: lein run
     ports:
       - 3000:3000
+    env_file: ./engine/.env
+    volumes:
+      - ./engine:/usr/src/app:cached
     depends_on:
       - rabbitmq
   
@@ -52,7 +56,6 @@ services:
     volumes:
       - rabbitmq-data:/var/lib/rabbitmq:cached
     ports:
-      - 5671:5671
       - 5672:5672
       - 15672:15672
   
