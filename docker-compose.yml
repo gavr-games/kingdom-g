@@ -22,7 +22,6 @@ services:
 
   engine:
     build: ./engine
-    command: lein run
     ports:
       - 3000:3000
     env_file: ./engine/.env

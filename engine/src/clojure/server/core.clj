@@ -20,7 +20,8 @@
 
 (defn -main
   [& args]
-  (println "Game engine server starting")
+  (println "Game engine server starting"
+           (.toString (java.time.LocalDateTime/now)))
   (let [conn (rmq/connect {:uri (System/getenv "RABBITMQ_URL")})
         ch (lch/open conn)]
     (println "Connected to RabbitMQ. Channel id: " (.getChannelNumber ch))
