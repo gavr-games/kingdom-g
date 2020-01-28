@@ -14,6 +14,7 @@ defmodule Site.Application do
       SiteWeb.Endpoint,
       # Starts a worker by calling: Site.Worker.start_link(arg)
       # {Site.Worker, arg},
+      Site.Presence,
       Site.Rabbitmq.GameManagement
     ]
 

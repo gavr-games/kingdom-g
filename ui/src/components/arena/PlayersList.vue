@@ -14,7 +14,7 @@
       >
         <div class="level">1</div>
         <div class="nickname" @click="showPlayerProfile(player.user_id)">
-          {{ player.nick }}
+          {{ player.username }}
         </div>
         <div class="status">
           {{ player.status_id }}
@@ -25,27 +25,45 @@
 </template>
 
 <script>
+import { Presence } from "phoenix";
 import { EventBus } from "../../lib/event_bus";
-import { mapState, mapActions } from "vuex";
 
 export default {
-  computed: mapState({
-    players: state => state.players.all
-  }),
   data() {
-    return {};
+    return {
+      presences: {},
+      players: []
+    };
   },
-  created() {},
-  beforeDestroy() {},
+  created() {
+    EventBus.$on("received-arena-presence-state", this.handlePresenceState);
+    EventBus.$on("received-arena-presence-diff", this.handlePresenceDiff);
+  },
+  beforeDestroy() {
+    EventBus.$off("received-arena-presence-state", this.handlePresenceState);
+    EventBus.$off("received-arena-presence-diff", this.handlePresenceDiff);
+  },
   methods: {
-    ...mapActions("players", [
-      "addPlayer",
-      "removePlayer",
-      "updatePlayer",
-      "setPlayers"
-    ]),
     showPlayerProfile(playerId) {
       EventBus.$emit("show-player-profile", playerId);
+    },
+    handlePresenceState(state) {
+      this.presences = Presence.syncState(this.presences, state);
+      this.setPlayers();
+    },
+    handlePresenceDiff(diff) {
+      this.presences = Presence.syncDiff(this.presences, diff);
+      this.setPlayers();
+    },
+    setPlayers() {
+      let players = Presence.list(this.presences, (_id, presence) => {
+        if (presence.metas !== undefined && presence.metas[0] !== undefined) {
+          return Object.create(presence.metas[0]);
+        } else {
+          return null;
+        }
+      });
+      this.players = players.filter(player => player !== null);
     }
   }
 };

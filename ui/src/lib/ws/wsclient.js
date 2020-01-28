@@ -72,6 +72,14 @@ class WSClient {
       EventBus.$emit(`received-${channelName}-msg`, payload);
     });
 
+    channel.on("presence_state", state => {
+      EventBus.$emit(`received-${channelName}-presence-state`, state);
+    });
+
+    channel.on("presence_diff", diff => {
+      EventBus.$emit(`received-${channelName}-presence-diff`, diff);
+    });
+
     channel.on("error", payload => {
       if (this.debug) {
         console.log(channelName, "error", payload);
