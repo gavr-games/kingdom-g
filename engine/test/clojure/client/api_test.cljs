@@ -1,6 +1,6 @@
 (ns client.api-test
   (:require [client.api :as api]
-            [engine.newgame :refer [create-new-game]]
+            [engine.newgame :refer [create-test-game]]
             [cljs.test :refer-macros [deftest is]]))
 
 

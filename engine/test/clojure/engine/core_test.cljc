@@ -1,18 +1,18 @@
 (ns engine.core-test
   (:require [engine.core :as core]
             [engine.objects :refer [get-new-object add-new-object]]
-            [engine.newgame :refer [create-new-game]]
+            [engine.newgame :refer [create-test-game]]
             #?(:clj  [clojure.test :refer [deftest is are]]
                :cljs [cljs.test :refer-macros [deftest is are]])))
 
 (deftest test-get-next-player
-  (let [g (create-new-game)]
+  (let [g (create-test-game)]
     (is (= 0 (g :active-player)))
     (is (= 1 (core/get-next-player g 0)))
     (is (= 0 (core/get-next-player g 1)))))
 
 (deftest test-initial-board
-  (let [g (create-new-game)]
+  (let [g (create-test-game)]
     (is (= :castle ((core/get-object-at g [0 0]) :type)))
     (is (= 0 ((core/get-object-at g [0 0]) :player)))
     (is (= (core/get-object-at g [0 0])
@@ -33,7 +33,7 @@
 
 
 (deftest test-object-placement
-  (let [ng (create-new-game)
+  (let [ng (create-test-game)
         g (add-new-object ng :puddle [3 3])
         can-place? (fn [obj coord]
                      (core/can-place-object? g

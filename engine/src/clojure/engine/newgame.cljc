@@ -58,7 +58,7 @@
       (add-player p (create-player team initial-gold))
       (add-initial-player-objects p quarter)))
 
-(defn create-new-game []
+(defn create-test-game []
   (-> (create-empty-game)
       (add-player-and-objects 0 0 0)
       (add-player-and-objects 1 1 2)
