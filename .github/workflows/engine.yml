@@ -3,7 +3,7 @@ name: Engine Tests
 on:
   push:
     paths:
-      - 'engine/*'
+      - 'engine/**'
 
 jobs:
   build:
