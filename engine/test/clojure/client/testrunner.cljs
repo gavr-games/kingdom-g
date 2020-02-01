@@ -5,6 +5,7 @@
             [engine.core-test]
             [engine.transformations-test]
             [engine.utils-test]
+            [engine.newgame-test]
             [client.api-test]))
 
 (doo-tests 'engine.abilities-test
@@ -12,4 +13,5 @@
            'engine.core-test
            'engine.transformations-test
            'engine.utils-test
+           'engine.newgame-test
            'client.api-test)

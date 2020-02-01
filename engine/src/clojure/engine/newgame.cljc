@@ -53,13 +53,19 @@
           (add-new-object p :spearman [0 (- board-size-y 3)]))))
 
 (defn add-player-and-objects
-  [g p team quarter]
+  [g {:keys [id team quarter]}]
   (-> g
-      (add-player p (create-player team initial-gold))
-      (add-initial-player-objects p quarter)))
+      (add-player id (create-player team initial-gold))
+      (add-initial-player-objects id quarter)))
+
+(defn create-game
+  "Creates a game with players specified in a seq of player data maps.
+  Example player data: {:id 6 :team 0 :quarter 1}.
+  The first player in the seq becomes active."
+  [players]
+  (-> (reduce add-player-and-objects (create-empty-game) players)
+      (set-active-player (:id (first players)))))
 
 (defn create-test-game []
-  (-> (create-empty-game)
-      (add-player-and-objects 0 0 0)
-      (add-player-and-objects 1 1 2)
-      (set-active-player 0)))
+  (create-game [{:id 0 :team 0 :quarter 0}
+                {:id 1 :team 1 :quarter 2}]))

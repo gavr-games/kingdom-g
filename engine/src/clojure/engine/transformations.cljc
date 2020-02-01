@@ -35,7 +35,7 @@
 (defn rotate
   "Rotates a coordinate clockwise (0 for no rotation, 1 for 90 degrees, 2 for 180, 3 for 270)."
   [coord rotation]
-  (case (or rotation 0)
+  (case (mod (or rotation 0) 4)
     0 coord
     1 (m*v rot90-matrix coord)
     2 (m*v rot180-matrix coord)

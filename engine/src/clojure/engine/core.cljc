@@ -82,9 +82,9 @@
   "Sets the main object for the player.
   If no object is provided, takes the last added object."
   ([g p]
-   (set-player-main-object g p (g :last-added-object-id)))
+   (set-player-main-object g p (:last-added-object-id g)))
   ([g p obj-id]
-   (assoc-in g [:players (g p) :main-object] obj-id)))
+   (assoc-in g [:players p :main-object] obj-id)))
 
 (defn set-object-placement
   "Updates object flip, rotation (if given and not nil) and position."
