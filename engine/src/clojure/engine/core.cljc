@@ -78,12 +78,13 @@
        (assoc :last-added-player p)
        (update :turn-order insert-after p (g :active-player)))))
 
-(defn set-last-player-main-object
-  "Sets the main object for the last added player.
-  If no obj-id passed, takes the last added object."
-  ([g] (set-last-player-main-object g (g :last-added-object-id)))
-  ([g obj-id]
-   (assoc-in g [:players (g :last-added-player) :main-object] obj-id)))
+(defn set-player-main-object
+  "Sets the main object for the player.
+  If no object is provided, takes the last added object."
+  ([g p]
+   (set-player-main-object g p (g :last-added-object-id)))
+  ([g p obj-id]
+   (assoc-in g [:players (g p) :main-object] obj-id)))
 
 (defn set-object-placement
   "Updates object flip, rotation (if given and not nil) and position."
