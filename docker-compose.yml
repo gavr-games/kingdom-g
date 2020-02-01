@@ -22,8 +22,6 @@ services:
 
   engine:
     build: ./engine
-    ports:
-      - 3000:3000
     env_file: ./engine/.env
     volumes:
       - ./engine:/usr/src/app:cached
