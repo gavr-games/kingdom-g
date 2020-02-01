@@ -56,19 +56,27 @@
 
 
 (defn create-player
+  "Returns a map with player data."
   [team gold]
   {:gold gold :team team :status :active :main-object nil})
 
 (defn add-player
   "Adds a player with given player data.
-  Player number is autoincremented and will be (game :last-added-player).
+  Player number is either given (has to be at least (game :last-added-player)),
+  or assigned automatically to the next free number.
   In the turn order the new player will be placed after (game :active-player)."
-  [g player-data]
-  (let [p (inc (g :last-added-player))]
-    (-> g
-        (assoc-in [:players p] player-data)
-        (assoc :last-added-player p)
-        (update :turn-order insert-after p (g :active-player)))))
+  ([g player-data]
+   (let [p (inc (g :last-added-player))]
+     (add-player g p player-data)))
+  ([g p player-data]
+   (assert (>= p (g :last-added-player))
+           (str "Player number has to be at least "
+                (g :last-added-player)
+                ", was " p))
+   (-> g
+       (assoc-in [:players p] player-data)
+       (assoc :last-added-player p)
+       (update :turn-order insert-after p (g :active-player)))))
 
 (defn set-last-player-main-object
   "Sets the main object for the last added player.
