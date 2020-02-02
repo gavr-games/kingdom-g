@@ -2,7 +2,8 @@
   :description "Game engine"
   :url "https://gavr.games"
   :dependencies [[org.clojure/clojure "1.10.0"]
-                 [com.novemberain/langohr "5.1.0"]]
+                 [com.novemberain/langohr "5.1.0"]
+                 [cheshire "5.9.0"]]
   :main ^:skip-aot server.core
   :source-paths ["src/clojure"]
   :java-source-paths ["src/java"]
