@@ -25,7 +25,7 @@
    :commands []
    :status :active
    :last-added-object-id -1
-   :last-added-player nil})
+   :last-added-npc -1})
 
 (defn add-initial-player-objects
   "Adds castle and initial spearmen."

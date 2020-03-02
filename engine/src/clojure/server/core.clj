@@ -51,8 +51,7 @@
           data (:body message)]
       (case action
         "create_game" (process-game-creation ch data)
-        (println "Unknown action" action))))
-  )
+        (println "Unknown action" action)))))
 
 (defn start-game-server
   "Starts a server and returns a closeable connection.

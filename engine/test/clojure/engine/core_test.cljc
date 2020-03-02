@@ -58,3 +58,13 @@
       :spearman [3 3]
       :puddle [4 4]
       :bridge [3 3])))
+
+(deftest add-npc-test
+  (let [npc0-data {:npc 0}
+        npc1-data {:npc 1 :gold 5}
+        g (-> (create-test-game)
+              (core/add-npc npc0-data)
+              (core/add-npc npc1-data))]
+    (is (= 1 (:last-added-npc g)))
+    (is (= npc0-data (get-in g [:players "npc0"])))
+    (is (= npc1-data (get-in g [:players "npc1"])))))

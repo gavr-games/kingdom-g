@@ -66,8 +66,16 @@
   [g p player-data]
   (-> g
       (assoc-in [:players p] player-data)
-      (assoc :last-added-player p)
       (update :turn-order insert-after p (g :active-player))))
+
+(defn add-npc
+  "Adds an NPC player with auto-generated player id."
+  [g npc-player-data]
+  (let [next-npc-number (inc (:last-added-npc g))
+        npc-player-id (str "npc" next-npc-number)]
+    (-> g
+        (add-player npc-player-id npc-player-data)
+        (update :last-added-npc inc))))
 
 (defn set-player-main-object
   "Sets the main object for the player.
