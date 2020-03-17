@@ -21,6 +21,11 @@
        (fn ~args ~body)
        {:args ~(mapv keyword (drop 2 args))})))
 
+(defn invalid-result?
+  "Checks if action-result represents an error."
+  [action-result]
+  (keyword? action-result))
+
 
 (defn auto-end-turn
   "Ends turn if p is active and does not have active objects."
@@ -33,36 +38,44 @@
     g))
 
 
+(defn unknown-action?
+  [action-code]
+  (if (nil? (get-method action action-code))
+    :unknown-action))
+
+
 (defn act
-  "Performs action and returns the resulting game state or error keyword.
+  "Performs action and returns the resulting game state or error.
   Params should be a map of keyword arguments."
   [g p action-code params]
-  (let [act-fn (action action-code)
-        param-keys ((meta act-fn) :args)
-        param-values (vals (select-keys params param-keys))
-        act-call #(apply act-fn % p param-values)
-        action-log {:player p :action action :params params}
-        prechecks-fail (or
-                        (check/game g)
-                        (check/player g p))]
-    (or
-     prechecks-fail
-     (let [g-after (-> g
-                       (update-in [:actions] conj action-log)
-                       act-call)
-           invalid-action (keyword? g-after)]
-       (if invalid-action
-         g-after
-         (auto-end-turn g-after p))))))
+  (or
+   (unknown-action? action-code)
+   (let [act-fn (action action-code)
+         param-keys ((meta act-fn) :args)
+         param-values (vals (select-keys params param-keys))
+         act-call #(apply act-fn % p param-values)
+         action-log {:player p :action action :params params}
+         prechecks-fail (or
+                         (check/game g)
+                         (check/player g p))]
+     (or
+      prechecks-fail
+      (let [g-after (-> g
+                        (update-in [:actions] conj action-log)
+                        act-call)
+            invalid-action (invalid-result? g-after)]
+        (if invalid-action
+          g-after
+          (auto-end-turn g-after p)))))))
 
 
 (defn check
   "Checks if an action can be performed.
-  Returns nil (on valid action) or error keyword.
+  Returns nil (on valid action) or error.
   Params should be a map of keyword arguments."
   [g p action-code params]
   (let [g-after (act g p action-code params)]
-    (if (keyword? g-after)
+    (if (invalid-result? g-after)
       g-after
       nil)))
 
