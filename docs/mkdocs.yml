@@ -14,5 +14,7 @@ nav:
     - RabbitMQ:
       - 'General': 'rabbitmq/general.md'
       - 'Game Management': 'rabbitmq/game_management_queue.md'
+      - 'Game Actions': 'rabbitmq/game_actions.md'
+      - 'Game Commands and Replies': 'rabbitmq/game_commands.md'
 theme: readthedocs
 dev_addr: '0.0.0.0:8080'
