@@ -57,18 +57,26 @@
            {:success true :commands new-commands}))))))
 
 (defn send-game-message
-  [game-id ch routing-key message]
-  (let [ename (game-commands-exchange-name game-id)
+  [game-id ch routing-key message request-meta]
+  (let [correlation-id (:correlation-id request-meta)
+        reply-to (:reply-to request-meta)
+        ename (if reply-to
+                default-exchange-name
+                (game-commands-exchange-name game-id))
         message-json (json/encode message)]
-    (lb/publish ch ename routing-key message-json)))
+    (lb/publish ch
+                ename
+                (or reply-to routing-key)
+                message-json
+                {:correlation-id correlation-id})))
 
 (defn process-game-action
-  [game-id ch action params]
+  [game-id ch action params request-meta]
   (let [p (:p params)
         action-result (act! game-id p action params)
         success (:success action-result)
         routing-key (if success "commands" "reply")]
-    (send-game-message game-id ch routing-key action-result)))
+    (send-game-message game-id ch routing-key action-result request-meta)))
 
 (defn game-action-handler
   [game-id ch message-meta ^bytes payload]
@@ -80,8 +88,8 @@
           action (:action message)
           params (:parameters message)]
       (case action
-        "get-game-data" (send-game-message game-id ch "reply" "{\"Not-implemented-yet\":0}")
-        (process-game-action game-id ch action params)))))
+        "get-game-data" (send-game-message game-id ch "reply" "{\"Not-implemented-yet\":0}" message-meta)
+        (process-game-action game-id ch action params message-meta)))))
 
 (defn create-game-actions-handler
   [ch game-id]
