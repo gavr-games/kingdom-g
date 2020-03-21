@@ -33,7 +33,7 @@
     (try
       (apply f args)
       (catch Exception ex
-        (clojure.stacktrace/print-stack-trace ex)))))
+        (println ex)))))
 
 (defn clean-players
   "Extracts :id and :team fields from player list."
@@ -41,7 +41,6 @@
   (map #(select-keys % [:id :team]) players))
 
 (defn act! [g-id p action params]
-  (println "ACT!" g-id p action params)
   (let [action (keyword action)]
     (dosync
      (let [g (@games g-id)
@@ -122,7 +121,7 @@
   (Thread/setDefaultUncaughtExceptionHandler
    (reify Thread$UncaughtExceptionHandler
      (uncaughtException [_ thread ex]
-       (clojure.stacktrace/print-stack-trace ex))))
+       (println ex))))
   (println "Game engine server starting"
            (.toString (java.time.LocalDateTime/now)))
   (let [conn (rmq/connect {:uri (System/getenv "RABBITMQ_URL")})
