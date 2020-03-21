@@ -2,6 +2,7 @@
   (:gen-class)
   (:require [engine.newgame :refer [create-game-shuffled-players]]
             [engine.actions :as action]
+            [engine.abilities] ; To load the namespace and register actions
             [langohr.core      :as rmq]
             [langohr.channel   :as lch]
             [langohr.queue     :as lq]
