@@ -14,10 +14,10 @@ TODO
 
 On player actions Site will send messages such as
 
-```json
+```js
 {
-    action: "move",
-    parameters: {
+    "action": "move",
+    "parameters": {
         "p":55,  // Player ID of a player that is performing the action
         "obj-id":14,  // ID of the object (unit) to move
         "new-position":[3,10]  // new x and y coordinates
@@ -25,10 +25,10 @@ On player actions Site will send messages such as
 }
 ```
 
-```json
+```js
 {
-    action: "attack",
-    parameters: {
+    "action": "attack",
+    "parameters": {
         "p":55,
         "obj-id":14,
         "target-id":15  // Object ID of the attack target
