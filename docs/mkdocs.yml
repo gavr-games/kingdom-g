@@ -16,5 +16,7 @@ nav:
       - 'Game Management': 'rabbitmq/game_management_queue.md'
       - 'Game Actions': 'rabbitmq/game_actions.md'
       - 'Game Commands and Replies': 'rabbitmq/game_commands.md'
+    - Engine:
+      - 'Client JS Library': 'engine/client_api.md'
 theme: readthedocs
 dev_addr: '0.0.0.0:8080'

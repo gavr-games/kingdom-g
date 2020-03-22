@@ -30,3 +30,10 @@
   []
   (let [objects (:objects @game)]
     (clj->js (clean-objects objects))))
+
+(defn ^:export get-all-coords
+  "Returns an array of all valid coortinates."
+  []
+  (let [coords (sort (keys (:board @game)))]
+    (clj->js coords)))
+
