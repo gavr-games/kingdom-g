@@ -9,6 +9,6 @@
   (let [g (create-test-game)
         g4p (core/get-state-for-player g 0)
         g4p-edn (prn-str g4p)]
-    (api/init-game (clj->js g))
+    (api/init-game g4p-edn)
     (is (= g4p @api/game))))
 
