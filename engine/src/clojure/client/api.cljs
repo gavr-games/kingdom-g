@@ -1,13 +1,14 @@
 (ns client.api
   (:require [engine.actions :as a]
-            [engine.abilities]))
+            [engine.abilities]
+            [cljs.reader]))
 
 (def game (atom {}))
 
 (defn ^:export init-game
   "Initialises a local game from `game-edn` string."
   [game-edn]
-  (reset! game (read-string game-edn)))
+  (reset! game (cljs.reader/read-string game-edn)))
 
 (defn ^:export apply-command
   "Applies the given command to the local game."
