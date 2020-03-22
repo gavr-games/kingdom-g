@@ -39,4 +39,4 @@ On error action Engine will send a following reply with a corresponding error co
 
 ### Game state reply
 
-TODO
+Game state will be sent as an edn string (clojure data format).

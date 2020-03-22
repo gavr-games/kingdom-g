@@ -8,7 +8,16 @@ This is the queue for all player queries and game actions. Reply to these messag
 
 ### Getting game state
 
-TODO
+Request for getting game state for a certain player:
+
+```json
+{
+    "action": "get-game-data",
+    "parameters": {
+        "p":55
+    }
+}
+```
 
 ### Player actions
 
