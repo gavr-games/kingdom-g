@@ -1,6 +1,7 @@
 (ns server.core
   (:gen-class)
   (:require [engine.newgame :refer [create-game-shuffled-players]]
+            [engine.core :as core]
             [engine.actions :as action]
             [engine.abilities] ; To load the namespace and register actions
             [langohr.core      :as rmq]
@@ -78,6 +79,17 @@
         routing-key (if success "commands" "reply")]
     (send-game-message game-id ch routing-key action-result request-meta)))
 
+(defn send-game-state
+  "Sends a reply with game state."
+  [game-id ch p request-meta]
+  (let [g (@games game-id)
+        g4p (core/get-state-for-player g p)]
+    (send-game-message game-id
+                       ch
+                       "reply"
+                       (prn-str g4p)
+                       request-meta)))
+
 (defn game-action-handler
   [game-id ch message-meta ^bytes payload]
   (lb/ack ch (:delivery-tag message-meta))
@@ -88,7 +100,7 @@
           action (:action message)
           params (:parameters message)]
       (case action
-        "get-game-data" (send-game-message game-id ch "reply" "{\"Not-implemented-yet\":0}" message-meta)
+        "get-game-data" (send-game-state game-id ch (:p params) message-meta)
         (process-game-action game-id ch action params message-meta)))))
 
 (defn create-game-actions-handler

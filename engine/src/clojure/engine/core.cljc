@@ -424,3 +424,14 @@
   [g obj-id experience]
   (update-object g obj-id
                  #(obj/add-experience % experience) cmd/set-experience))
+
+(defn clean-game
+  "Removes information not relevant for the client"
+  [g]
+  (dissoc g
+          :last-added-npc
+          :last-added-object-id))
+
+(defn get-state-for-player
+  [g p]
+  (clean-game g))
