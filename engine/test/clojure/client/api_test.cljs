@@ -1,12 +1,14 @@
 (ns client.api-test
   (:require [client.api :as api]
             [engine.newgame :refer [create-test-game]]
+            [engine.core :as core]
             [cljs.test :refer-macros [deftest is]]))
 
 
-(deftest roundtrip
-  ; TODO Create a game, export to json, initialise client game, check that they are the same
-  (let [g "HERE WILL BE GAME DATA"]
+(deftest roundtrip-test
+  (let [g (create-test-game)
+        g4p (core/get-state-for-player g 0)
+        g4p-edn (prn-str g4p)]
     (api/init-game (clj->js g))
-    (is (= g @api/game))))
+    (is (= g4p @api/game))))
 

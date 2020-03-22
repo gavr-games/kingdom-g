@@ -4,15 +4,28 @@
 
 (def game (atom {}))
 
-;; Public API
-
 (defn ^:export init-game
-  "Initialises a local game from the state passed with the json object."
-  [game-json]
-  (println "TODO: Initialise the game.")
-  (reset! game (js->clj game-json)))
+  "Initialises a local game from `game-edn` string."
+  [game-edn]
+  (reset! game (read-string game-edn)))
 
 (defn ^:export apply-command
   "Applies the given command to the local game."
   [command]
   (println "TODO: Apply command."))
+
+
+(defn clean-object
+  "Removes irrelevant information for the client from the given object."
+  [obj]
+  (dissoc obj :handlers))
+
+(defn clean-objects
+  "Cleans `objs` as a map from object id to object data."
+  [objs]
+  (reduce-kv #(assoc %1 %2 (clean-object %3)) {} objs))
+
+(defn ^:export get-objects
+  []
+  (let [objects (:objects @game)]
+    (clj->js (clean-objects objects))))
