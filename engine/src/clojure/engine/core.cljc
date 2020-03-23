@@ -241,26 +241,33 @@
       g)))
 
 
+(defn move-object-on-board
+  "Moves an object to a new place on board.
+  Does not run handlers or add commands, just moves."
+  [g obj-id position flip rotation]
+  (let [obj (get-in g [:objects obj-id])
+        moved-obj (set-object-placement obj position flip rotation)]
+    (-> g
+        (remove-object-coords obj-id)
+        (assert-can-place-object moved-obj)
+        (assoc-in [:objects obj-id] moved-obj)
+        (place-object-on-board obj-id))))
+
 (defn move-object
   "Moves object to the given position.
-  Assumes that it is a valid move."
+  Assumes that it is a valid move.
+  Adds move command, runs after-move handlers."
   ([g p obj-id position] (move-object g p obj-id position nil nil))
   ([g p obj-id position flip rotation]
-   (let [obj (get-in g [:objects obj-id])
-         old-position (obj :position)
-         old-flip (obj :flip)
-         old-rotation (obj :rotation)
-         moved-obj (set-object-placement obj position flip rotation)]
-     (-> g
-         (remove-object-coords obj-id)
-         (assoc-in [:objects obj-id] moved-obj)
-         (assert-can-place-object moved-obj)
-         (place-object-on-board obj-id)
-         (cmd/add-command (cmd/move-obj obj-id obj moved-obj))
+   (let [old-obj (get-in g [:objects obj-id])
+         g-moved (move-object-on-board g obj-id position flip rotation)
+         new-obj (get-in g-moved [:objects obj-id])]
+     (-> g-moved
+         (cmd/add-command (cmd/move-obj obj-id old-obj new-obj))
          (handle obj-id :after-moved
-                 old-position position
-                 old-flip flip
-                 old-rotation rotation)
+                 (:position old-obj) position
+                 (:flip old-obj) flip
+                 (:rotation old-obj) rotation)
          (drown-handler p obj-id)))))
 
 (defn get-objects
