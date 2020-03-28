@@ -172,20 +172,29 @@
   g)
 
 (defn add-object
+  "Adds the given object to the game with the given id."
+  [g obj-id obj]
+  (-> g
+      (assert-can-place-object obj)
+      (assoc-in [:objects obj-id] obj)
+      (place-object-on-board obj-id)))
+
+(defn add-new-object
   "Adds a new object to the game.
   Assumes that the placement is valid."
-  ([g obj position] (add-object g nil obj position nil nil))
-  ([g obj position flip rotation] (add-object g nil obj position flip rotation))
-  ([g p obj position] (add-object g p obj position nil nil))
+  ([g obj position]
+   (add-new-object g nil obj position nil nil))
+  ([g obj position flip rotation]
+   (add-new-object g nil obj position flip rotation))
+  ([g p obj position]
+   (add-new-object g p obj position nil nil))
   ([g p obj position flip rotation]
    (let [owned-obj (if p (assoc obj :player p) obj)
          new-obj (set-object-placement owned-obj position flip rotation)
          new-obj-id (inc (g :last-added-object-id))]
      (-> g
-         (assert-can-place-object new-obj)
-         (assoc-in [:objects new-obj-id] new-obj)
+         (add-object new-obj-id new-obj)
          (assoc :last-added-object-id new-obj-id)
-         (place-object-on-board new-obj-id)
          (cmd/add-command (cmd/add-obj new-obj-id new-obj))))))
 
 (defn can-move-object?
@@ -435,9 +444,12 @@
 (defn clean-game
   "Removes information not relevant for the client"
   [g]
-  (dissoc g
-          :last-added-npc
-          :last-added-object-id))
+  (-> g
+      (dissoc
+       :last-added-npc
+       :last-added-object-id
+       :actions)
+      (update-in [:commands] dissoc :action-id)))
 
 (defn get-state-for-player
   [g p]

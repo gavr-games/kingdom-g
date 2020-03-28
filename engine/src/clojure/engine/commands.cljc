@@ -9,7 +9,10 @@
 
 (defn add-obj
   [obj-id obj]
-  {:command :add-object :object-id obj-id})
+  {:command :add-object
+   :object-id obj-id
+   :object obj
+   :object-edn (prn-str obj)})
 
 (defn remove-obj
   [obj-id]

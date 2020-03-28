@@ -175,7 +175,7 @@
   ([g p obj-type position flip rotation]
    (add-new-object g p obj-type position flip rotation nil))
   ([g p obj-type position flip rotation fields]
-   (core/add-object g p
+   (core/add-new-object g p
                (merge (get-new-object obj-type) fields)
                position flip rotation)))
 
