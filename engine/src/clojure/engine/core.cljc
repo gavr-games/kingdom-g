@@ -444,12 +444,13 @@
 (defn clean-game
   "Removes information not relevant for the client"
   [g]
-  (-> g
-      (dissoc
-       :last-added-npc
-       :last-added-object-id
-       :actions)
-      (update-in [:commands] dissoc :action-id)))
+  (let [without-action #(dissoc % :action-id)]
+    (-> g
+        (dissoc
+         :last-added-npc
+         :last-added-object-id
+         :actions)
+        (update-in [:commands] #(mapv without-action %)))))
 
 (defn get-state-for-player
   [g p]
