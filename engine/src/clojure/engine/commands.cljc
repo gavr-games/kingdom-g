@@ -40,22 +40,6 @@
   ([obj-id obj]
    {:command :set-moves :object-id obj-id :moves (obj :moves)}))
 
-(defn set-active-player
-  [p]
-  {:command :set-active-player :player p})
-
-(defn end-turn
-  [p]
-  {:command :end-turn :player p})
-
-(defn change-gold
-  ([p amount] (change-gold p amount nil))
-  ([p amount obj-id]
-   (let [cmd {:command :set-gold :player p :amount amount}]
-     (if obj-id
-       (assoc cmd :object-id obj-id)
-       cmd))))
-
 (defn set-health
   ([obj-id old-obj obj] (set-health obj-id obj))
   ([obj-id obj]
@@ -65,6 +49,22 @@
   ([obj-id old-obj obj] (set-experience obj-id obj))
   ([obj-id obj]
    {:command :set-experience :object-id obj-id :experience (obj :experience)}))
+
+(defn set-active-player
+  [p]
+  {:command :set-active-player :player p})
+
+(defn end-turn
+  [p]
+  {:command :end-turn :player p})
+
+(defn change-gold
+  "Change player's gold by given amount.
+  If obj-id is given, it indicates reward for destroying this object."
+  ([p amount] (change-gold p amount nil))
+  ([p amount obj-id]
+   (cond-> {:command :change-gold :player p :amount amount}
+     obj-id (assoc :object-id obj-id))))
 
 (defn attack
   [obj-id target-id params]
