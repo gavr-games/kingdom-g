@@ -11,7 +11,6 @@
   [obj-id obj]
   {:command :add-object
    :object-id obj-id
-   :object obj
    :object-edn (prn-str obj)})
 
 (defn remove-obj
@@ -28,7 +27,13 @@
 
 (defn move-obj
   [obj-id old-obj new-obj]
-  {:command :move-object :object-id obj-id})
+  (cond-> {:command :move-object
+           :object-id obj-id
+           :position (:position new-obj)}
+    (not= (:rotation old-obj)
+          (:rotation new-obj)) (assoc :rotation (:rotation new-obj))
+    (not= (:flip old-obj)
+          (:flip new-obj)) (assoc :flip (:flip new-obj))))
 
 (defn set-moves
   ([obj-id old-obj obj] (set-moves obj-id obj))
@@ -84,3 +89,8 @@
 (defn unbinds
   [obj-id target-id]
   {:command :unbinds :object-id obj-id :target target-id})
+
+
+
+
+;;;; Every command that changes game state should have a corresponding runner
