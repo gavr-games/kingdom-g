@@ -62,22 +62,18 @@
   [g cmd]
   (update-in g [:players (:player cmd) :gold] + (:amount cmd)))
 
+(defmethod run-command :player-lost
+  [g cmd]
+  (assoc-in g [:players (:player cmd) :status] :lost))
 
-(defn attack
-  [obj-id target-id params]
-  {:command :attack :attacker obj-id :target target-id :params params})
+(defmethod run-command :player-won
+  [g cmd]
+  (assoc-in g [:players (:player cmd) :status] :won))
 
-(defn player-lost
-  [p]
-  {:command :player-lost :player p})
+(defmethod run-command :game-over
+  [g cmd]
+  (assoc g :status :over))
 
-(defn player-won
-  [p]
-  {:command :player-won :player p})
-
-(defn game-over
-  []
-  {:command :game-over})
 
 (defn binds
   [obj-id target-id]
