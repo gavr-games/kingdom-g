@@ -441,16 +441,21 @@
   (update-object g obj-id
                  #(obj/add-experience % experience) cmd/set-experience))
 
+
+(defn clean-command
+  "Removes action-id to avoid giving hints to client."
+  [cmd]
+  (dissoc cmd :action-id))
+
 (defn clean-game
   "Removes information not relevant for the client"
   [g]
-  (let [without-action #(dissoc % :action-id)]
-    (-> g
-        (dissoc
-         :last-added-npc
-         :last-added-object-id
-         :actions)
-        (update-in [:commands] #(mapv without-action %)))))
+  (-> g
+      (dissoc
+       :last-added-npc
+       :last-added-object-id
+       :actions)
+      (update :commands #(mapv clean-command %))))
 
 (defn get-state-for-player
   [g p]

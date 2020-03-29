@@ -4,14 +4,6 @@
                :cljs [cljs.reader :as edn])))
 
 
-(defn apply-command
-  "Adds command to the game and runs it."
-  [g cmd]
-  (-> g
-      (update-in [:commands] conj cmd)
-      (run-command cmd)))
-
-
 (defmulti run-command
   "Changes the game state according to the passed command."
   (fn [g cmd] (:command cmd)))
@@ -19,6 +11,14 @@
 (defmethod run-command :default
   [g cmd]
   g)
+
+(defn apply-command
+  "Adds command to the game and runs it."
+  [g cmd]
+  (-> g
+      (update-in [:commands] conj cmd)
+      (run-command cmd)))
+
 
 (defmethod run-command :add-object
   [g cmd]

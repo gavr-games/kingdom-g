@@ -2,7 +2,7 @@
   (:require [engine.actions :refer [act]]
             [engine.core :as core :refer [get-object-id-at]]
             [engine.newgame :refer [create-test-game]]
-            [engine.command-runner :refer [run-command]]
+            [engine.command-runner :refer [apply-command]]
             #?(:clj  [clojure.test :refer [deftest is]]
                :cljs [cljs.test :refer-macros [deftest is]])))
 
@@ -16,6 +16,7 @@
                     (act 0 :attack {:obj-id sp2-id :target-id castle-id})
                     (act 0 :end-turn {}))
         new-commands (subvec (g-after :commands) (count (g :commands)))
+        cleaned-commands (map core/clean-command new-commands)
         g4p (core/get-state-for-player g 0)
-        g4p-after (reduce run-command g4p new-commands)]
+        g4p-after (reduce apply-command g4p cleaned-commands)]
     (is (= (core/get-state-for-player g-after 0) g4p-after))))
