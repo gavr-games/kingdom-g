@@ -16,10 +16,10 @@ Engine will send a following message on a successfully performed game engine
     "success":true,
     "commands":
     [
-        {"command":"set-moves","object-id":1,"moves":0},
+        {"command":"set-moves","object_id":1,"moves":0},
         {"command":"attack","attacker":1,"target":0,"params":{"damage":2,"outcome":"critical","type":"melee"}},
-        {"command":"set-health","object-id":0,"health":8},
-        {"command":"set-experience","object-id":1,"experience":2}
+        {"command":"set-health","object_id":0,"health":8},
+        {"command":"set-experience","object_id":1,"experience":2}
     ]
 }
 ```
