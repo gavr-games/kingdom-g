@@ -75,10 +75,17 @@
   (assoc g :status :over))
 
 
-(defn binds
-  [obj-id target-id]
-  {:command :binds :object-id obj-id :target target-id})
+(defmethod run-command :binds
+  [g cmd]
+  (let [{:keys [object-id target-id]} cmd]
+    (-> g
+        (assoc-in [:objects object-id :binding-to] target-id)
+        (assoc-in [:objects target-id :binding-from] object-id))))
 
-(defn unbinds
-  [obj-id target-id]
-  {:command :unbinds :object-id obj-id :target target-id})
+(defmethod run-command :unbinds
+  [g cmd]
+  (let [{:keys [object-id target-id]} cmd]
+    (-> g
+        (update-in [:objects object-id] dissoc :binding-to)
+        (update-in [:objects target-id] dissoc :binding-from))))
+

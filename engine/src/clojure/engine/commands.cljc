@@ -68,7 +68,7 @@
 
 (defn attack
   [obj-id target-id params]
-  {:command :attack :attacker obj-id :target target-id :params params})
+  {:command :attack :attacker-id obj-id :target-id target-id :params params})
 
 (defn player-lost
   [p]
@@ -84,11 +84,11 @@
 
 (defn binds
   [obj-id target-id]
-  {:command :binds :object-id obj-id :target target-id})
+  {:command :binds :object-id obj-id :target-id target-id})
 
 (defn unbinds
   [obj-id target-id]
-  {:command :unbinds :object-id obj-id :target target-id})
+  {:command :unbinds :object-id obj-id :target-id target-id})
 
 
 
