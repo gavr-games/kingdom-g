@@ -25,3 +25,11 @@
     (is (= 6 (count objects)))
     (is (= "castle" (get castle "type")))))
 
+(deftest apply-command-test
+  (init-test-game)
+  (let [initial-gold (get-in @api/game [:players 0 :gold])
+        expected-gold (+ initial-gold 10)
+        cmd-json "{\"command\":\"change-gold\", \"player\":0, \"amount\":10}"
+        cmd-js (.parse js/JSON cmd-json)]
+    (api/apply-command cmd-js)
+    (is (= expected-gold (get-in @api/game [:players 0 :gold])))))

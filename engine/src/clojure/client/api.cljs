@@ -1,6 +1,5 @@
 (ns client.api
-  (:require [engine.actions :as a]
-            [engine.abilities]
+  (:require [engine.command-runner :as cr]
             [cljs.reader]))
 
 (def game (atom {}))
@@ -12,8 +11,10 @@
 
 (defn ^:export apply-command
   "Applies the given command to the local game."
-  [command]
-  (println "TODO: Apply command."))
+  [command-js]
+  (let [cmd (js->clj command-js :keywordize-keys true)
+        cmd (assoc cmd :command (keyword (:command cmd)))]
+    (swap! game cr/apply-command cmd)))
 
 
 (defn clean-object

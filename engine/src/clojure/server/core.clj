@@ -56,7 +56,7 @@
            (if over
              (alter games dissoc g-id)
              (alter games assoc g-id g-after))
-           {:success true :commands new-commands}))))))
+           {:success true :commands cleaned-commands}))))))
 
 (defn send-game-message
   [game-id ch routing-key message request-meta]
@@ -120,6 +120,7 @@
   (let [game-id (:id game-data)
         players (clean-players (:players game-data))
         game (create-game-shuffled-players players)]
+    (println "Creating game" game-id)
     (dosync (alter games assoc game-id game))
     (create-game-commands-exchange ch game-id)
     (create-game-actions-handler ch game-id)))
@@ -131,7 +132,7 @@
     (println "Received a message:" message-str message-meta)
     (let [message (json/decode message-str true)
           action (:action message)
-          data (:body message)]
+          data (:data message)]
       (case action
         "create_game" (process-game-creation! ch data)
         (println "Unknown action" action)))))
