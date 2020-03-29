@@ -69,6 +69,11 @@ Returns a dictionary of all objects in the game, such as
 }
 ```
 
+### `client.api.get_object(object-id)`
+
+Returns object data for the given object id.
+
+
 ### `client.api.apply-command(command)`
 
 Applies a server command to the local game state. Command should be passed as a javascript dictionary, such as
