@@ -10,25 +10,25 @@
 (defn add-obj
   [obj-id obj]
   {:command :add-object
-   :object-id obj-id
-   :object-edn (prn-str obj)})
+   :object_id obj-id
+   :object_edn (prn-str obj)})
 
 (defn remove-obj
   [obj-id]
-  {:command :remove-object :object-id obj-id})
+  {:command :remove-object :object_id obj-id})
 
 (defn destroy-obj
   [obj-id]
-  {:command :destroy-object :object-id obj-id})
+  {:command :destroy-object :object_id obj-id})
 
 (defn drown-obj
   [obj-id]
-  {:command :drown-object :object-id obj-id})
+  {:command :drown-object :object_id obj-id})
 
 (defn move-obj
   [obj-id old-obj new-obj]
   (cond-> {:command :move-object
-           :object-id obj-id
+           :object_id obj-id
            :position (:position new-obj)}
     (not= (:rotation old-obj)
           (:rotation new-obj)) (assoc :rotation (:rotation new-obj))
@@ -38,17 +38,17 @@
 (defn set-moves
   ([obj-id old-obj obj] (set-moves obj-id obj))
   ([obj-id obj]
-   {:command :set-moves :object-id obj-id :moves (obj :moves)}))
+   {:command :set-moves :object_id obj-id :moves (obj :moves)}))
 
 (defn set-health
   ([obj-id old-obj obj] (set-health obj-id obj))
   ([obj-id obj]
-   {:command :set-health :object-id obj-id :health (obj :health)}))
+   {:command :set-health :object_id obj-id :health (obj :health)}))
 
 (defn set-experience
   ([obj-id old-obj obj] (set-experience obj-id obj))
   ([obj-id obj]
-   {:command :set-experience :object-id obj-id :experience (obj :experience)}))
+   {:command :set-experience :object_id obj-id :experience (obj :experience)}))
 
 (defn set-active-player
   [p]
@@ -64,11 +64,11 @@
   ([p amount] (change-gold p amount nil))
   ([p amount obj-id]
    (cond-> {:command :change-gold :player p :amount amount}
-     obj-id (assoc :object-id obj-id))))
+     obj-id (assoc :object_id obj-id))))
 
 (defn attack
   [obj-id target-id params]
-  {:command :attack :attacker-id obj-id :target-id target-id :params params})
+  {:command :attack :attacker_id obj-id :target_id target-id :params params})
 
 (defn player-lost
   [p]
@@ -84,11 +84,11 @@
 
 (defn binds
   [obj-id target-id]
-  {:command :binds :object-id obj-id :target-id target-id})
+  {:command :binds :object_id obj-id :target_id target-id})
 
 (defn unbinds
   [obj-id target-id]
-  {:command :unbinds :object-id obj-id :target-id target-id})
+  {:command :unbinds :object_id obj-id :target_id target-id})
 
 
 

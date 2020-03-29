@@ -22,37 +22,37 @@
 
 (defmethod run-command :add-object
   [g cmd]
-  (let [obj-id (:object-id cmd)
-        obj (edn/read-string (:object-edn cmd))]
+  (let [obj-id (:object_id cmd)
+        obj (edn/read-string (:object_edn cmd))]
     (core/add-object g obj-id obj)))
 
 (defmethod run-command :remove-object
   [g cmd]
-  (let [obj-id (:object-id cmd)
-        obj (edn/read-string (:object-edn cmd))]
+  (let [obj-id (:object_id cmd)]
     (-> g
         (core/remove-object-coords obj-id)
         (update-in [:objects] dissoc obj-id))))
 
 (defmethod run-command :move-object
   [g cmd]
-  (let [{:keys [object-id position flip rotation]} cmd]
-    (core/move-object-on-board g object-id position flip rotation)))
+  (let [obj-id (:object_id cmd)
+        {:keys [position flip rotation]} cmd]
+    (core/move-object-on-board g obj-id position flip rotation)))
 
 (defmethod run-command :set-moves
   [g cmd]
-  (let [{:keys [object-id moves]} cmd]
-    (update-in g [:objects object-id] assoc :moves moves)))
+  (let [obj-id (:object_id cmd)]
+    (update-in g [:objects obj-id] assoc :moves (:moves cmd))))
 
 (defmethod run-command :set-health
   [g cmd]
-  (let [{:keys [object-id health]} cmd]
-    (update-in g [:objects object-id] assoc :health health)))
+  (let [obj-id (:object_id cmd)]
+    (update-in g [:objects obj-id] assoc :health (:health cmd))))
 
 (defmethod run-command :set-experience
   [g cmd]
-  (let [{:keys [object-id experience]} cmd]
-    (update-in g [:objects object-id] assoc :experience experience)))
+  (let [obj-id (:object_id cmd)]
+    (update-in g [:objects obj-id] assoc :experience (:experience cmd))))
 
 (defmethod run-command :set-active-player
   [g cmd]
@@ -77,15 +77,17 @@
 
 (defmethod run-command :binds
   [g cmd]
-  (let [{:keys [object-id target-id]} cmd]
+  (let [obj-id (:object_id cmd)
+        target-id (:target_id cmd)]
     (-> g
-        (assoc-in [:objects object-id :binding-to] target-id)
-        (assoc-in [:objects target-id :binding-from] object-id))))
+        (assoc-in [:objects obj-id :binding-to] target-id)
+        (assoc-in [:objects target-id :binding-from] obj-id))))
 
 (defmethod run-command :unbinds
   [g cmd]
-  (let [{:keys [object-id target-id]} cmd]
+  (let [obj-id (:object_id cmd)
+        target-id (:target_id cmd)]
     (-> g
-        (update-in [:objects object-id] dissoc :binding-to)
+        (update-in [:objects obj-id] dissoc :binding-to)
         (update-in [:objects target-id] dissoc :binding-from))))
 
