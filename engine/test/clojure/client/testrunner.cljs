@@ -7,6 +7,7 @@
             [engine.transformations-test]
             [engine.utils-test]
             [engine.newgame-test]
+            [engine.command-runner-test]
             [client.api-test]))
 
 (doo-tests 'engine.abilities-test
@@ -16,4 +17,5 @@
            'engine.transformations-test
            'engine.utils-test
            'engine.newgame-test
+           'engine.command-runner-test
            'client.api-test)
