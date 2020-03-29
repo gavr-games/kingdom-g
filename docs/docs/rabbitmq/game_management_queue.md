@@ -9,8 +9,8 @@ Name: `game.management`
 Site will send this message when the game is started
 ```json
 {
-  action: "create_game",
-  data: {
+  "action": "create_game",
+  "data": {
     "has_password":false,
     "id":14,
     "mode_id":null,
@@ -40,4 +40,5 @@ Site will send this message when the game is started
     "time_limit":0,
     "title":"3"
   }
+}
 ```
