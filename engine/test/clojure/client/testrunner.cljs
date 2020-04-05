@@ -8,6 +8,7 @@
             [engine.utils-test]
             [engine.newgame-test]
             [engine.command-runner-test]
+            [engine.pathfinding-test]
             [client.api-test]))
 
 (doo-tests 'engine.abilities-test
@@ -18,4 +19,5 @@
            'engine.utils-test
            'engine.newgame-test
            'engine.command-runner-test
+           'engine.pathfinding-test
            'client.api-test)
