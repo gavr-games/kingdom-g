@@ -101,3 +101,17 @@
               (add-new-object :puddle [6 6]))
         u-id (get-object-id-at g [5 5])]
     (is (= [[6 6] [7 7]] (find-path g u-id [7 7])))))
+
+(deftest locked-test
+  (let [g (-> (create-test-game)
+              (add-new-active-object 0 :spearman [5 5])
+              (add-new-object :tree [4 4])
+              (add-new-object :tree [4 5])
+              (add-new-object :tree [4 6])
+              (add-new-object :tree [5 4])
+              (add-new-object :tree [5 6])
+              (add-new-object :tree [6 4])
+              (add-new-object :tree [6 5])
+              (add-new-object :tree [6 6]))
+        u-id (get-object-id-at g [5 5])]
+    (is (nil? (find-path g u-id [5 7])))))
