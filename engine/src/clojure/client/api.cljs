@@ -1,5 +1,8 @@
 (ns client.api
-  (:require [engine.command-runner :as cr]
+  (:require [engine.core :as core]
+            [engine.command-runner :as cr]
+            [engine.pathfinding :as pf]
+            [engine.attack :as attack]
             [cljs.reader]))
 
 (def game (atom {}))
@@ -44,3 +47,22 @@
   (let [coords (sort (keys (:board @game)))]
     (clj->js coords)))
 
+(defn ^:export find-path
+  [obj-id coord-js]
+  (clj->js
+   (pf/find-path @game obj-id (js->clj coord-js))))
+
+(defn ^:export attack-outcomes
+  [obj-id target-id]
+  (let [obj (get-in @game [:objects obj-id])
+        target (get-in @game [:objects target-id])]
+    (clj->js
+     (attack/get-attack-possibilities obj target))))
+
+(defn ^:export shoot-outcomes
+  [obj-id target-id]
+  (let [obj (get-in @game [:objects obj-id])
+        target (get-in @game [:objects target-id])
+        d (core/obj-distance obj target)]
+    (clj->js
+     (attack/get-shot-possibilities obj target d))))

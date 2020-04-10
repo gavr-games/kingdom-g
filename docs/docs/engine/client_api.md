@@ -79,3 +79,55 @@ Returns object data for the given object id.
 Applies a server command to the local game state. Command should be passed as a javascript dictionary, such as
 
 `{ command: "set-health", "object-id": 0, health: 8 }`
+
+### `client.api.find_path(object_id, destination)`
+
+Finds a path for the object to the destination.
+Destination should be an array of two integers.
+Path is returned as an array of coordinates with destination being the last one.
+The object should have enough moves to reach the destination.
+Destination coordinate can be occupied. If it is occupied, looks for a path with the last step stepping on the destination.
+Returns null if path doesn't exist.
+
+For flying objects if the destination is further than one step away, but occupied, returns null. If the destination is free and within reach, returns a path consisting only of destination.
+
+Example:
+```js
+client.api.get_object(1).position
+> [2, 0]
+
+client.api.find_path(1, [2, 2])
+> [[2, 1], [2, 2]]
+
+client.api.find_path(1, [2, 3])
+> null  // not enough moves
+```
+
+### `client.api.attack_outcomes(object_id, target_id)`
+
+Returns an array of possible outcomes if the object would attack the target.
+Preconditions: object has "attack" action, target has health attribute.
+
+Does not check if object has enough moves or is near the target.
+
+Outcomes are returned in the following format:
+```js
+[
+    { weight: 5, damage: 1, outcome: "hit" },
+    { weight: 1, damage: 2, outcome: "critical" }
+]
+```
+
+Weight indicates how likely is this result.
+Outcome attribute can be "hit", "critical", "miss" (for UI purposes).
+
+
+### `client.api.shoot_outcomes(object_id, target_id)`
+
+Returns an array of possible outcomes if the object would shoot the target.
+Preconditions: object has "shoot" action, target has health attribute.
+
+Takes into account the distance between objects.
+Outcomes are returned in the same way as `attack_outcomes`.
+
+If target is too far or too close, returns null, if the object cannot shoot this target, returns empty array.
