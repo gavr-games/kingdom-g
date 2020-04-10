@@ -32,20 +32,24 @@
       (not (get-in obj [:actions action-code])) :invalid-action)))
 
 
-(defn- chess-knight-reachable
+(defn chess-knight-reachable?
   [c1 c2]
   (let [deltas (map abs (v-v c1 c2))]
     (= (set deltas) #{1 2})))
 
+(defn one-step-reachable?
+  [c1 c2]
+  (= 1 (distance c1 c2)))
 
 (defn coord-one-step-away
   [obj coord]
-  (if (or
-       (and (obj :chess-knight)
-            (not (chess-knight-reachable (obj :position) coord)))
-       (and (not (obj :chess-knight))
-            (not= 1 (distance (obj :position) coord))))
-    :target-coord-not-reachable))
+  (let [pos (:position obj)]
+    (if (or
+         (and (obj :chess-knight)
+              (not (chess-knight-reachable? pos coord)))
+         (and (not (obj :chess-knight))
+              (not (one-step-reachable? pos coord))))
+      :target-coord-not-reachable)))
 
 
 (defn obj-one-step-away
@@ -53,7 +57,7 @@
   [o1 o2]
   (if (or
        (and (o1 :chess-knight)
-            (not-any? #(apply chess-knight-reachable %)
+            (not-any? #(apply chess-knight-reachable? %)
                       (core/all-filled-coord-pairs o1 o2)))
        (and (not (o1 :chess-knight))
             (not= 1 (core/obj-distance o1 o2))))
@@ -62,7 +66,7 @@
 
 (defn valid-coord
   [g coord]
-  (if (not (get-in g [:board coord]))
+  (if (not (core/valid-coord? g coord))
     :invalid-coord))
 
 

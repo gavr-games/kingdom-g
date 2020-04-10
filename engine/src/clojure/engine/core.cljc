@@ -156,9 +156,15 @@
     :bridge (= fills #{:water})
     (empty? fills)))
 
+(defn valid-coord?
+  "Checks if the given coord exists on the board of the game."
+  [g coord]
+  (get-in g [:board coord]))
+
 (defn can-add-coordinate?
   [g [coord params]]
-  (can-add-fill? (params :fill) (get-fills-in-cell g coord)))
+  (and (valid-coord? g coord)
+       (can-add-fill? (params :fill) (get-fills-in-cell g coord))))
 
 (defn can-place-object?
   [g obj]
@@ -197,21 +203,10 @@
          (assoc :last-added-object-id new-obj-id)
          (cmd/add-command (cmd/add-obj new-obj-id new-obj))))))
 
-(defn can-move-object?
-  "Checks if the object can be moved to the given position."
-  ([g obj-id position] (can-move-object? g obj-id position nil nil))
-  ([g obj-id position flip rotation]
-   (let [obj (get-in g [:objects obj-id])
-         moved-obj (set-object-placement obj position flip rotation)]
-     (can-place-object?
-      (remove-object-coords g obj-id)
-      moved-obj))))
-
 (defn on-water?
   "Checks if object stands on water with at least one cell."
-  [g obj-id]
-  (let [obj (get-in g [:objects obj-id])
-        cells (keys (get-object-coords-map obj))]
+  [g obj]
+  (let [cells (keys (get-object-coords-map obj))]
     (some #(and (:water %) (not (:bridge %)))
           (map #(get-fills-in-cell g %) cells))))
 
@@ -241,14 +236,40 @@
       (cmd/add-command (cmd/drown-obj obj-id))
       (destroy-obj p obj-id)))
 
+(defn shall-drown?
+  "Checks if the object will drown if placed on board."
+  [g obj]
+  (and (on-water? g obj)
+       (not (or (:waterwalking obj) (:flying obj)))))
+
 (defn drown-handler
   [g p obj-id]
   (let [obj (get-in g [:objects obj-id])]
-    (if (and (on-water? g obj-id)
-             (not (or (:waterwalking obj) (:flying obj))))
+    (if (shall-drown? g obj)
       (drown-object g p obj-id)
       g)))
 
+(defn can-move-object?
+  "Checks if the object can be moved to the given position."
+  ([g obj-id position] (can-move-object? g obj-id position nil nil))
+  ([g obj-id position flip rotation]
+   (let [obj (get-in g [:objects obj-id])
+         moved-obj (set-object-placement obj position flip rotation)]
+     (can-place-object?
+      (remove-object-coords g obj-id)
+      moved-obj))))
+;; +++++++++++++++++
+(defn can-move-object-without-drowning?
+  ([g obj-id position] (can-move-object-without-drowning?
+                        g obj-id position nil nil))
+  ([g obj-id position flip rotation]
+   (let [obj (get-in g [:objects obj-id])
+         moved-obj (set-object-placement obj position flip rotation)]
+     (and
+      (can-place-object?
+       (remove-object-coords g obj-id)
+       moved-obj)
+      (not (shall-drown? g moved-obj))))))
 
 (defn move-object-on-board
   "Moves an object to a new place on board.
