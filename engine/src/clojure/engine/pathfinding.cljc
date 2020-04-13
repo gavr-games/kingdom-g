@@ -26,6 +26,7 @@
    [(dec x) (- y 2)] [(inc x) (- y 2)] [(dec x) (+ y 2)] [(inc x) (+ y 2)]])
 
 (defn a-star
+  "Turns out to be slower on 20*20 board, using BFS instead."
   [g obj-id destination]
   (let [obj (get-in g [:objects obj-id])
         neighbours (if (:chess-knight obj)
@@ -64,6 +65,43 @@
                   (recur new-paths new-visited))))
             (recur rest-paths new-visited)))))))
 
+(defn bfs-build-path
+  [prevs destination]
+  (loop [p [destination]]
+    (let [cur (last p)
+          prev (prevs cur)]
+      (if (= :start (prevs prev))
+        (reverse p)
+        (recur (conj p prev))))))
+
+(defn bfs
+  [g obj-id destination]
+  (let [obj (get-in g [:objects obj-id])
+        neighbours (if (:chess-knight obj)
+                     neighbours-knight
+                     neighbours-normal)
+        reachable? (if (:chess-knight obj)
+                     #(check/chess-knight-reachable? % destination)
+                     #(check/one-step-reachable? % destination))
+        moves (:moves obj)
+        valid-pos? #(core/can-move-object-without-drowning? g obj-id %)
+        pos (:position obj)]
+    (loop [q [[pos 0]]
+           prevs {pos :start}]
+      (if (seq q)
+        (let [[cur-pos steps] (first q)]
+          (if (valid-pos? cur-pos)
+            (if (< steps moves)
+              (if (reachable? cur-pos)
+                (bfs-build-path (assoc prevs destination cur-pos) destination)
+                (let [neibs (filter #(core/valid-coord? g %)
+                                    (remove prevs (neighbours cur-pos)))
+                      new-prevs (reduce #(assoc %1 %2 cur-pos) prevs neibs)
+                      new-q (reduce #(conj %1 [%2 (inc steps)])
+                                    (subvec q 1) neibs)]
+                  (recur new-q new-prevs))))
+            (recur (subvec q 1) prevs)))))))
+
 (defn find-path
   "Searches for a path for the object with the given id to the given destination.
   The object should have enough moves to reach the destination.
@@ -85,4 +123,4 @@
            (not (:chess-knight obj))) (if (can-move-object? g obj-id destination)
                                         [destination])
 
-      :else (a-star g obj-id destination))))
+      :else (bfs g obj-id destination))))
