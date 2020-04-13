@@ -1,4 +1,5 @@
-(ns engine.transformations)
+(ns engine.transformations
+  (:require [engine.utils :refer [abs]]))
 
 (defn dot
   "Calculates dot product of two vectors."
@@ -69,12 +70,17 @@
 (defn difference
   "Returns absolute value of the difference between two numbers."
   [a b]
-  (Math/abs (- a b)))
+  (abs (- a b)))
 
 (defn distance
-  "Returns distance between two coordinates (allowing diagonal moves)."
-  [c1 c2]
-  (apply max (map difference c1 c2)))
+  "Returns distance between two 2d coordinates (allowing diagonal moves)."
+  [[x1 y1] [x2 y2]]
+  (max (difference x1 x2) (difference y1 y2)))
+
+(defn mh-distance
+  "Returns manhattan distance between two 2d coordinates (no diagonal moves)."
+  [[x1 y1] [x2 y2]]
+  (+ (difference x1 x2) (difference y1 y2)))
 
 (defn eu-distance
   "Returns euclidean distance between two coordinates."

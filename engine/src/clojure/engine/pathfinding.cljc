@@ -1,7 +1,7 @@
 (ns engine.pathfinding
   (:require [engine.checks :as check]
             [engine.core :as core :refer [can-move-object?]]
-            [engine.transformations :refer [distance difference]]))
+            [engine.transformations :refer [distance difference mh-distance]]))
 
 (defn theoretically-reachable
   [obj target]
@@ -25,11 +25,6 @@
   [[(- x 2) (dec y)] [(- x 2) (inc y)] [(+ x 2) (dec y)] [(+ x 2) (inc y)]
    [(dec x) (- y 2)] [(inc x) (- y 2)] [(dec x) (+ y 2)] [(inc x) (+ y 2)]])
 
-(defn- m-dist
-  "Returns manhattan distance between coords (not allowing diagonals)."
-  [c1 c2]
-  (reduce + (map difference c1 c2)))
-
 (defn a-star
   [g obj-id destination]
   (let [obj (get-in g [:objects obj-id])
@@ -52,21 +47,22 @@
         (let [[estimate straight-moves path] (first paths)
               rest-paths (disj paths (first paths))
               cur-pos (last path)
+              new-visited (conj visited cur-pos)
               steps-made (dec (count path))]
-          (if (<= estimate moves)
-            (if (reachable? cur-pos)
-              (rest (conj path destination))
-              (let [new-visited (conj visited cur-pos)
-                    n->p (fn [n]
-                           [(+ steps-made 1 (calc-estimate n))
-                            (+ straight-moves (m-dist cur-pos n))
-                            (conj path n)])
-                    ns (->> (neighbours cur-pos)
-                            (remove visited)
-                            (filter valid-pos?))
-                    added-paths (map n->p ns)
-                    new-paths (apply conj rest-paths added-paths)]
-                (recur new-paths new-visited)))))))))
+          (if (valid-pos? cur-pos)
+            (if (<= estimate moves)
+              (if (reachable? cur-pos)
+                (rest (conj path destination))
+                (let [n->p (fn [n]
+                             [(+ steps-made 1 (calc-estimate n))
+                              (+ straight-moves (mh-distance cur-pos n))
+                              (conj path n)])
+                      ns (->> (neighbours cur-pos)
+                              (remove visited))
+                      added-paths (map n->p ns)
+                      new-paths (apply conj rest-paths added-paths)]
+                  (recur new-paths new-visited))))
+            (recur rest-paths new-visited)))))))
 
 (defn find-path
   "Searches for a path for the object with the given id to the given destination.
