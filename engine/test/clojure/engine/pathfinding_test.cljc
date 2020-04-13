@@ -133,3 +133,20 @@
               (add-new-object :puddle [6 4]))
         u-id (get-object-id-at g [5 5])]
     (is (= [[5 4] [5 3]] (find-path g u-id [5 3])))))
+
+(deftest bridge-test
+  (let [g (-> (create-test-game)
+              (add-new-active-object 0 :spearman [5 5])
+              (add-new-object :puddle [4 4])
+              (add-new-object :bridge [4 4]))
+        u-id (get-object-id-at g [5 5])]
+    (is (= [[4 4] [3 3]] (find-path g u-id [3 3])))))
+
+(deftest big-object-bridge-test
+  (let [g (-> (create-test-game)
+              (add-new-object 0 :dragon [5 5] nil nil
+                              {:flying nil :moves 5})
+              (add-new-object :puddle [7 5])
+              (add-new-object :bridge [7 5]))
+        u-id (get-object-id-at g [5 5])]
+    (is (= [[6 4] [7 3]] (find-path g u-id [7 3])))))
