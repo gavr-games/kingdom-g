@@ -115,3 +115,21 @@
               (add-new-object :tree [6 6]))
         u-id (get-object-id-at g [5 5])]
     (is (nil? (find-path g u-id [5 7])))))
+
+(deftest big-object-test
+  (let [g (-> (create-test-game)
+              (add-new-object 0 :dragon [5 5] nil nil
+                              {:flying nil :moves 5})
+              (add-new-object :puddle [4 4])
+              (add-new-object :puddle [6 4]))
+        u-id (get-object-id-at g [5 5])]
+    (is (= [[6 5] [7 4] [7 3] [6 2] [5 2]] (find-path g u-id [5 2])))))
+
+(deftest big-waterwalking-object-test
+  (let [g (-> (create-test-game)
+              (add-new-object 0 :dragon [5 5] nil nil
+                              {:flying nil :waterwalking true :moves 5})
+              (add-new-object :puddle [4 4])
+              (add-new-object :puddle [6 4]))
+        u-id (get-object-id-at g [5 5])]
+    (is (= [[5 4] [5 3]] (find-path g u-id [5 3])))))
