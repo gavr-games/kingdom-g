@@ -25,6 +25,44 @@
   [[(- x 2) (dec y)] [(- x 2) (inc y)] [(+ x 2) (dec y)] [(+ x 2) (inc y)]
    [(dec x) (- y 2)] [(inc x) (- y 2)] [(dec x) (+ y 2)] [(inc x) (+ y 2)]])
 
+
+(defn can-move-object-without-drowning?
+  [g obj-id position]
+  (let [obj (get-in g [:objects obj-id])
+        moved-obj (core/set-object-placement obj position)]
+    (and
+     (core/can-move-object? g obj-id position)
+     (not (core/shall-drown? g moved-obj)))))
+
+
+(defn can-add-fill?
+  "Quicker check for objects of size 1."
+  [g fill position]
+  (let [fills (core/get-fills-in-cell g position)]
+    (and
+     (core/can-add-fill? fill fills))))
+;; +++++++++++++++++++
+(defn can-add-fill-without-drowning?
+  "Quicker check for objects of size 1."
+  [g fill position]
+  (let [fills (core/get-fills-in-cell g position)]
+    (and
+     (core/can-add-fill? fill fills)
+     (or (not (:water fills))
+         (:bridge fills)))))
+
+(defn get-valid-pos-fn
+  "Returns a function (fn [pos]...) that checks if object can step on position."
+  [g obj-id]
+  (let [obj (get-in g [:objects obj-id])
+        g-no-obj (core/remove-object-coords g obj-id)]
+    (if (> (count (:coords obj)) 1)
+      #(can-move-object-without-drowning? g obj-id %)
+      (let [fill (get-in obj [:coords [0 0] :fill])]
+        (if (or (:waterwalking obj) (:flying obj))
+          #(can-add-fill? g-no-obj fill %)
+          #(can-add-fill-without-drowning? g-no-obj fill %))))))
+
 (defn a-star
   "Turns out to be slower on 20*20 board, using BFS instead."
   [g obj-id destination]
@@ -39,7 +77,7 @@
                          0
                          (distance % destination))
         moves (:moves obj)
-        valid-pos? #(core/can-move-object-without-drowning? g obj-id %)
+        valid-pos? (get-valid-pos-fn g obj-id)
         pos (:position obj)
         initial-path [(distance pos destination) 0 [pos]]]
     (loop [paths (sorted-set initial-path)
@@ -59,7 +97,8 @@
                               (+ straight-moves (mh-distance cur-pos n))
                               (conj path n)])
                       ns (->> (neighbours cur-pos)
-                              (remove visited))
+                              (remove visited)
+                              (filter #(core/valid-coord? g %)))
                       added-paths (map n->p ns)
                       new-paths (apply conj rest-paths added-paths)]
                   (recur new-paths new-visited))))
@@ -84,7 +123,7 @@
                      #(check/chess-knight-reachable? % destination)
                      #(check/one-step-reachable? % destination))
         moves (:moves obj)
-        valid-pos? #(core/can-move-object-without-drowning? g obj-id %)
+        valid-pos? (get-valid-pos-fn g obj-id)
         pos (:position obj)]
     (loop [q [[pos 0]]
            prevs {pos :start}]

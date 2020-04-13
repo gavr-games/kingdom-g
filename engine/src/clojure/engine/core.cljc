@@ -258,18 +258,6 @@
      (can-place-object?
       (remove-object-coords g obj-id)
       moved-obj))))
-;; +++++++++++++++++
-(defn can-move-object-without-drowning?
-  ([g obj-id position] (can-move-object-without-drowning?
-                        g obj-id position nil nil))
-  ([g obj-id position flip rotation]
-   (let [obj (get-in g [:objects obj-id])
-         moved-obj (set-object-placement obj position flip rotation)]
-     (and
-      (can-place-object?
-       (remove-object-coords g obj-id)
-       moved-obj)
-      (not (shall-drown? g moved-obj))))))
 
 (defn move-object-on-board
   "Moves an object to a new place on board.
