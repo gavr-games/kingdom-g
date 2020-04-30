@@ -1,16 +1,18 @@
-# Game Commands Exchange
+# Game Replies Exchange
 
-Name: `game.commands.X`, where X is game ID, e.g. `game.commands.5` for game 5.
+Name: `game.replies`.
 Type: direct.
 
-Game Engine will send all new commands and replies to player messages to this exchange.
-For new commands the routing key is `commands`, and for replies (error reply and game state reply) the routing key is `reply`.
+Game Engine will send all new commands and replies to player messages to this exchange for all games.
+For new commands the routing key is `commands`, for game state replies routing key is `game_state`, for error messages after invalid actions routing key is `error`.
 
-## Messages
+All messages have fields `game_id`, `player` and `reply_type` (can be `commands`, `game_state` or `error`). Additional fields specific to the reply type are described below.
+
+## Reply types
 
 ### Commands
 
-Engine will send a following message on a successfully performed game engine
+Engine will send a following message on a successfully performed game action
 ```json
 {
     "success":true,
@@ -39,4 +41,9 @@ On error action Engine will send a following reply with a corresponding error co
 
 ### Game state reply
 
-Game state will be sent as an edn string (clojure data format).
+```js
+{
+    "game_state":"..."  // Game state is sent as an edn string (clojure data format)
+}
+```
+
