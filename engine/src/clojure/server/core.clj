@@ -20,13 +20,11 @@
 
 (def management-q-name "game.management")
 
+(def game-replies-exchange-name "game.replies")
+
 (defn game-actions-q-name
   [game-id]
   (str "game.actions." game-id))
-
-(defn game-commands-exchange-name
-  [game-id]
-  (str "game.commands." game-id))
 
 (defn ex-logging
   "Wraps given function into try-catch which prints exceptions to stderr."
@@ -59,17 +57,21 @@
            {:success true :commands cleaned-commands}))))))
 
 (defn send-game-message
-  [game-id ch routing-key message request-meta]
+  [game-id p ch routing-key message request-meta]
   (let [correlation-id (:correlation-id request-meta)
         reply-to (:reply-to request-meta)
         ename (if reply-to
                 default-exchange-name
-                (game-commands-exchange-name game-id))
-        message-json (json/encode message)]
+                game-replies-exchange-name)
+        reply (assoc message
+                     :game_id game-id
+                     :player p
+                     :reply_type routing-key)
+        reply-json (json/encode reply)]
     (lb/publish ch
                 ename
                 (or reply-to routing-key)
-                message-json
+                reply-json
                 {:correlation-id correlation-id})))
 
 (defn process-game-action
@@ -77,18 +79,20 @@
   (let [p (:p params)
         action-result (act! game-id p action params)
         success (:success action-result)
-        routing-key (if success "commands" "reply")]
-    (send-game-message game-id ch routing-key action-result request-meta)))
+        routing-key (if success "commands" "error")]
+    (send-game-message game-id p ch routing-key action-result request-meta)))
 
 (defn send-game-state
   "Sends a reply with game state."
   [game-id ch p request-meta]
   (let [g (@games game-id)
-        g4p (core/get-state-for-player g p)]
+        g4p (core/get-state-for-player g p)
+        reply {:game_state (prn-str g4p)}]
     (send-game-message game-id
+                       p
                        ch
-                       "reply"
-                       (prn-str g4p)
+                       "game_state"
+                       reply
                        request-meta)))
 
 (defn game-action-handler
@@ -111,10 +115,6 @@
     (lc/subscribe ch actions-q-name
                   (ex-logging (partial game-action-handler game-id)))))
 
-(defn create-game-commands-exchange
-  [ch game-id]
-  (le/direct ch (game-commands-exchange-name game-id)))
-
 (defn process-game-creation!
   [ch game-data]
   (let [game-id (:id game-data)
@@ -122,7 +122,6 @@
         game (create-game-shuffled-players players)]
     (println "Creating game" game-id)
     (dosync (alter games assoc game-id game))
-    (create-game-commands-exchange ch game-id)
     (create-game-actions-handler ch game-id)))
 
 (defn management-handler
@@ -152,6 +151,7 @@
     (println "Connected to RabbitMQ. Channel id:" (.getChannelNumber ch))
     (lq/declare ch management-q-name {:auto-delete false})
     (lc/subscribe ch management-q-name (ex-logging management-handler))
+    (le/direct ch game-replies-exchange-name)
     conn))
 
 (defn -main
