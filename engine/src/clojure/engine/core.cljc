@@ -397,14 +397,21 @@
       (cmd/add-command (cmd/player-won p))
       (assoc-in [:players p :status] :won)))
 
+(defn remove-obj-shield
+  "Decreases object shields by one."
+  [g obj-id]
+  (update-object g obj-id obj/remove-shield cmd/set-shield))
+
 (defn damage-obj
-  "Deals damage to an object."
+  "Deals damage to an object or removes shield."
   [g p obj-id damage]
-  (let [health (get-in g [:objects obj-id :health])
-        health-after (- health damage)]
-    (if (pos? health-after)
-      (update-object g obj-id #(obj/set-health % health-after) cmd/set-health)
-      (destroy-obj g p obj-id))))
+  (if ((fnil pos? 0) (get-in g [:objects obj-id :shield]))
+    (remove-obj-shield g obj-id)
+    (let [health (get-in g [:objects obj-id :health])
+          health-after (- health damage)]
+      (if (pos? health-after)
+        (update-object g obj-id #(obj/set-health % health-after) cmd/set-health)
+        (destroy-obj g p obj-id)))))
 
 (defn end-game
   "Marks game as over."

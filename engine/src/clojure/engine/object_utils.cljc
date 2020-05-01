@@ -46,8 +46,13 @@
   "Adds experience."
   [obj exp]
   {:pre [(pos? exp)]}
-  (update obj :experience (fnil + 0) exp))
+  (update obj :experience + exp))
 
 (defn damaged?
   [obj]
   (and (obj :health) (< (obj :health) (obj :max-health))))
+
+(defn remove-shield
+  [obj]
+  (assert (pos? (:shield obj)))
+  (update obj :shield dec))

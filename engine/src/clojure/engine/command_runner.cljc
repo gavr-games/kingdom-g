@@ -91,3 +91,7 @@
         (update-in [:objects obj-id] dissoc :binding-to)
         (update-in [:objects target-id] dissoc :binding-from))))
 
+(defmethod run-command :set-shield
+  [g cmd]
+  (let [obj-id (:object_id cmd)]
+    (update-in g [:objects obj-id] assoc :shield (:shield cmd))))

@@ -199,15 +199,14 @@
                          (act 0 :shoot {:obj-id archer-id :target-id t4-id})
                          (update-object archer-id obj/activate)))
         g-after (first (drop-while
-                        #(nil? (get-in % [:objects archer-id :experience]))
+                        #(zero? (get-in % [:objects archer-id :experience]))
                         (take 1000 (iterate shoot-tree g))))]
     (is (check g 0 :shoot {:obj-id archer-id :target-id t1-id}))
     (is (check g 0 :shoot {:obj-id archer-id :target-id t2-id}))
     (is (check g 0 :shoot {:obj-id archer-id :target-id t3-id}))
     (is (check g 0 :shoot {:obj-id archer-id :target-id t5-id}))
     (is (nil? (check g 0 :shoot {:obj-id archer-id :target-id t4-id})))
-    (is (< 0 (count (g-after :actions)) 1000))
-    ))
+    (is (< 0 (count (g-after :actions)) 1000))))
 
 (deftest test-ram-push
   (let [g (-> (create-test-game)
@@ -311,3 +310,14 @@
     (is (check g 0 :move {:obj-id d-id :new-position [3 3]}))
     (is (check g 0 :move {:obj-id d-id :new-position [4 4]}))
     (is (not (check g 0 :move {:obj-id d-id :new-position [3 2]})))))
+
+(deftest attack-shielded-test
+  (let [g (-> (create-test-game)
+              (add-new-object 0 :wizard [1 1]))
+        sp-id (get-object-id-at g [2 0])
+        w-id (get-object-id-at g [1 1])
+        g-after (act g 0 :attack {:obj-id sp-id :target-id w-id})]
+    (is (= (get-in g-after [:objects w-id :health])
+           (get-in g [:objects w-id :health])))
+    (is (< (get-in g-after [:objects w-id :shield])
+           (get-in g [:objects w-id :shield])))))

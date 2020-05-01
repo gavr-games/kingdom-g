@@ -90,7 +90,10 @@
   [obj-id target-id]
   {:command :unbinds :object_id obj-id :target_id target-id})
 
-
+(defn set-shield
+  ([obj-id old-obj obj] (set-health obj-id obj))
+  ([obj-id obj]
+   {:command :set-shield :object_id obj-id :shield (obj :shield)}))
 
 
 ;;;; Every command that changes game state should have a corresponding runner
