@@ -8,6 +8,10 @@ Engine code is compiled to a javascript library to provide a client API for game
 
 Initialises the game from the string with edn game state.
 
+### `client.api.init_test_game()`
+
+Initialises a test game with two players (for debugging).
+
 ### `client.api.get_all_coords()`
 
 Returns an array with all coordinates on the board, where every coordinate is an array of two integers, e.g.
@@ -131,3 +135,7 @@ Takes into account the distance between objects.
 Outcomes are returned in the same way as `attack_outcomes`.
 
 If target is too far or too close, returns null, if the object cannot shoot this target, returns empty array.
+
+### `client.api.can_levelup(object_id)`
+
+Checks if object can levelup.
