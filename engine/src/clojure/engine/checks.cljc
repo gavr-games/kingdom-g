@@ -2,6 +2,7 @@
   (:require [engine.core :as core]
             [engine.transformations :refer [distance v-v]]
             [engine.object-utils :refer [unit?]]
+            [engine.objects :refer [objects]]
             [engine.utils :refer [abs]]))
 
 
@@ -113,3 +114,26 @@
   [obj dist]
   (if (> dist (obj :moves))
     :target-coord-not-reachable))
+
+(defn valid-levelup-stat
+  [stat]
+  (if (not (#{"attack" "health" "moves"} stat))
+    :invalid-levelup-stat))
+
+
+(defn exp-needed-for-levelup
+  [obj-type cur-level]
+  (let [obj (objects obj-type)
+        base-stats ((fnil + 0 0 0) (:health obj) (:attack obj) (:shield obj))]
+    (+ cur-level (* base-stats (inc cur-level)))))
+
+
+(defn can-levelup
+  [g obj-id]
+  (let [obj (get-in g [:objects obj-id])
+        obj-type (:type obj)
+        level (:level obj)
+        exp (:experience obj)]
+    (cond
+      (> level 2) :already-top-level
+      (< exp (exp-needed-for-levelup obj-type level)) :not-enough-experience)))

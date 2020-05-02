@@ -50,6 +50,11 @@
   ([obj-id obj]
    {:command :set-experience :object_id obj-id :experience (obj :experience)}))
 
+(defn set-level
+  ([obj-id old-obj obj] (set-level obj-id obj))
+  ([obj-id obj]
+   {:command :set-level :object_id obj-id :level (obj :level)}))
+
 (defn set-active-player
   [p]
   {:command :set-active-player :player p})
@@ -91,9 +96,23 @@
   {:command :unbinds :object_id obj-id :target_id target-id})
 
 (defn set-shield
-  ([obj-id old-obj obj] (set-health obj-id obj))
+  ([obj-id old-obj obj] (set-shield obj-id obj))
   ([obj-id obj]
    {:command :set-shield :object_id obj-id :shield (obj :shield)}))
 
+(defn set-max-moves
+  ([obj-id old-obj obj] (set-max-moves obj-id obj))
+  ([obj-id obj]
+   {:command :set-max-moves :object_id obj-id :max-moves (obj :max-moves)}))
+
+(defn set-max-health
+  ([obj-id old-obj obj] (set-max-health obj-id obj))
+  ([obj-id obj]
+   {:command :set-max-health :object_id obj-id :max-health (obj :max-health)}))
+
+(defn set-attack
+  ([obj-id old-obj obj] (set-attack obj-id obj))
+  ([obj-id obj]
+   {:command :set-attack :object_id obj-id :attack (obj :attack)}))
 
 ;;;; Every command that changes game state should have a corresponding runner

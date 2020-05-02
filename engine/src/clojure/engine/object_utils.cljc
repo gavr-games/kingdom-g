@@ -54,5 +54,5 @@
 
 (defn remove-shield
   [obj]
-  (assert (pos? (:shield obj)))
+  {:pre [(pos? (:shield obj))]}
   (update obj :shield dec))

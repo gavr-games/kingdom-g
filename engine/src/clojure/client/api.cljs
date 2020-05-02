@@ -4,6 +4,7 @@
             [engine.pathfinding :as pf]
             [engine.attack :as attack]
             [engine.newgame :as ng]
+            [engine.checks :as check]
             [cljs.reader]))
 
 (def game (atom {}))
@@ -71,3 +72,7 @@
         d (core/obj-distance obj target)]
     (clj->js
      (attack/get-shot-possibilities obj target d))))
+
+(defn ^:export can-levelup
+  [obj-id]
+  (nil? (check/can-levelup @game obj-id)))
