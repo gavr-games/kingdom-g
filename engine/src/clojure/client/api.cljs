@@ -3,9 +3,14 @@
             [engine.command-runner :as cr]
             [engine.pathfinding :as pf]
             [engine.attack :as attack]
+            [engine.newgame :as ng]
             [cljs.reader]))
 
 (def game (atom {}))
+
+(defn ^:export init-test-game
+  [game-edn]
+  (reset! game (assoc-in (ng/create-test-game) [:objects 1 :moves] 20)))
 
 (defn ^:export init-game
   "Initialises a local game from `game-edn` string."
