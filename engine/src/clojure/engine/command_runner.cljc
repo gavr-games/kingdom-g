@@ -54,6 +54,11 @@
   (let [obj-id (:object_id cmd)]
     (update-in g [:objects obj-id] assoc :experience (:experience cmd))))
 
+(defmethod run-command :set-level
+  [g cmd]
+  (let [obj-id (:object_id cmd)]
+    (update-in g [:objects obj-id] assoc :level (:level cmd))))
+
 (defmethod run-command :set-active-player
   [g cmd]
   (assoc g :active-player (:player cmd)))
@@ -91,3 +96,22 @@
         (update-in [:objects obj-id] dissoc :binding-to)
         (update-in [:objects target-id] dissoc :binding-from))))
 
+(defmethod run-command :set-shield
+  [g cmd]
+  (let [obj-id (:object_id cmd)]
+    (update-in g [:objects obj-id] assoc :shield (:shield cmd))))
+
+(defmethod run-command :set-max-moves
+  [g cmd]
+  (let [obj-id (:object_id cmd)]
+    (update-in g [:objects obj-id] assoc :max-moves (:max-moves cmd))))
+
+(defmethod run-command :set-max-health
+  [g cmd]
+  (let [obj-id (:object_id cmd)]
+    (update-in g [:objects obj-id] assoc :max-health (:max-health cmd))))
+
+(defmethod run-command :set-attack
+  [g cmd]
+  (let [obj-id (:object_id cmd)]
+    (update-in g [:objects obj-id] assoc :attack (:attack cmd))))

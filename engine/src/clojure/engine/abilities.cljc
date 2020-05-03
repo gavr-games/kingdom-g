@@ -302,3 +302,33 @@
        (if g-pushed
          g-pushed
          g)))))
+
+(defn levelup-stat
+  [g obj-id stat]
+  (case stat
+    "moves" (core/update-object g obj-id
+                                #(update % :max-moves inc)
+                                cmd/set-max-moves)
+    "attack" (core/update-object g obj-id
+                                #(update % :attack inc)
+                                cmd/set-attack)
+    "health" (-> g
+                 (core/update-object obj-id
+                                     #(update % :max-health inc)
+                                     cmd/set-max-health)
+                 (core/update-object obj-id
+                                     #(update % :health inc)
+                                     cmd/set-health))))
+
+(create-action
+ :levelup
+ [g p obj-id stat]
+ (or
+   (check/object-action g p obj-id :levelup)
+   (check/valid-levelup-stat stat)
+   (check/can-levelup g obj-id)
+
+   (-> g
+       (core/update-object obj-id obj-utils/deactivate cmd/set-moves)
+       (core/update-object obj-id #(update % :level inc) cmd/set-level)
+       (levelup-stat obj-id stat))))

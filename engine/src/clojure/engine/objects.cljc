@@ -43,7 +43,7 @@
 
   :spearman
   {:health 1
-   :max-moves 2
+   :moves 2
    :attack 1
    :class :unit
    :coords
@@ -53,7 +53,7 @@
 
   :chevalier
   {:health 3
-   :max-moves 4
+   :moves 4
    :attack 2
    :class :unit
    :coords
@@ -63,7 +63,7 @@
 
   :ram
   {:health 2
-   :max-moves 1
+   :moves 1
    :attack 5
    :class :unit
    :coords
@@ -75,7 +75,7 @@
 
   :dragon
   {:health 5
-   :max-moves 6
+   :moves 6
    :attack 5
    :class :unit
    :flying true
@@ -89,7 +89,7 @@
 
   :archer
   {:health 1
-   :max-moves 2
+   :moves 2
    :attack 1
    :class :unit
    :coords
@@ -101,7 +101,7 @@
 
   :marksman
   {:health 2
-   :max-moves 2
+   :moves 2
    :attack 2
    :class :unit
    :coords
@@ -111,7 +111,7 @@
 
   :catapult
   {:health 2
-   :max-moves 1
+   :moves 1
    :attack 3
    :class :unit
    :coords
@@ -119,6 +119,15 @@
    :actions
    #{:shoot :bind}}
 
+  :wizard
+  {:health 1
+   :moves 3
+   :attack 1
+   :shield 1
+   :class :unit
+   :coords
+   {[0 0] {:fill :unit}}
+   :actions #{}} ;; TODO add wizard abilities
   })
 
 (create-handler
@@ -152,14 +161,22 @@
   [obj-type]
   (as-> (objects obj-type) obj
     (assoc obj :type obj-type)
-    (if (obj :max-moves)
-      (assoc obj :moves 0)
+    (if (obj :moves)
+      (assoc obj :max-moves (obj :moves) :moves 0)
       obj)
     (if (obj :health)
       (assoc obj :max-health (obj :health))
       obj)
+    (if (obj :shield)
+      (assoc obj :max-shield (obj :shield))
+      obj)
     (if (unit? obj)
       (update obj :actions set/union default-unit-actions)
+      obj)
+    (if (:levelup (:actions obj))
+      (assoc obj
+             :experience 0
+             :level 0)
       obj)))
 
 
@@ -183,4 +200,4 @@
   [g p obj-type position]
   (add-new-object
    g p obj-type position nil nil
-   {:moves (get-in objects [obj-type :max-moves])}))
+   {:moves (get-in objects [obj-type :moves])}))

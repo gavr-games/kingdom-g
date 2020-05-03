@@ -199,15 +199,14 @@
                          (act 0 :shoot {:obj-id archer-id :target-id t4-id})
                          (update-object archer-id obj/activate)))
         g-after (first (drop-while
-                        #(nil? (get-in % [:objects archer-id :experience]))
+                        #(zero? (get-in % [:objects archer-id :experience]))
                         (take 1000 (iterate shoot-tree g))))]
     (is (check g 0 :shoot {:obj-id archer-id :target-id t1-id}))
     (is (check g 0 :shoot {:obj-id archer-id :target-id t2-id}))
     (is (check g 0 :shoot {:obj-id archer-id :target-id t3-id}))
     (is (check g 0 :shoot {:obj-id archer-id :target-id t5-id}))
     (is (nil? (check g 0 :shoot {:obj-id archer-id :target-id t4-id})))
-    (is (< 0 (count (g-after :actions)) 1000))
-    ))
+    (is (< 0 (count (g-after :actions)) 1000))))
 
 (deftest test-ram-push
   (let [g (-> (create-test-game)
@@ -311,3 +310,53 @@
     (is (check g 0 :move {:obj-id d-id :new-position [3 3]}))
     (is (check g 0 :move {:obj-id d-id :new-position [4 4]}))
     (is (not (check g 0 :move {:obj-id d-id :new-position [3 2]})))))
+
+(deftest attack-shielded-test
+  (let [g (-> (create-test-game)
+              (add-new-object 0 :wizard [1 1]))
+        sp-id (get-object-id-at g [2 0])
+        w-id (get-object-id-at g [1 1])
+        g-after (act g 0 :attack {:obj-id sp-id :target-id w-id})]
+    (is (= (get-in g-after [:objects w-id :health])
+           (get-in g [:objects w-id :health])))
+    (is (< (get-in g-after [:objects w-id :shield])
+           (get-in g [:objects w-id :shield])))))
+
+(deftest levelup-test
+  (let [g (create-test-game)
+        sp-id (get-object-id-at g [2 0])
+        sp (get-in g [:objects sp-id])
+        g-low-exp (assoc-in g [:objects sp-id :experience] 1)
+        g-top-level (-> g
+                        (assoc-in [:objects sp-id :experience] 100)
+                        (assoc-in [:objects sp-id :level] 3))
+        g-can-levelup (assoc-in g [:objects sp-id :experience] 5)
+        g-leveled-m (act g-can-levelup 0 :levelup
+                         {:obj-id sp-id :stat "moves"})
+        g-leveled-a (act g-can-levelup 0 :levelup
+                         {:obj-id sp-id :stat "attack"})
+        g-leveled-h (act g-can-levelup 0 :levelup
+                         {:obj-id sp-id :stat "health"})]
+
+    (is (check g 0 :levelup {:obj-id sp-id :stat "moves"}))
+    (is (check g-low-exp 0 :levelup {:obj-id sp-id :stat "attack"}))
+    (is (check g-top-level 0 :levelup {:obj-id sp-id :stat "health"}))
+    (is (check g-can-levelup 0 :levelup {:obj-id sp-id :stat "invalid"}))
+
+    (is (not (check g-can-levelup 0 :levelup {:obj-id sp-id :stat "moves"})))
+
+    (is (= 1 (get-in g-leveled-m [:objects sp-id :level])))
+    (is (zero? (get-in g-leveled-m [:objects sp-id :moves])))
+    (is (= (inc (:max-moves sp))
+           (get-in g-leveled-m [:objects sp-id :max-moves])))
+    (is (= (:health sp) (get-in g-leveled-m [:objects sp-id :health])))
+    (is (= (:max-health sp) (get-in g-leveled-m [:objects sp-id :max-health])))
+    (is (= (:attack sp) (get-in g-leveled-m [:objects sp-id :attack])))
+
+    (is (= (inc (:max-health sp))
+           (get-in g-leveled-h [:objects sp-id :max-health])))
+    (is (= (inc (:health sp))
+           (get-in g-leveled-h [:objects sp-id :health])))
+
+    (is (= (inc (:attack sp))
+           (get-in g-leveled-a [:objects sp-id :attack])))))

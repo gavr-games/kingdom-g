@@ -3,9 +3,15 @@
             [engine.command-runner :as cr]
             [engine.pathfinding :as pf]
             [engine.attack :as attack]
+            [engine.newgame :as ng]
+            [engine.checks :as check]
             [cljs.reader]))
 
 (def game (atom {}))
+
+(defn ^:export init-test-game
+  []
+  (reset! game (ng/create-test-game)))
 
 (defn ^:export init-game
   "Initialises a local game from `game-edn` string."
@@ -66,3 +72,7 @@
         d (core/obj-distance obj target)]
     (clj->js
      (attack/get-shot-possibilities obj target d))))
+
+(defn ^:export can-levelup
+  [obj-id]
+  (nil? (check/can-levelup @game obj-id)))
