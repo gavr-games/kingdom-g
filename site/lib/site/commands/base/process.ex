@@ -7,14 +7,16 @@ defmodule Site.Commands.Base.Process do
       "signup" ->
         result = Create.call(data)
         if success?(result) do
-          {:ok, %{data: %{token: GenerateToken.call(unwrap!(result))}} }
+          user = unwrap!(result)
+          {:ok, %{data: %{id: user.id, token: GenerateToken.call(user)}} }
         else
           {:error, %{code: result.error}}
         end
       "login" ->
         result = Authenticate.call(data)
         if success?(result) do
-          {:ok, %{data: %{token: GenerateToken.call(unwrap!(result))}} }
+          user = unwrap!(result)
+          {:ok, %{data: %{id: user.id, token: GenerateToken.call(user)}} }
         else
           {:error, %{code: result.error}}
         end

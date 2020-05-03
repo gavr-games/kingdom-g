@@ -3,39 +3,33 @@ import Unit from "../units/unit";
 import Building from "../buildings/building";
 
 class Board {
-  constructor(scene, gamePayload) {
+  constructor(scene) {
     this.scene = scene;
     this.cells = [];
     this.units = [];
     this.buildings = [];
-    this.gamePayload = gamePayload;
   }
 
   create() {
     // Add cells
-    for (const coordsKey in this.gamePayload.board) {
-      let cell = new Cell(
-        this.scene,
-        coordsKey,
-        this.gamePayload.board[coordsKey]
-      );
+    let allCoords = window.client.api.get_all_coords();
+    for (const coordsKey in allCoords) {
+      let cell = new Cell(this.scene, coordsKey, allCoords[coordsKey]);
       cell.create();
       this.cells.push(cell);
     }
     // Add objects
-    for (const objId in this.gamePayload.objects) {
+    let allObjects = window.client.api.get_objects();
+    for (const objId in allObjects) {
       // units
-      if (this.gamePayload.objects[objId]["class"] == "unit") {
-        let unit = new Unit(this.scene, this.gamePayload.objects[objId]);
+      if (allObjects[objId]["class"] == "unit") {
+        let unit = new Unit(this.scene, allObjects[objId]);
         unit.create();
         this.units.push(unit);
       }
       // buildings
-      if (this.gamePayload.objects[objId]["class"] == "building") {
-        let building = new Building(
-          this.scene,
-          this.gamePayload.objects[objId]
-        );
+      if (allObjects[objId]["class"] == "building") {
+        let building = new Building(this.scene, allObjects[objId]);
         building.create();
         this.buildings.push(building);
       }

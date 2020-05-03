@@ -18,10 +18,12 @@ services:
       - 80
     volumes:
       - ./ui:/usr/src/app:cached
+      - ./engine/resources:/usr/src/app/public/engine_libs:cached
     command: /bin/sh -c "yarn install && npm run serve"
 
   engine:
     build: ./engine
+    command: ./bin/start.sh
     env_file: ./engine/.env
     volumes:
       - ./engine:/usr/src/app:cached

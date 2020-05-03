@@ -3,6 +3,10 @@
 
 This channel is for logged in users to perform profile edit and check location.
 
+## Join
+
+Channel name should be `user:<USER_ID>`
+
 ## Check Location
 
 Send message with type `msg` and payload:

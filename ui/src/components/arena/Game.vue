@@ -24,6 +24,7 @@
 
 <script>
 import { EventBus } from "../../lib/event_bus";
+import getId from "../../lib/concepts/user/operations/get_id";
 
 export default {
   data() {
@@ -38,15 +39,15 @@ export default {
   created() {
     this.getGame();
     EventBus.$on("received-arena-msg", this.handleArenaMsg);
-    EventBus.$on("received-user-msg", this.handleUserMsg);
+    EventBus.$on(`received-user:${getId()}-msg`, this.handleUserMsg);
   },
   beforeDestroy() {
     EventBus.$off("received-arena-msg", this.handleArenaMsg);
-    EventBus.$off("received-user-msg", this.handleUserMsg);
+    EventBus.$off(`received-user:${getId()}-msg`, this.handleUserMsg);
   },
   methods: {
     getGame() {
-      this.$WSClient.sendMsg("user", {
+      this.$WSClient.sendMsg(`user:${getId()}`, {
         action: "get_my_game",
         data: {}
       });

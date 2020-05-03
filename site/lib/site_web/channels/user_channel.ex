@@ -3,9 +3,14 @@ defmodule SiteWeb.UserChannel do
   alias Site.Commands.User.Process
   require Logger
 
-  def join("user", _params, socket) do
-    Logger.info "User joined user channel"
-    {:ok, socket}
+  def join("user:" <> user_id, _params, socket) do
+    case socket.assigns.user_id == String.to_integer(user_id) do
+      true ->
+        Logger.info Logger.info "User joined user:#{user_id}"
+        {:ok, socket}
+      false ->
+        {:error, %{reason: "unauthorized"}}
+    end
   end
 
   def handle_in("msg", params, socket) do

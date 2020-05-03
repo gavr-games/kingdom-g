@@ -8,7 +8,7 @@ import GameState from "../game_state";
 class Cell {
   constructor(scene, coordsKey, payload) {
     this.scene = scene;
-    this.coords = Coords.parse(coordsKey);
+    this.coords = Coords.parsePosition(payload);
     this.payload = payload;
     this.selected = false;
     this.mesh = null;

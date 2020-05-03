@@ -18,8 +18,8 @@ class Game {
     this.camera = null;
     this.light = null;
     this.board = null;
-    EventBus.$on("init-game", gamePayload => {
-      this.init(gamePayload);
+    EventBus.$on("init-game", () => {
+      this.init();
     });
     EventBus.$on("selected-unit", unit => {
       this.selectHighlight.addMesh(unit.mesh, BABYLON.Color3.Green());
@@ -39,14 +39,14 @@ class Game {
     });
   }
 
-  createScene(gamePayload) {
+  createScene() {
     let scene = new BABYLON.Scene(this.engine);
 
     scene.actionManager = new BABYLON.ActionManager(scene);
     this.registerActions(scene);
 
     this.loader = new Loader(scene, () => {
-      this.createObjects(gamePayload);
+      this.createObjects();
     });
     this.loader.load();
 
@@ -72,11 +72,11 @@ class Game {
     );
   }
 
-  createObjects(gamePayload) {
+  createObjects() {
     this.camera = new Camera(this.scene, this.canvas);
     this.camera.create();
 
-    this.board = new Board(this.scene, gamePayload);
+    this.board = new Board(this.scene);
     this.board.create();
 
     this.light = new Light(this.scene);
@@ -96,20 +96,19 @@ class Game {
     });
   }
 
-  init(gamePayload) {
-    console.log(gamePayload);
+  init() {
     this.canvas = document.getElementById("game-canvas");
     this.engine = new BABYLON.Engine(this.canvas, true, {
       preserveDrawingBuffer: true,
       stencil: true
     });
     Loaders.OBJFileLoader.OPTIMIZE_WITH_UV = true;
-    this.scene = this.createScene(gamePayload);
+    this.scene = this.createScene();
     this.selectHighlight = new BABYLON.HighlightLayer(
       "selectHighlight",
       this.scene
     );
-    GameState.init(gamePayload);
+    GameState.init();
   }
 }
 

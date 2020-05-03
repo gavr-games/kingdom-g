@@ -20,6 +20,7 @@ In case of success a `msg` message will be sent back with the next payload:
 {
   action: "login",
   data: {
+    id: 123,
     token: "12345token"
   }
 }
@@ -52,6 +53,7 @@ In case of success a `msg` message will be sent back with the next payload:
 {
   action: "signup",
   data: {
+    id: 123,
     token: "12345token"
   }
 }

@@ -51,7 +51,8 @@ defmodule Site.Game.Operations.Create do
   end
 
   def add_player(game, user_id) do
-    player_params = %{game_id: game.id, user_id: user_id}
+    #TODO: make the team selected before game start and check teams on game start
+    player_params = %{game_id: game.id, user_id: user_id, team: 0}
     changeset = Player.changeset(%Player{}, player_params)
 
     case Site.Repo.insert(changeset) do

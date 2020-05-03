@@ -68,6 +68,7 @@ import setLanguage from "../lib/concepts/lang/operations/set_lang";
 import loginUser from "../lib/concepts/user/operations/login";
 import checkUserLocation from "../lib/concepts/user/operations/check_location";
 import redirectUser from "../lib/concepts/user/operations/redirect_user";
+import getId from "../lib/concepts/user/operations/get_id";
 
 export default {
   data() {
@@ -84,12 +85,14 @@ export default {
     checkUserLocation();
     EventBus.$on("received-base-msg", this.handleMsg);
     EventBus.$on("received-base-error", this.handleError);
-    EventBus.$on("received-user-msg", this.handleUserMsg);
+    if (getId() !== null) {
+      EventBus.$on(`received-user:${getId()}-msg`, this.handleUserMsg);
+    }
   },
   beforeDestroy() {
     EventBus.$off("received-base-msg", this.handleMsg);
     EventBus.$off("received-base-error", this.handleError);
-    EventBus.$off("received-user-msg", this.handleUserMsg);
+    EventBus.$off(`received-user:${getId()}-msg`, this.handleUserMsg);
   },
   methods: {
     doSignup() {
@@ -115,7 +118,8 @@ export default {
     handleMsg(payload) {
       if (payload["action"] == "signup") {
         this.showError = false;
-        loginUser(payload["data"]["token"]);
+        loginUser(payload["data"]);
+        EventBus.$on(`received-user:${getId()}-msg`, this.handleUserMsg);
       }
     },
     handleUserMsg(payload) {

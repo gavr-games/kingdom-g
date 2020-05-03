@@ -17,6 +17,6 @@ You can get `token` after Login or Signup.
 |------|-------------|
 | arena | For logged in users to perform create/join/start game and etc |
 | base | For not logged in users to perform login and signup |
-| game | For logged in users to perform all game related actions |
-| user | For logged in users to perform edit profile and check location |
+| game:game_id | For logged in users to perform all game related actions |
+| user:user_id | For logged in users to perform edit profile and check location |
 

@@ -10,7 +10,6 @@ class GameState {
     this.state = IDLE;
     this.currentPLayer = null;
     this.selectedUnit = null;
-    this.payload = null;
     EventBus.$on("selected-unit", unit => {
       this.selectedUnit = unit;
       this.state = UNIT_SELECTED;
@@ -29,9 +28,8 @@ class GameState {
     });
   }
 
-  init(gamePayload) {
-    this.payload = gamePayload;
-    //TODO: check pyalod
+  init() {
+    //TODO: check turn etc
     this.state = MY_TURN;
   }
 

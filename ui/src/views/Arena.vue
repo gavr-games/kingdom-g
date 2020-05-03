@@ -37,6 +37,7 @@ import redirectUser from "../lib/concepts/user/operations/redirect_user";
 import checkUserLocation from "../lib/concepts/user/operations/check_location";
 //import getMyId from "../lib/concepts/user/get_my_id";
 import logout from "../lib/concepts/user/operations/logout";
+import getId from "../lib/concepts/user/operations/get_id";
 //import processCommands from "../lib/concepts/arena/process_commands";
 
 export default {
@@ -48,18 +49,18 @@ export default {
   },
   created() {
     checkUserLocation(this);
-    this.$WSClient.sendMsg("user", {
+    this.$WSClient.sendMsg(`user:${getId()}`, {
       action: "get_my_game",
       data: {}
     });
     EventBus.$on("received-arena-msg", this.handleArenaMsg);
     EventBus.$on("received-arena-error", this.handleArenaError);
-    EventBus.$on("received-user-msg", this.handleUserMsg);
+    EventBus.$on(`received-user:${getId()}-msg`, this.handleUserMsg);
   },
   beforeDestroy() {
     EventBus.$off("received-arena-msg", this.handleArenaMsg);
     EventBus.$off("received-arena-error", this.handleArenaError);
-    EventBus.$off("received-user-msg", this.handleUserMsg);
+    EventBus.$off(`received-user:${getId()}-msg`, this.handleUserMsg);
   },
   methods: {
     handleArenaMsg(payload) {

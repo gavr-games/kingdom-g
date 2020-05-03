@@ -17,9 +17,10 @@ defmodule SiteWeb.UserSocket do
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
   
-  channel "base", SiteWeb.BaseChannel
-  channel "user", SiteWeb.UserChannel
   channel "arena", SiteWeb.ArenaChannel
+  channel "base", SiteWeb.BaseChannel
+  channel "game:*", SiteWeb.GameChannel
+  channel "user:*", SiteWeb.UserChannel
 
   def connect(params = %{"token" => token}, socket) do
     Logger.info "New socket with token " <> token
