@@ -35,16 +35,10 @@
   [obj]
   (dissoc obj :handlers))
 
-(defn clean-objects
-  "Cleans `objs` as a map from object id to object data."
-  [objs]
-  (reduce-kv #(assoc %1 %2 (clean-object %3)) {} objs))
-
-(defn ^:export get-objects
+(defn ^:export get-object-ids
   "Returns a map of object IDs to objects."
   []
-  (let [objects (:objects @game)]
-    (clj->js (clean-objects objects))))
+  (clj->js (keys (:objects @game))))
 
 (defn ^:export get-object
   [obj-id]
@@ -81,7 +75,7 @@
   [obj-id]
   (nil? (check/can-levelup @game obj-id)))
 
-(defn ^:export get-players
+(defn ^:export get-player-ids
   "Gets a list of player ids in the order of their turns."
   []
   (clj->js (:turn-order @game)))
