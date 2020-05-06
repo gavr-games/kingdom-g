@@ -30,6 +30,8 @@ Returns an array of object id's on the board.
 
 Returns object data for the given object id.
 
+Examples:
+
 ```js
 {
     "type": "castle",
