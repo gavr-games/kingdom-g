@@ -13,6 +13,10 @@
   []
   (reset! game (ng/create-test-game)))
 
+(defn ^:export get-game-data
+  []
+  (clj->js @game))
+
 (defn ^:export init-game
   "Initialises a local game from `game-edn` string."
   [game-edn]
@@ -76,3 +80,17 @@
 (defn ^:export can-levelup
   [obj-id]
   (nil? (check/can-levelup @game obj-id)))
+
+(defn ^:export get-players
+  "Gets a list of player ids in the order of their turns."
+  []
+  (clj->js (:turn-order @game)))
+
+(defn ^:export get-player
+  [p]
+  (clj->js (get-in @game [:players p])))
+
+(defn ^:export get-active-player
+  "Returns id of the active player."
+  []
+  (clj->js (:active-player @game)))

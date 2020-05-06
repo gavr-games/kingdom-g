@@ -12,6 +12,10 @@ Initialises the game from the string with edn game state.
 
 Initialises a test game with two players (for debugging).
 
+### `client.api.get_game_data()`
+
+Returns all game data as js object (for debugging).
+
 ### `client.api.get_all_coords()`
 
 Returns an array with all coordinates on the board, where every coordinate is an array of two integers, e.g.
@@ -139,3 +143,15 @@ If target is too far or too close, returns null, if the object cannot shoot this
 ### `client.api.can_levelup(object_id)`
 
 Checks if object can levelup.
+
+### `client.api.get_players()`
+
+Returns an array of player id's in the order of their turns.
+
+### `client.api.get_player(player_id)`
+
+Returns player data as a js object.
+
+### `client.api.get_active_player()`
+
+Returns the id of the currently active player.
