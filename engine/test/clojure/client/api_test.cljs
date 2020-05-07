@@ -20,8 +20,8 @@
 
 (deftest get-objects-test
   (init-test-game)
-  (let [objects (js->clj (api/get-objects))
-        castle (get objects "0")]
+  (let [objects (js->clj (api/get-object-ids))
+        castle (js->clj (api/get-object 0))]
     (is (= 6 (count objects)))
     (is (= "castle" (get castle "type")))))
 
