@@ -1,6 +1,6 @@
 <template>
   <div id="game-cont">
-    <canvas id="game-canvas" width="800" height="600"></canvas>
+    <canvas id="game-canvas" width="1000" height="600"></canvas>
     <a href="#" @click="enterFullscreen">Fullscreen</a>
   </div>
 </template>
@@ -15,12 +15,16 @@ export default {
   data() {
     return {
       currentGameId: null,
-      game: {}
+      game: {},
+      canvas: null
     };
   },
   created() {
     this.getGame();
     EventBus.$on(`received-user:${getId()}-msg`, this.handleUserMsg);
+  },
+  mounted() {
+    this.canvas = document.getElementById("game-canvas");
   },
   beforeDestroy() {
     EventBus.$off(`received-user:${getId()}-msg`, this.handleUserMsg);
@@ -54,6 +58,8 @@ export default {
           break;
         case "game_state":
           window.client.api.init_game(payload.data.game_state);
+          this.canvas.width = document.body.clientWidth;
+          this.canvas.height = document.body.clientHeight;
           GameController.init();
           break;
       }

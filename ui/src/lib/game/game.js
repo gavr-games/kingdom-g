@@ -1,9 +1,11 @@
 import * as BABYLON from "babylonjs";
+import * as GUI from "babylonjs-gui";
 import * as Loaders from "babylonjs-loaders";
 import { EventBus } from "@/lib/event_bus";
 import Camera from "./camera";
 import Light from "./light";
 import Board from "./board/board";
+import PlayersPanel from "./panels/players_panel";
 import Grid from "./grid";
 import GameState from "./game_state";
 import Loader from "./atlas/loader";
@@ -18,6 +20,7 @@ class Game {
     this.camera = null;
     this.light = null;
     this.board = null;
+    this.playersPanel = null;
     EventBus.$on("init-game", () => {
       this.init();
     });
@@ -47,6 +50,7 @@ class Game {
 
     this.loader = new Loader(scene, () => {
       this.createObjects();
+      this.createGUI();
     });
     this.loader.load();
 
@@ -94,6 +98,12 @@ class Game {
     window.addEventListener("resize", () => {
       this.engine.resize();
     });
+  }
+
+  createGUI() {
+    let gui = GUI.AdvancedDynamicTexture.CreateFullscreenUI("gui_panels");
+    this.playersPanel = new PlayersPanel(gui);
+    this.playersPanel.create();
   }
 
   init() {

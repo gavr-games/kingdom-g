@@ -5,7 +5,7 @@ defmodule Site.Rabbitmq.GameActions do
 
   @reconnect_interval 5_000
 
-  def start_link(_) do
+  def start_link() do
     GenServer.start_link(__MODULE__, nil, name: :game_actions)
   end
 

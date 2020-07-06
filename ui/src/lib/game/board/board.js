@@ -19,17 +19,18 @@ class Board {
       this.cells.push(cell);
     }
     // Add objects
-    let allObjects = window.client.api.get_objects();
+    let allObjects = window.client.api.get_object_ids();
     for (const objId in allObjects) {
+      let obj = window.client.api.get_object(parseInt(objId));
       // units
-      if (allObjects[objId]["class"] == "unit") {
-        let unit = new Unit(this.scene, allObjects[objId]);
+      if (obj["class"] == "unit") {
+        let unit = new Unit(this.scene, obj);
         unit.create();
         this.units.push(unit);
       }
       // buildings
-      if (allObjects[objId]["class"] == "building") {
-        let building = new Building(this.scene, allObjects[objId]);
+      if (obj["class"] == "building") {
+        let building = new Building(this.scene, obj);
         building.create();
         this.buildings.push(building);
       }

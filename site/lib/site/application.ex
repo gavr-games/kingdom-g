@@ -15,9 +15,21 @@ defmodule Site.Application do
       # Starts a worker by calling: Site.Worker.start_link(arg)
       # {Site.Worker, arg},
       Site.Presence,
-      Site.Rabbitmq.GameManagement,
-      Site.Rabbitmq.GameActions,
-      Site.Rabbitmq.GameReplies
+      %{
+        id: Site.Rabbitmq.GameManagement,
+        start: {Site.Rabbitmq.GameManagement, :start_link, []},
+        restart: :transient
+      },
+      %{
+        id: Site.Rabbitmq.GameActions,
+        start: {Site.Rabbitmq.GameActions, :start_link, []},
+        restart: :transient
+      },
+      %{
+        id: Site.Rabbitmq.GameReplies,
+        start: {Site.Rabbitmq.GameReplies, :start_link, []},
+        restart: :transient
+      }
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

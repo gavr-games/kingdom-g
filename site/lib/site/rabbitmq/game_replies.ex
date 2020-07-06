@@ -3,7 +3,7 @@ defmodule Site.Rabbitmq.GameReplies do
   use AMQP
   require Logger
 
-  def start_link(_) do
+  def start_link() do
     GenServer.start_link(__MODULE__, nil, name: :game_replies)
   end
 

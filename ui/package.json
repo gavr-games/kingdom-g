@@ -15,8 +15,9 @@
     "vue-i18n": "8.15.3",
     "axios": "0.19.0",
     "phoenix": "1.4.11",
-    "babylonjs": "^4.0.3",
-    "babylonjs-loaders": "^4.0.3",
+    "babylonjs": "4.0.3",
+    "babylonjs-gui": "4.0.3",
+    "babylonjs-loaders": "4.0.3",
     "lato-font": "^3.0.0"
   },
   "devDependencies": {

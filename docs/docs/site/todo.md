@@ -6,3 +6,4 @@
 - add exit game feature (server, doc, js)
 - add game status to list (server, doc, js)
 - handle owner left the game
+- use createInstance to clone sameobjects
