@@ -5,7 +5,7 @@ defmodule Site.Rabbitmq.GameActions do
 
   @reconnect_interval 5_000
 
-  def start_link() do
+  def start_link(_) do
     GenServer.start_link(__MODULE__, nil, name: :game_actions)
   end
 
@@ -45,6 +45,8 @@ defmodule Site.Rabbitmq.GameActions do
   end
 
   def terminate(_reason, state) do
-    AMQP.Connection.close(state.connection)
+    if state != nil do
+      AMQP.Connection.close(state.connection)
+    end
   end
 end

@@ -3,7 +3,7 @@ defmodule Site.Rabbitmq.GameReplies do
   use AMQP
   require Logger
 
-  def start_link() do
+  def start_link(_) do
     GenServer.start_link(__MODULE__, nil, name: :game_replies)
   end
 
@@ -78,6 +78,8 @@ defmodule Site.Rabbitmq.GameReplies do
   end
 
   def terminate(_reason, state) do
-    Connection.close(state.connection)
+    if state != nil do
+      Connection.close(state.connection)
+    end
   end
 end
