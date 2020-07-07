@@ -7,12 +7,21 @@ class GameController {
     this.game = new Game();
   }
 
-  init() {
+  init(gameData, myUserId) {
+    this.gameData = gameData;
+    this.userId = myUserId;
     EventBus.$emit("init-game");
   }
 
   enterFullscreen() {
     this.game.engine.enterFullscreen();
+  }
+
+  getMyPlayerId() {
+    let player = this.gameData.players.find(
+      p => p.user_id === parseInt(this.userId)
+    );
+    return player.id;
   }
 
   moveUnit(unit, cell) {

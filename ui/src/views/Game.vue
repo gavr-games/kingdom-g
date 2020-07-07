@@ -60,7 +60,7 @@ export default {
           window.client.api.init_game(payload.data.game_state);
           this.canvas.width = document.body.clientWidth;
           this.canvas.height = document.body.clientHeight;
-          GameController.init();
+          GameController.init(this.game, getId());
           break;
       }
     },

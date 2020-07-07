@@ -38,7 +38,6 @@ class Unit {
     mesh.actionManager = new BABYLON.ActionManager(this.scene);
     mesh.actionManager.registerAction(
       new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, () => {
-        console.log(this.selected);
         if (this.selected) {
           this.selected = false;
           EventBus.$emit("deselected-unit", this);

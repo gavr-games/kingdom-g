@@ -8,7 +8,6 @@ const IDLE = 0,
 class GameState {
   constructor() {
     this.state = IDLE;
-    this.currentPLayer = null;
     this.selectedUnit = null;
     EventBus.$on("selected-unit", unit => {
       this.selectedUnit = unit;
@@ -29,8 +28,11 @@ class GameState {
   }
 
   init() {
-    //TODO: check turn etc
-    this.state = MY_TURN;
+    if (
+      GameController.getMyPlayerId() == window.client.api.get_active_player()
+    ) {
+      this.state = MY_TURN;
+    }
   }
 
   canMove() {
