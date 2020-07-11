@@ -1,21 +1,20 @@
-import Cell from "../cells/cell";
-import Unit from "../units/unit";
-import Building from "../buildings/building";
+import CellController from "@/lib/game/cells/cell_controller";
+import UnitController from "@/lib/game/units/unit_controller";
+import BuildingController from "@/lib/game/buildings/building_controller";
 
-class Board {
-  constructor(scene) {
-    this.scene = scene;
+class BoardController {
+  init() {
     this.cells = [];
     this.units = [];
     this.buildings = [];
+    this.create();
   }
 
   create() {
     // Add cells
     let allCoords = window.client.api.get_all_coords();
     for (const coordsKey in allCoords) {
-      let cell = new Cell(this.scene, coordsKey, allCoords[coordsKey]);
-      cell.create();
+      let cell = new CellController(coordsKey, allCoords[coordsKey]);
       this.cells.push(cell);
     }
     // Add objects
@@ -24,14 +23,12 @@ class Board {
       let obj = window.client.api.get_object(parseInt(objId));
       // units
       if (obj["class"] == "unit") {
-        let unit = new Unit(this.scene, obj);
-        unit.create();
+        let unit = new UnitController(objId);
         this.units.push(unit);
       }
       // buildings
       if (obj["class"] == "building") {
-        let building = new Building(this.scene, obj);
-        building.create();
+        let building = new BuildingController(objId);
         this.buildings.push(building);
       }
     }
@@ -44,4 +41,6 @@ class Board {
   }
 }
 
-export default Board;
+const boardController = new BoardController();
+
+export default boardController;

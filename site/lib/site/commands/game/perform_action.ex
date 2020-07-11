@@ -10,8 +10,10 @@ defmodule Site.Commands.Game.PerformAction do
       nil ->
         {:error, %{reason: "unauthorized"}}
       game ->
-        parameters = Map.put(parameters, :p, user_id)
+        player = Enum.find(game.players, fn p -> p.user_id == user_id end)
+        parameters = Map.put(parameters, :p, player.id)
         GameActions.publish(game.id, Jason.encode!(%{action: action, parameters: parameters}))
+        {:ok, %{}}
     end
   end
 end

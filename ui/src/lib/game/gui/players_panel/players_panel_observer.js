@@ -1,8 +1,13 @@
 import * as GUI from "babylonjs-gui";
+import { EventBus } from "@/lib/event_bus";
 
-class PlayersPanel {
-  constructor(gui) {
-    this.gui = gui;
+class PlayersPanelObserver {
+  init() {
+    this.gui = null;
+    EventBus.$on("gui-created", gui => {
+      this.gui = gui;
+      this.create();
+    });
   }
 
   create() {
@@ -30,4 +35,6 @@ class PlayersPanel {
   }
 }
 
-export default PlayersPanel;
+const playersPanelObserver = new PlayersPanelObserver();
+
+export default playersPanelObserver;

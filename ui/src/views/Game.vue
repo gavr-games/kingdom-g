@@ -1,7 +1,6 @@
 <template>
   <div id="game-cont">
     <canvas id="game-canvas" width="1000" height="600"></canvas>
-    <a href="#" @click="enterFullscreen">Fullscreen</a>
   </div>
 </template>
 
@@ -36,9 +35,6 @@ export default {
     }
   },
   methods: {
-    enterFullscreen() {
-      GameController.enterFullscreen();
-    },
     getGame() {
       this.$WSClient.sendMsg(`user:${getId()}`, {
         action: "get_my_game",

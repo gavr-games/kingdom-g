@@ -84,7 +84,7 @@ Examples:
 }
 ```
 
-### `client.api.apply-command(command)`
+### `client.api.apply_command(command)`
 
 Applies a server command to the local game state. Command should be passed as a javascript dictionary, such as
 
