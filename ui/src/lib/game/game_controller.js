@@ -1,3 +1,4 @@
+import { EventBus } from "@/lib/event_bus";
 import GameState from "@/lib/game/game_state";
 import GameObserver from "@/lib/game/game_observer";
 import BoardController from "@/lib/game/board/board_controller";
@@ -13,6 +14,9 @@ class GameController {
     GameState.init(gameData, myUserId);
     GameObserver.init();
     CommandsController.init(gameData);
+    EventBus.$on(`received-user:${myUserId}-error`, payload => {
+      alert(payload.error);
+    });
   }
 }
 
