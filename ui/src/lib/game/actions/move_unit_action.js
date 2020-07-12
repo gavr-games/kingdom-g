@@ -54,13 +54,16 @@ class MoveUnitAction {
     if (path === null) {
       return;
     }
-    let actionParams = {
-      action: "move",
-      parameters: {
-        "obj-id": this.unitObserver.state.id,
-        "new-position": cellObserver.state.payload
-      }
-    };
+    let actionParams = [];
+    path.forEach(step => {
+      actionParams.push({
+        action: "move",
+        parameters: {
+          "obj-id": this.unitObserver.state.id,
+          "new-position": step
+        }
+      });
+    });
     EventBus.$emit("perform-action", actionParams);
   }
 

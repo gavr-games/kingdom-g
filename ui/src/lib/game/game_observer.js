@@ -16,6 +16,7 @@ class GameObserver {
     this.camera = null;
     this.light = null;
     this.renderObservers = [];
+    this.showGrid = false;
   }
 
   init() {
@@ -76,7 +77,7 @@ class GameObserver {
     this.light = new Light(this.scene);
     this.light.create();
 
-    if (process.env.NODE_ENV === "development") {
+    if (this.showGrid) {
       let grid = new Grid(this.scene);
       grid.create();
     }
