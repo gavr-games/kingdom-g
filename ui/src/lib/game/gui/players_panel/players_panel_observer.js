@@ -2,8 +2,10 @@ import * as GUI from "babylonjs-gui";
 import { EventBus } from "@/lib/event_bus";
 
 class PlayersPanelObserver {
-  init() {
+  init(state) {
     this.gui = null;
+    this.state = state;
+    this.players = [];
     EventBus.$on("gui-created", gui => {
       this.gui = gui;
       this.create();
@@ -11,13 +13,11 @@ class PlayersPanelObserver {
   }
 
   create() {
-    let plane = new GUI.Rectangle("test");
+    let plane = new GUI.StackPanel();
     plane.background = "black";
     plane.height = "200px";
-    plane.alpha = 0.3;
+    plane.alpha = 0.8;
     plane.width = "150px";
-    plane.cornerRadius = 10;
-    plane.thickness = 2;
     plane.color = "#e74004";
     plane.linkOffsetY = 10;
     plane.top = "1%";
@@ -30,8 +30,31 @@ class PlayersPanelObserver {
     heading.text = "Players:";
     heading.color = "white";
     heading.fontSize = 24;
+    heading.height = "40px";
+    heading.width = "150px";
     heading.textWrapping = true;
     plane.addControl(heading);
+    this.state.players.forEach(player => {
+      let pText = new GUI.TextBlock();
+      pText.text = `${player.username} (${player.gold})`;
+      pText.color = player.active ? "white" : "grey";
+      pText.fontSize = 18;
+      pText.height = "30px";
+      pText.width = "150px";
+      plane.addControl(pText);
+      this.players.push({
+        id: player.id,
+        text: pText
+      });
+    });
+  }
+
+  update() {
+    this.state.players.forEach(player => {
+      let pText = this.players.find(p => p.id === player.id).text;
+      pText.text = `${player.username} (${player.gold})`;
+      pText.color = player.active ? "white" : "grey";
+    });
   }
 }
 

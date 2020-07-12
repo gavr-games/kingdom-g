@@ -28,6 +28,10 @@ class GameState {
   isMyTurn() {
     return this.state == MY_TURN;
   }
+
+  get players() {
+    return this.gameData.players;
+  }
 }
 
 const gameState = new GameState();
