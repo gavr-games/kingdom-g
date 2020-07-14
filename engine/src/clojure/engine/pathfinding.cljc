@@ -142,8 +142,9 @@
             (recur (subvec q 1) prevs)))))))
 
 (defn find-path
-  "Searches for a path for the object with the given id to the given destination.
+  "Searches for a path for the object with given id to the given destination.
   The object should have enough moves to reach the destination.
+  If the object is already at the destination, returns nil.
   Destination can be free or occupied. If it is occupied, looks for a path with
   the last step stepping on the destination.
   If path exists, returns a sequence of positions leading to the destination,
@@ -157,6 +158,8 @@
       (nil? (check/coord-one-step-away obj destination)) [destination]
 
       (not (theoretically-reachable obj destination)) nil
+
+      (= (:position obj) destination) nil
 
       (and (:flying obj)
            (not (:chess-knight obj))) (if (can-move-object? g obj-id destination)

@@ -157,8 +157,5 @@
               (add-new-active-object 0 :dragon [5 5]))
         sp-id (get-object-id-at g [3 3])
         dr-id (get-object-id-at g [5 5])]
-    (is (nil? (find-path g sp-id [3 3])))
-    (is (nil? (find-path g dr-id [5 5])))
-    (is (nil? (find-path g dr-id [6 5])))
-    (is (nil? (find-path g dr-id [5 6])))
-    (is (nil? (find-path g dr-id [6 6])))))
+    (is (= nil (find-path g sp-id [3 3])))
+    (is (= nil (find-path g dr-id [5 5])))))
