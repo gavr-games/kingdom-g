@@ -15,10 +15,10 @@ class Camera {
     this.createLimitPlanes(20);
     this.camera = new BABYLON.FreeCamera(
       "MainCamera",
-      new BABYLON.Vector3(-10, CameraZ, -10),
+      new BABYLON.Vector3(-17, CameraZ, -17),
       this.scene
     );
-    this.camera.setTarget(new BABYLON.Vector3(10, 0, 10));
+    this.camera.setTarget(new BABYLON.Vector3(10, 5, 10));
     this.camera.attachControl(this.canvas, true);
     this.camera.checkCollisions = true;
     this.camera.ellipsoid = new BABYLON.Vector3(

@@ -1586,6 +1586,13 @@ babylonjs-loaders@4.0.3:
     babylonjs "4.0.3"
     babylonjs-gltf2interface "4.0.3"
 
+babylonjs-materials@4.0.3:
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/babylonjs-materials/-/babylonjs-materials-4.0.3.tgz#b6bf7bc332e1d14c72258ed7bd14ddc3cb3957de"
+  integrity sha512-Vy5FDAxLXXlN0EnnUlmTG2aBwfh1rQZbGxU04S3CZRPpqHXi/rsrPvr3R6R08N8E9D/o5AWTIpoTVj6yGazqkg==
+  dependencies:
+    babylonjs "4.0.3"
+
 babylonjs@4.0.3:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/babylonjs/-/babylonjs-4.0.3.tgz#5dba9a96a7cb70634338e8dd7a17081e9f902cf6"

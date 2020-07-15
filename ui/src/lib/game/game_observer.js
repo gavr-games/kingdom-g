@@ -1,10 +1,11 @@
 import * as BABYLON from "babylonjs";
 import * as Loaders from "babylonjs-loaders";
 import { EventBus } from "@/lib/event_bus";
-import Camera from "./camera";
-import Light from "./light";
-import Grid from "./grid";
-import Loader from "./atlas/loader";
+import Camera from "@/lib/game/camera";
+import Light from "@/lib/game/light";
+import Skybox from "@/lib/game/skybox";
+import Grid from "@/lib/game/grid";
+import Loader from "@/lib/game/atlas/loader";
 
 class GameObserver {
   constructor() {
@@ -12,9 +13,11 @@ class GameObserver {
     this.canvas = null;
     this.engine = null;
     this.scene = null;
+    this.objectPopupScene = null;
     this.loader = null;
     this.camera = null;
     this.light = null;
+    this.skybox = null;
     this.renderObservers = [];
     this.showGrid = false;
   }
@@ -35,9 +38,10 @@ class GameObserver {
 
   createScene() {
     this.scene = new BABYLON.Scene(this.engine);
-
     this.scene.actionManager = new BABYLON.ActionManager(this.scene);
     this.registerActions(this.scene);
+
+    //this.objectPopupScene = new BABYLON.Scene(this.engine);
 
     this.loader = new Loader(this.scene, () => {
       this.createObjects();
@@ -77,6 +81,9 @@ class GameObserver {
     this.light = new Light(this.scene);
     this.light.create();
 
+    this.skybox = new Skybox(this.scene);
+    this.skybox.create();
+
     if (this.showGrid) {
       let grid = new Grid(this.scene);
       grid.create();
@@ -84,8 +91,10 @@ class GameObserver {
   }
 
   runRenderLoop() {
+    //this.objectPopupScene.autoClear = false;
     this.engine.runRenderLoop(() => {
       this.scene.render();
+      //this.objectPopupScene.render();
       this.renderObservers.forEach(observer => {
         observer.obj.update();
       });
