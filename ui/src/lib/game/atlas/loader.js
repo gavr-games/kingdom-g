@@ -1,9 +1,9 @@
 import * as BABYLON from "babylonjs";
 import boardConfig from "../board/config";
-import Atlas from "./atlas";
 
 class Loader {
-  constructor(scene, finishCallback) {
+  constructor(scene, finishCallback, atlas) {
+    this.atlas = atlas;
     this.scene = scene;
     this.finishCallback = finishCallback;
     this.assetsManager = new BABYLON.AssetsManager(scene);
@@ -17,9 +17,9 @@ class Loader {
       "/game_assets/fills/",
       "solid.obj"
     );
-    task.onSuccess = function(task) {
+    task.onSuccess = task => {
       task.loadedMeshes[0].setEnabled(false);
-      Atlas.set("solidFill", task.loadedMeshes[0]);
+      this.atlas.set("solidFill", task.loadedMeshes[0]);
     };
     this.loadUnits();
     this.loadBuildings();
@@ -47,14 +47,14 @@ class Loader {
         "/game_assets/buildings/",
         building + ".obj"
       );
-      task.onSuccess = function(task) {
+      task.onSuccess = task => {
         let mesh = task.loadedMeshes[0];
         let pivotDiff = boardConfig.cellSize;
         mesh.setPivotPoint(
           new BABYLON.Vector3(pivotDiff + pivotDiff / 2, 0, -pivotDiff / 2)
         );
         mesh.setEnabled(false);
-        Atlas.set(building + "Building", mesh);
+        this.atlas.set(building + "Building", mesh);
       };
     });
   }
@@ -78,10 +78,10 @@ class Loader {
         "/game_assets/units/",
         unit + ".obj"
       );
-      task.onSuccess = function(task) {
+      task.onSuccess = task => {
         task.loadedMeshes[0].setEnabled(false);
         let mesh = task.loadedMeshes[0];
-        Atlas.set(unit + "Unit", mesh);
+        this.atlas.set(unit + "Unit", mesh);
       };
     });
   }

@@ -62,6 +62,7 @@ class CellObserver {
         EventBus.$emit("click-cell", this);
       })
     );
+    mesh.setEnabled(true);
     this.mesh = mesh;
   }
 }

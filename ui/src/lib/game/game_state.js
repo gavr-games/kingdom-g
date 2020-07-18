@@ -1,21 +1,7 @@
-const IDLE = 0,
-  MY_TURN = 1,
-  NOT_MY_TURN = 2;
-
 class GameState {
   init(gameData, myUserId) {
     this.gameData = gameData;
     this.userId = myUserId;
-    this.state = IDLE;
-    this.setDefaultState();
-  }
-
-  setDefaultState() {
-    if (this.getMyPlayerId() == window.client.api.get_active_player()) {
-      this.state = MY_TURN;
-    } else {
-      this.state = NOT_MY_TURN;
-    }
   }
 
   getMyPlayerId() {
@@ -26,7 +12,7 @@ class GameState {
   }
 
   isMyTurn() {
-    return this.state == MY_TURN;
+    return this.getMyPlayerId() == window.client.api.get_active_player();
   }
 
   get players() {

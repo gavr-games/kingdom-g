@@ -32,10 +32,27 @@ class UnitObserver {
 
     mesh.actionManager = new BABYLON.ActionManager(this.scene);
     mesh.actionManager.registerAction(
+      new BABYLON.ExecuteCodeAction(
+        BABYLON.ActionManager.OnPointerOverTrigger,
+        () => {
+          EventBus.$emit("pointer-over-unit", this);
+        }
+      )
+    );
+    mesh.actionManager.registerAction(
       new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, () => {
         EventBus.$emit("click-unit", this);
       })
     );
+    mesh.actionManager.registerAction(
+      new BABYLON.ExecuteCodeAction(
+        BABYLON.ActionManager.OnPointerOutTrigger,
+        () => {
+          EventBus.$emit("pointer-out-unit", this);
+        }
+      )
+    );
+    mesh.setEnabled(true);
     this.mesh = mesh;
   }
 

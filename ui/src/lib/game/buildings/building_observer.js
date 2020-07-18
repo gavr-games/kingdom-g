@@ -30,6 +30,7 @@ class BuildingObserver {
     mesh.position.z = coords.z * boardConfig.cellSize + boardConfig.cellSize;
     mesh.rotationQuaternion = quaternion;
     mesh.visibility = 1;
+    mesh.setEnabled(true);
     mesh.metadata = this.state;
   }
 }

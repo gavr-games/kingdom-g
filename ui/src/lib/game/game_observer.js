@@ -6,6 +6,7 @@ import Light from "@/lib/game/light";
 import Skybox from "@/lib/game/skybox";
 import Grid from "@/lib/game/grid";
 import Loader from "@/lib/game/atlas/loader";
+import Atlas from "@/lib/game/atlas/atlas";
 
 class GameObserver {
   constructor() {
@@ -13,7 +14,6 @@ class GameObserver {
     this.canvas = null;
     this.engine = null;
     this.scene = null;
-    this.objectPopupScene = null;
     this.loader = null;
     this.camera = null;
     this.light = null;
@@ -41,13 +41,15 @@ class GameObserver {
     this.scene.actionManager = new BABYLON.ActionManager(this.scene);
     this.registerActions(this.scene);
 
-    //this.objectPopupScene = new BABYLON.Scene(this.engine);
-
-    this.loader = new Loader(this.scene, () => {
-      this.createObjects();
-      this.runRenderLoop();
-      EventBus.$emit("scene-created", this.scene);
-    });
+    this.loader = new Loader(
+      this.scene,
+      () => {
+        this.createObjects();
+        this.runRenderLoop();
+        EventBus.$emit("scene-created", this.scene);
+      },
+      Atlas
+    );
     this.loader.load();
   }
 
@@ -70,6 +72,8 @@ class GameObserver {
     );
 
     window.addEventListener("resize", () => {
+      this.canvas.width = document.body.clientWidth;
+      this.canvas.height = document.body.clientHeight;
       this.engine.resize();
     });
   }
@@ -91,10 +95,10 @@ class GameObserver {
   }
 
   runRenderLoop() {
-    //this.objectPopupScene.autoClear = false;
     this.engine.runRenderLoop(() => {
-      this.scene.render();
-      //this.objectPopupScene.render();
+      if (this.scene.activeCamera) {
+        this.scene.render();
+      }
       this.renderObservers.forEach(observer => {
         observer.obj.update();
       });

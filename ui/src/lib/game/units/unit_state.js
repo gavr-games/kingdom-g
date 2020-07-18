@@ -22,6 +22,11 @@ class UnitState {
     return obj.type;
   }
 
+  get objectClass() {
+    let obj = window.client.api.get_object(parseInt(this.id));
+    return obj.class;
+  }
+
   get coords() {
     let obj = window.client.api.get_object(parseInt(this.id));
     return Coords.parsePosition(obj.position);
@@ -30,6 +35,36 @@ class UnitState {
   get player() {
     let obj = window.client.api.get_object(parseInt(this.id));
     return obj.player;
+  }
+
+  get attack() {
+    let obj = window.client.api.get_object(parseInt(this.id));
+    return obj.attack;
+  }
+
+  get health() {
+    let obj = window.client.api.get_object(parseInt(this.id));
+    return obj.health;
+  }
+
+  get maxHealth() {
+    let obj = window.client.api.get_object(parseInt(this.id));
+    return obj["max-health"];
+  }
+
+  get level() {
+    let obj = window.client.api.get_object(parseInt(this.id));
+    return obj.level;
+  }
+
+  get moves() {
+    let obj = window.client.api.get_object(parseInt(this.id));
+    return obj.moves;
+  }
+
+  get maxMoves() {
+    let obj = window.client.api.get_object(parseInt(this.id));
+    return obj["max-moves"];
   }
 
   moveToPosition(position) {
