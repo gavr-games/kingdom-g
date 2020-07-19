@@ -21,11 +21,14 @@ class ObjectPopupObserver {
     EventBus.$on("pointer-over-unit", unitObserver => {
       this.showObject(unitObserver.state);
     });
+    EventBus.$on("pointer-over-building", buildingObserver => {
+      this.showObject(buildingObserver.state);
+    });
     EventBus.$on("pointer-out-unit", () => {
-      if (this.mesh !== null) {
-        this.scene.removeMesh(this.mesh);
-        this.mesh = null;
-      }
+      this.hideObject();
+    });
+    EventBus.$on("pointer-out-building", () => {
+      this.hideObject();
     });
   }
 
@@ -71,8 +74,18 @@ class ObjectPopupObserver {
         this.mesh = ObjectPopupAtlas.get(object.type + "Unit").clone();
         this.mesh.setEnabled(true);
         break;
+      case "building":
+        this.mesh = ObjectPopupAtlas.get(object.type + "Building").clone();
+        this.mesh.setEnabled(true);
+        break;
     }
-    //this.mesh = clone;
+  }
+
+  hideObject() {
+    if (this.mesh !== null) {
+      this.scene.removeMesh(this.mesh);
+      this.mesh = null;
+    }
   }
 
   update() {

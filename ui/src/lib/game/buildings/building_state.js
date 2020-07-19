@@ -10,6 +10,11 @@ class BuildingState {
     return obj.type;
   }
 
+  get objectClass() {
+    let obj = window.client.api.get_object(parseInt(this.id));
+    return obj.class;
+  }
+
   get coords() {
     let obj = window.client.api.get_object(parseInt(this.id));
     return Coords.parsePosition(obj.position);
@@ -18,6 +23,16 @@ class BuildingState {
   get rotation() {
     let obj = window.client.api.get_object(parseInt(this.id));
     return obj.rotation;
+  }
+
+  get health() {
+    let obj = window.client.api.get_object(parseInt(this.id));
+    return obj.health;
+  }
+
+  get maxHealth() {
+    let obj = window.client.api.get_object(parseInt(this.id));
+    return obj["max-health"];
   }
 }
 

@@ -1,7 +1,7 @@
 <template>
   <div id="arena-games-list">
     <div class="heading">- {{ $t("arena.gamelist.game_list") }} -</div>
-    <table>
+    <table id="active-games">
       <tr>
         <th>{{ $t("arena.gamelist.creator") }}</th>
         <th>{{ $t("arena.gamelist.name") }}</th>
@@ -103,6 +103,12 @@ export default {
     td {
       border-right: 2px solid rgba($color: #ffffff, $alpha: 0.1);
     }
+  }
+
+  #active-games {
+    display: block;
+    height: 350px;
+    overflow-y: scroll;
   }
 
   .pass-flag {

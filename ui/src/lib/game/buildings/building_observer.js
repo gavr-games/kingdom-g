@@ -30,6 +30,30 @@ class BuildingObserver {
     mesh.position.z = coords.z * boardConfig.cellSize + boardConfig.cellSize;
     mesh.rotationQuaternion = quaternion;
     mesh.visibility = 1;
+
+    mesh.actionManager = new BABYLON.ActionManager(this.scene);
+    mesh.actionManager.registerAction(
+      new BABYLON.ExecuteCodeAction(
+        BABYLON.ActionManager.OnPointerOverTrigger,
+        () => {
+          EventBus.$emit("pointer-over-building", this);
+        }
+      )
+    );
+    mesh.actionManager.registerAction(
+      new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, () => {
+        EventBus.$emit("click-building", this);
+      })
+    );
+    mesh.actionManager.registerAction(
+      new BABYLON.ExecuteCodeAction(
+        BABYLON.ActionManager.OnPointerOutTrigger,
+        () => {
+          EventBus.$emit("pointer-out-building", this);
+        }
+      )
+    );
+
     mesh.setEnabled(true);
     mesh.metadata = this.state;
   }
