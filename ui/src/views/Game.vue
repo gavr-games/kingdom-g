@@ -42,6 +42,23 @@
         </tr>
       </table>
     </div>
+    <div id="actions-panel-cont" v-if="showActionsPanel">
+      <h3>Actions</h3>
+      <div
+        class="action"
+        v-for="action in selectedObject.state.actions"
+        v-bind:key="action"
+      >
+        <a href="#" class="green-button" @click="handleAction(action)">
+          {{ action }}
+        </a>
+      </div>
+      <div>
+        <a href="#" class="red-button" @click="cancelAction">
+          {{ $t("common.cancel") }}
+        </a>
+      </div>
+    </div>
     <canvas id="game-canvas"></canvas>
   </div>
 </template>
@@ -60,7 +77,9 @@ export default {
       canvas: null,
       players: [],
       popupObject: null,
-      showObjectPopup: true
+      showObjectPopup: true,
+      selectedObject: null,
+      showActionsPanel: false
     };
   },
   created() {
@@ -71,6 +90,8 @@ export default {
     EventBus.$on("pointer-out-unit", this.hidePopupObject);
     EventBus.$on("pointer-over-building", this.setPopupObject);
     EventBus.$on("pointer-out-building", this.hidePopupObject);
+    EventBus.$on("unit-selected", this.setActionsPanel);
+    EventBus.$on("unit-deselected", this.hideActionsPanel);
   },
   mounted() {
     this.canvas = document.getElementById("game-canvas");
@@ -82,6 +103,8 @@ export default {
     EventBus.$off("pointer-out-unit", this.hidePopupObject);
     EventBus.$off("pointer-over-building", this.setPopupObject);
     EventBus.$off("pointer-out-building", this.hidePopupObject);
+    EventBus.$off("unit-selected", this.showActionsPanel);
+    EventBus.$off("unit-deselected", this.hideActionsPanel);
     if (this.currentGameId !== null) {
       EventBus.$off(
         `received-game:${this.currentGameId}-msg`,
@@ -137,6 +160,20 @@ export default {
     hidePopupObject() {
       this.popupObject = null;
       this.showObjectPopup = false;
+    },
+    setActionsPanel(objectObserver) {
+      this.selectedObject = objectObserver;
+      this.showActionsPanel = true;
+    },
+    hideActionsPanel() {
+      this.selectedObject = null;
+      this.showActionsPanel = false;
+    },
+    handleAction(action) {
+      EventBus.$emit("click-action", action, this.selectedObject);
+    },
+    cancelAction() {
+      EventBus.$emit("cancel-action");
     }
   }
 };
@@ -179,6 +216,16 @@ export default {
     .active {
       color: white;
     }
+  }
+}
+#actions-panel-cont {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  h3 {
+    color: white;
   }
 }
 </style>

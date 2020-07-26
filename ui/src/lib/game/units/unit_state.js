@@ -27,6 +27,11 @@ class UnitState {
     return obj.class;
   }
 
+  get actions() {
+    let obj = window.client.api.get_object(parseInt(this.id));
+    return obj.actions;
+  }
+
   get coords() {
     let obj = window.client.api.get_object(parseInt(this.id));
     return Coords.parsePosition(obj.position);

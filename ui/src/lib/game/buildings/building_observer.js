@@ -7,6 +7,7 @@ class BuildingObserver {
   constructor(state) {
     this.scene = null;
     this.state = state;
+    this.mesh = null;
     EventBus.$on("scene-created", scene => {
       this.scene = scene;
       this.create();
@@ -56,6 +57,7 @@ class BuildingObserver {
 
     mesh.setEnabled(true);
     mesh.metadata = this.state;
+    this.mesh = mesh;
   }
 }
 

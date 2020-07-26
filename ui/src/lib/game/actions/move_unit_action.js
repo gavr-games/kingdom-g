@@ -27,6 +27,7 @@ class MoveUnitAction {
     EventBus.$on("pointer-over-cell", this.pointerOverCellCallback);
     EventBus.$on("pointer-out-cell", this.pointerOutCellCallback);
     EventBus.$on("click-cell", this.clickCellCallback);
+    EventBus.$emit("unit-selected", unitObserver);
   }
 
   handlePointerOverCell(cellObserver) {
@@ -75,6 +76,7 @@ class MoveUnitAction {
     EventBus.$off("pointer-over-cell", this.pointerOverCellCallback);
     EventBus.$off("pointer-out-cell", this.pointerOutCellCallback);
     EventBus.$off("click-cell", this.clickCellCallback);
+    EventBus.$emit("unit-deselected", this.unitObserver);
   }
 }
 

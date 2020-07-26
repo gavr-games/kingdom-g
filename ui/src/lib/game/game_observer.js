@@ -116,12 +116,24 @@ class GameObserver {
     this.renderObservers = this.renderObservers.filter(ob => ob.id !== id);
   }
 
-  highlight(mesh) {
-    this.selectHighlight.addMesh(mesh, BABYLON.Color3.Green());
+  highlight(mesh, color = "select") {
+    color = this.getHiglightColor(color);
+    this.selectHighlight.addMesh(mesh, color);
   }
 
-  unhighlight(mesh) {
-    this.selectHighlight.removeMesh(mesh, BABYLON.Color3.Green());
+  unhighlight(mesh, color = "select") {
+    color = this.getHiglightColor(color);
+    this.selectHighlight.removeMesh(mesh, color);
+  }
+
+  getHiglightColor(color) {
+    switch (color) {
+      case "select":
+        return BABYLON.Color3.Green();
+      case "target":
+        return BABYLON.Color3.Red();
+    }
+    return BABYLON.Color3.Green();
   }
 }
 

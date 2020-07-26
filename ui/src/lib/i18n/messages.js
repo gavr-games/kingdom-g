@@ -1,7 +1,8 @@
 const messages = {
   en: {
     common: {
-      back: "Back"
+      back: "Back",
+      cancel: "Cancel"
     },
     login: {
       enter: "Enter",
@@ -115,7 +116,8 @@ const messages = {
   },
   ru: {
     common: {
-      back: "Назад"
+      back: "Назад",
+      cancel: "Отмена"
     },
     login: {
       enter: "Войти",

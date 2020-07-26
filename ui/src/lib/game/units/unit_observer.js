@@ -12,10 +12,11 @@ class UnitObserver {
     this.state = state;
     this.scene = null;
     this.mesh = null;
-    EventBus.$on("scene-created", scene => {
+    this.sceneCreatedCallback = scene => {
       this.scene = scene;
       this.create();
-    });
+    };
+    EventBus.$on("scene-created", this.sceneCreatedCallback);
     GameObserver.addRenderObserver(`unit-${this.state.id}`, this);
   }
 
@@ -112,6 +113,15 @@ class UnitObserver {
         this.state.stop();
       }
     }
+  }
+
+  remove() {
+    EventBus.$emit("pointer-out-unit", this);
+    GameObserver.removeRenderObserver(`unit-${this.state.id}`);
+    EventBus.$off("scene-created", this.sceneCreatedCallback);
+    this.mesh.dispose();
+    this.mesh = null;
+    this.state = null;
   }
 }
 

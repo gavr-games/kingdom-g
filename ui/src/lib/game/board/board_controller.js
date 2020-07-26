@@ -1,3 +1,4 @@
+import { EventBus } from "@/lib/event_bus";
 import CellController from "@/lib/game/cells/cell_controller";
 import UnitController from "@/lib/game/units/unit_controller";
 import BuildingController from "@/lib/game/buildings/building_controller";
@@ -7,6 +8,9 @@ class BoardController {
     this.cells = [];
     this.units = [];
     this.buildings = [];
+    EventBus.$on(`command-destroy-object`, cmd => {
+      this.destroyObject(parseInt(cmd.object_id));
+    });
     this.create();
   }
 
@@ -19,7 +23,8 @@ class BoardController {
     }
     // Add objects
     let allObjects = window.client.api.get_object_ids();
-    for (const objId in allObjects) {
+    for (const i in allObjects) {
+      const objId = allObjects[i];
       let obj = window.client.api.get_object(parseInt(objId));
       // units
       if (obj["class"] == "unit") {
@@ -34,10 +39,20 @@ class BoardController {
     }
   }
 
-  update() {
+  destroyObject(id) {
     for (const i in this.units) {
-      this.units[i].update();
+      if (this.units[i].state.id === id) {
+        this.units[i].remove();
+      }
     }
+    this.units = this.units.filter(u => u.state !== null);
+
+    for (const i in this.buildings) {
+      if (this.buildings[i].state.id === id) {
+        this.buildings[i].remove();
+      }
+    }
+    this.buildings = this.buildings.filter(b => b.state !== null);
   }
 }
 

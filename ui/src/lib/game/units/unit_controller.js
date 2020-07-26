@@ -19,6 +19,9 @@ class UnitController {
   }
 
   remove() {
+    this.observer.remove();
+    this.observer = null;
+    this.state = null;
     EventBus.$off("command-move-object", this.handleMoveObjectCallback);
   }
 }
