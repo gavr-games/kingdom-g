@@ -64,7 +64,17 @@ services:
       - ./docs:/docs:cached
     ports:
       - 8080:8080
+  
+  redis:
+    image: redis:6-alpine
+    ports:
+      - 6379:6379
+    volumes:
+      - redis-data:/var/lib/redis
+    environment:
+      - REDIS_REPLICATION_MODE=master
 
 volumes:
   rabbitmq-data: null
   pg-data: null
+  redis-data: null
