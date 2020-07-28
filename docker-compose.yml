@@ -29,6 +29,7 @@ services:
       - ./engine:/usr/src/app:cached
     depends_on:
       - rabbitmq
+      - redis
   
   site:
     build: ./site
@@ -71,8 +72,6 @@ services:
       - 6379:6379
     volumes:
       - redis-data:/var/lib/redis
-    environment:
-      - REDIS_REPLICATION_MODE=master
 
 volumes:
   rabbitmq-data: null
