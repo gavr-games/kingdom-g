@@ -10,7 +10,8 @@
             [langohr.consumers :as lc]
             [langohr.basic     :as lb]
             [langohr.exchange  :as le]
-            [cheshire.core     :as json]))
+            [cheshire.core     :as json]
+            [server.persistence :refer [save-games load-games]]))
 
 (def games
   "Map of game id to game data."
@@ -136,6 +137,32 @@
         "create_game" (process-game-creation! ch data)
         (println "Unknown action" action)))))
 
+(defn stop-game-server
+  "Saves games and closes the passed rabbitmq connection."
+  [conn]
+  (println "Game engine server stopping"
+           (str (java.time.LocalDateTime/now)))
+  (rmq/close conn)
+  (println "Closed RabbitMQ connection")
+  (save-games @games)
+  (println "Saved games"))
+
+(defn add-shutdown-hook
+  [conn]
+  (.addShutdownHook
+   (Runtime/getRuntime)
+   (Thread. ^Runnable #(stop-game-server conn))))
+
+(defn load-games-from-redis
+  "Loads games from redis and creates rabbitmq listeners for their actions.
+  ch - rabbitmq channel."
+  [ch]
+  (let [loaded (load-games)]
+    (dosync
+     (alter games merge loaded))
+    (doall (map #(create-game-actions-handler ch %) (keys loaded)))
+    (println "Loaded" (count loaded) "games from redis:" (str (keys loaded)))))
+
 (defn start-game-server
   "Starts a server and returns a closeable connection.
   To close the connection (langohr.core/close conn)"
@@ -145,14 +172,18 @@
      (uncaughtException [_ thread ex]
        (println ex))))
   (println "Game engine server starting"
-           (.toString (java.time.LocalDateTime/now)))
+           (str (java.time.LocalDateTime/now)))
   (let [conn (rmq/connect {:uri (System/getenv "RABBITMQ_URL")})
         ch (lch/open conn)]
     (println "Connected to RabbitMQ. Channel id:" (.getChannelNumber ch))
+    (load-games-from-redis ch)
     (lq/declare ch management-q-name {:auto-delete false})
     (lc/subscribe ch management-q-name (ex-logging management-handler))
     (le/direct ch game-replies-exchange-name)
+    (add-shutdown-hook conn)
     conn))
+
+
 
 (defn -main
   [& args]

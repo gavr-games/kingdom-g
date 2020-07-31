@@ -54,7 +54,7 @@
          param-keys ((meta act-fn) :args)
          param-values (vals (select-keys params param-keys))
          act-call #(apply act-fn % p param-values)
-         action-log {:player p :action action :params params}
+         action-log {:player p :action action-code :params params}
          prechecks-fail (or
                          (check/game g)
                          (check/player g p))]
