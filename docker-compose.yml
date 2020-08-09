@@ -10,7 +10,6 @@ services:
       - 443:443
     environment:
       - ACME_AGREE=true
-    restart: always
   
   ui:
     build: ./ui
