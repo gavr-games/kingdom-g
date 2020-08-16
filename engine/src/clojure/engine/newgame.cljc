@@ -116,6 +116,17 @@
                      4 shuffle-4-players)]
     (shuffle-fn players)))
 
+(defn add-test-units
+  "TODO tempory function to add some units for testing."
+  [g]
+  (let [p (get-in g [:objects 0 :player])]
+    (-> g
+        (add-new-object p :catapult [1 2])
+        (add-new-object p :archer [2 1])
+        (add-new-object p :ram [1 1])
+        (add-new-object p :dragon [2 2]))))
+
 (defn create-game-shuffled-players
   [players]
-  (create-game (sort-by :quarter (shuffle-players players))))
+  (-> (create-game (sort-by :quarter (shuffle-players players)))
+      add-test-units))
