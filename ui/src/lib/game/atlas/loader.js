@@ -63,10 +63,12 @@ class Loader {
     let units = [
       "arbalester",
       "archer",
+      "catapult",
       "dragon",
       "knight_with_horse",
       "knight",
       "ninja",
+      "ram",
       "spearman",
       "swordsman",
       "wizard"

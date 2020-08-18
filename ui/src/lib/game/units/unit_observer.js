@@ -28,7 +28,6 @@ class UnitObserver {
     mesh.position.y = coords.y * boardConfig.cellSize;
     mesh.position.z =
       boardConfig.cellSize / 2 + coords.z * boardConfig.cellSize;
-    mesh.visibility = 1;
     mesh.metadata = this.state;
 
     mesh.actionManager = new BABYLON.ActionManager(this.scene);

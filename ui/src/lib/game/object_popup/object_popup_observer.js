@@ -71,11 +71,11 @@ class ObjectPopupObserver {
   showObject(object) {
     switch (object.objectClass) {
       case "unit":
-        this.mesh = ObjectPopupAtlas.get(object.type + "Unit").clone();
+        this.mesh = ObjectPopupAtlas.get(object.type + "Unit").createInstance();
         this.mesh.setEnabled(true);
         break;
       case "building":
-        this.mesh = ObjectPopupAtlas.get(object.type + "Building").clone();
+        this.mesh = ObjectPopupAtlas.get(object.type + "Building").createInstance();
         this.mesh.setEnabled(true);
         break;
     }

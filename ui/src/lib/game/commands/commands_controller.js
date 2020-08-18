@@ -8,8 +8,8 @@ class CommandsController {
   handleCommands(payload) {
     if (payload.reply_type === "commands") {
       payload.commands.forEach(cmd => {
-        EventBus.$emit(`command-${cmd.command}`, cmd);
         window.client.api.apply_command(cmd);
+        EventBus.$emit(`command-${cmd.command}`, cmd);
       });
     }
   }

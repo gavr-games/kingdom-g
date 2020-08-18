@@ -30,7 +30,6 @@ class BuildingObserver {
     mesh.position.y = coords.y * boardConfig.cellSize;
     mesh.position.z = coords.z * boardConfig.cellSize + boardConfig.cellSize;
     mesh.rotationQuaternion = quaternion;
-    mesh.visibility = 1;
 
     mesh.actionManager = new BABYLON.ActionManager(this.scene);
     mesh.actionManager.registerAction(

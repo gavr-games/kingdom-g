@@ -29,7 +29,6 @@ class CellObserver {
   create() {
     let mesh = Atlas.get("solidFill").clone();
     let coords = this.state.coords;
-    mesh.visibility = 1;
     mesh.name = "cell" + this.state.coordsKey;
     mesh.position.x = coords.x * boardConfig.cellSize;
     mesh.position.y = -2 + coords.y * boardConfig.cellSize;
