@@ -73,6 +73,13 @@ class UnitState {
     return obj["max-moves"];
   }
 
+  get size() {
+    return Math.ceil(
+      Object.keys(window.client.api.get_object(parseInt(this.id)).coords)
+        .length / 2
+    );
+  }
+
   moveToPosition(position) {
     this.targetPosition = position;
     this.state = MOVING;

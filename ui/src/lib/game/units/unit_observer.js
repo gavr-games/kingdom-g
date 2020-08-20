@@ -23,11 +23,9 @@ class UnitObserver {
   create() {
     let coords = this.state.coords;
     let mesh = Atlas.get(this.state.type + "Unit").clone();
-    mesh.position.x =
-      coords.x * boardConfig.cellSize + boardConfig.cellSize / 2;
+    mesh.position.x = this.getMeshCoordinate(coords.x);
     mesh.position.y = coords.y * boardConfig.cellSize;
-    mesh.position.z =
-      boardConfig.cellSize / 2 + coords.z * boardConfig.cellSize;
+    mesh.position.z = this.getMeshCoordinate(coords.z);
     mesh.metadata = this.state;
 
     mesh.actionManager = new BABYLON.ActionManager(this.scene);
@@ -62,12 +60,8 @@ class UnitObserver {
       let speedY = SPEED;
       let speedZ = SPEED;
       let targetCoords = {
-        x:
-          this.state.targetPosition[0] * boardConfig.cellSize +
-          boardConfig.cellSize / 2,
-        z:
-          this.state.targetPosition[1] * boardConfig.cellSize +
-          boardConfig.cellSize / 2,
+        x: this.getMeshCoordinate(this.state.targetPosition[0]),
+        z: this.getMeshCoordinate(this.state.targetPosition[1]),
         y: 0
       };
 
@@ -132,6 +126,14 @@ class UnitObserver {
     this.mesh.dispose();
     this.mesh = null;
     this.state = null;
+  }
+
+  getMeshCoordinate(coordinate) {
+    return (
+      coordinate * boardConfig.cellSize +
+      boardConfig.cellSize / 2 -
+      ((this.state.size - 1) * boardConfig.cellSize) / 2
+    );
   }
 }
 
