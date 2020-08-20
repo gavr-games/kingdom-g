@@ -8,6 +8,7 @@ class UnitState {
   constructor(id) {
     this.id = parseInt(id);
     this.state = STOPPED;
+    this.meshRotation = Math.PI;
     this.targetPosition = null; //where to move (animation)
     EventBus.$on("move-unit-animation-finished", unitObserver => {
       if (this.id === unitObserver.state.id) {

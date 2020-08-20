@@ -70,6 +70,17 @@ class UnitObserver {
           boardConfig.cellSize / 2,
         y: 0
       };
+
+      let rotationAngle = Math.atan2(
+        targetCoords.z - this.mesh.position.z,
+        targetCoords.x - this.mesh.position.x
+      );
+      let rotationDelta = this.state.meshRotation - rotationAngle;
+      if (rotationDelta != 0) {
+        this.state.meshRotation = rotationAngle;
+        this.mesh.rotate(BABYLON.Axis.Y, rotationDelta);
+      }
+
       if (targetCoords.x < this.mesh.position.x) {
         speedX = -SPEED;
       }
