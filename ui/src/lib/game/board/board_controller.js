@@ -54,6 +54,21 @@ class BoardController {
     }
     this.buildings = this.buildings.filter(b => b.state !== null);
   }
+
+  getObjectObserver(id) {
+    for (const i in this.units) {
+      if (this.units[i].state.id === id) {
+        return this.units[i].observer;
+      }
+    }
+
+    for (const i in this.buildings) {
+      if (this.buildings[i].state.id === id) {
+        return this.buildings[i].observer;
+      }
+    }
+    return null;
+  }
 }
 
 const boardController = new BoardController();

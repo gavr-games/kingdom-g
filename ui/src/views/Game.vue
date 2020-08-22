@@ -1,5 +1,6 @@
 <template>
   <div id="game-cont">
+    <div id="fps">0</div>
     <div id="playerslist-cont">
       <h3>Players</h3>
       <div class="player" v-for="player in players" v-bind:key="player.user_id">
@@ -44,11 +45,7 @@
     </div>
     <div id="actions-panel-cont" v-if="showActionsPanel">
       <h3>Actions</h3>
-      <div
-        class="action"
-        v-for="action in selectedObject.state.actions"
-        v-bind:key="action"
-      >
+      <div class="action" v-for="action in selectedObjectState.actions" v-bind:key="action">
         <a href="#" class="green-button" @click="handleAction(action)">
           {{ action }}
         </a>
@@ -78,7 +75,7 @@ export default {
       players: [],
       popupObject: null,
       showObjectPopup: true,
-      selectedObject: null,
+      selectedObjectState: null,
       showActionsPanel: false
     };
   },
@@ -103,7 +100,7 @@ export default {
     EventBus.$off("pointer-out-unit", this.hidePopupObject);
     EventBus.$off("pointer-over-building", this.setPopupObject);
     EventBus.$off("pointer-out-building", this.hidePopupObject);
-    EventBus.$off("unit-selected", this.showActionsPanel);
+    EventBus.$off("unit-selected", this.setActionsPanel);
     EventBus.$off("unit-deselected", this.hideActionsPanel);
     if (this.currentGameId !== null) {
       EventBus.$off(
@@ -162,7 +159,7 @@ export default {
       this.showObjectPopup = false;
     },
     setActionsPanel(objectObserver) {
-      this.selectedObject = objectObserver;
+      this.selectedObjectState = objectObserver.state;
       this.showActionsPanel = true;
     },
     hideActionsPanel() {
@@ -170,7 +167,7 @@ export default {
       this.showActionsPanel = false;
     },
     handleAction(action) {
-      EventBus.$emit("click-action", action, this.selectedObject);
+      EventBus.$emit("click-action", action, this.selectedObjectState);
     },
     cancelAction() {
       EventBus.$emit("cancel-action");
@@ -180,6 +177,18 @@ export default {
 </script>
 
 <style lang="scss">
+#fps {
+  position: absolute;
+  background-color: black;
+  border: 2px solid red;
+  text-align: center;
+  font-size: 16px;
+  color: white;
+  top: 15px;
+  right: 10px;
+  width: 60px;
+  height: 20px;
+}
 #game-cont {
   width: 100%;
   height: 100%;

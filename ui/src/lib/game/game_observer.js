@@ -20,6 +20,7 @@ class GameObserver {
     this.skybox = null;
     this.renderObservers = [];
     this.showGrid = false;
+    this.fpsEl = null;
   }
 
   init() {
@@ -102,6 +103,11 @@ class GameObserver {
       this.renderObservers.forEach(observer => {
         observer.obj.update();
       });
+      if (this.fpsEl) {
+        this.fpsEl.innerHTML = this.engine.getFps().toFixed() + " fps";
+      } else {
+        this.fpsEl = document.getElementById("fps");
+      }
     });
   }
 

@@ -62,6 +62,8 @@ class CellObserver {
       })
     );
     mesh.setEnabled(true);
+    mesh.freezeWorldMatrix();
+    mesh.doNotSyncBoundingInfo = true;
     this.mesh = mesh;
   }
 }

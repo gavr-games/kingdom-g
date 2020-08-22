@@ -13,7 +13,9 @@ class Skybox {
     skyboxMaterial.cameraOffset.y = 200;
     this.skybox = BABYLON.Mesh.CreateBox("skyBox", 1000.0, this.scene);
     this.skybox.position = new BABYLON.Vector3(0, 0, 0);
+    skyboxMaterial.freeze();
     this.skybox.material = skyboxMaterial;
+    this.skybox.freezeWorldMatrix();
     this.setSkyConfig("material.inclination", skyboxMaterial.inclination, 0);
   }
 

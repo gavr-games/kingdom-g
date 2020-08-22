@@ -3,6 +3,7 @@ import Chain from "@/lib/utils/chain";
 import MoveUnitAction from "@/lib/game/actions/move_unit_action";
 import UnitAttackAction from "@/lib/game/actions/unit_attack_action";
 import GameState from "@/lib/game/game_state";
+import BoardController from "@/lib/game/board/board_controller";
 import WSClient from "@/lib/ws/wsclient";
 
 class ActionsController {
@@ -33,8 +34,11 @@ class ActionsController {
       this.performAction(actionParams);
     });
     // Action is clicked from UI Actions Panel
-    EventBus.$on("click-action", (action, objectObserver) => {
-      this.handleActionClick(action, objectObserver);
+    EventBus.$on("click-action", (action, state) => {
+      this.handleActionClick(
+        action,
+        BoardController.getObjectObserver(state.id)
+      );
     });
     EventBus.$on("keydown", key => {
       if (key === "Escape") {
