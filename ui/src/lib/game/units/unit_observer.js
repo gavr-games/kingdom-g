@@ -6,12 +6,14 @@ import { MOVING } from "@/lib/game/units/unit_state";
 import GameObserver from "@/lib/game/game_observer";
 
 const SPEED = 0.2;
+const ANIMATED_UNITS = ["spearman"];
 
 class UnitObserver {
   constructor(state) {
     this.state = state;
     this.scene = null;
     this.mesh = null;
+    this.meshRotation = Math.PI;
     this.sceneCreatedCallback = scene => {
       this.scene = scene;
       this.create();
@@ -22,13 +24,31 @@ class UnitObserver {
 
   create() {
     let coords = this.state.coords;
-    let mesh = Atlas.get(this.state.type + "Unit").clone();
-    mesh.position.x = this.getMeshCoordinate(coords.x);
-    mesh.position.y = coords.y * boardConfig.cellSize;
-    mesh.position.z = this.getMeshCoordinate(coords.z);
+    let mesh = null;
+    if (ANIMATED_UNITS.includes(this.state.type)) {
+      this.container = Atlas.get(
+        this.state.type + "AnimatedUnit"
+      ).instantiateModelsToScene();
+      setTimeout(() => {
+        this.container.animationGroups.forEach(ag => {
+          if (ag.name == "Idle") {
+            ag.start(true);
+          }
+        });
+      }, Math.floor(Math.random() * Math.floor(2000)));
+      mesh = this.container.rootNodes[0];
+      this.meshRotation = 0;
+    } else {
+      mesh = Atlas.get(this.state.type + "Unit").clone();
+    }
+    mesh.enablePointerMoveEvents = true;
+    mesh.position.x = this.getHorizontalMeshCoordinate(coords.x);
+    mesh.position.y = this.getVerticalMeshCoordinate(coords.y);
+    mesh.position.z = this.getHorizontalMeshCoordinate(coords.z);
     mesh.metadata = this.state;
 
     mesh.actionManager = new BABYLON.ActionManager(this.scene);
+    mesh.actionManager.isRecursive = true;
     mesh.actionManager.registerAction(
       new BABYLON.ExecuteCodeAction(
         BABYLON.ActionManager.OnPointerOverTrigger,
@@ -60,18 +80,18 @@ class UnitObserver {
       let speedY = SPEED;
       let speedZ = SPEED;
       let targetCoords = {
-        x: this.getMeshCoordinate(this.state.targetPosition[0]),
-        z: this.getMeshCoordinate(this.state.targetPosition[1]),
-        y: 0
+        x: this.getHorizontalMeshCoordinate(this.state.targetPosition[0]),
+        z: this.getHorizontalMeshCoordinate(this.state.targetPosition[1]),
+        y: this.getVerticalMeshCoordinate(0)
       };
 
       let rotationAngle = Math.atan2(
         targetCoords.z - this.mesh.position.z,
         targetCoords.x - this.mesh.position.x
       );
-      let rotationDelta = this.state.meshRotation - rotationAngle;
+      let rotationDelta = this.meshRotation - rotationAngle;
       if (rotationDelta != 0) {
-        this.state.meshRotation = rotationAngle;
+        this.meshRotation = rotationAngle;
         this.mesh.rotate(BABYLON.Axis.Y, rotationDelta);
       }
 
@@ -128,12 +148,20 @@ class UnitObserver {
     this.state = null;
   }
 
-  getMeshCoordinate(coordinate) {
+  getHorizontalMeshCoordinate(coordinate) {
     return (
       coordinate * boardConfig.cellSize +
       boardConfig.cellSize / 2 -
       ((this.state.size - 1) * boardConfig.cellSize) / 2
     );
+  }
+
+  getVerticalMeshCoordinate(coordinate) {
+    let meshCoordinate = coordinate * boardConfig.cellSize;
+    if (ANIMATED_UNITS.includes(this.state.type)) {
+      meshCoordinate += boardConfig.cellSize;
+    }
+    return meshCoordinate;
   }
 }
 

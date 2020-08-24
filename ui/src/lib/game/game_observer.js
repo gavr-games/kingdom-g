@@ -124,12 +124,34 @@ class GameObserver {
 
   highlight(mesh, color = "select") {
     color = this.getHiglightColor(color);
+    this.highlightChildren(mesh, color);
     this.selectHighlight.addMesh(mesh, color);
   }
 
   unhighlight(mesh, color = "select") {
     color = this.getHiglightColor(color);
+    this.unhighlightChildren(mesh, color);
     this.selectHighlight.removeMesh(mesh, color);
+  }
+
+  highlightChildren(mesh, color) {
+    let children = mesh.getChildren();
+    children.forEach(ch => {
+      if (ch.geometry) {
+        this.selectHighlight.addMesh(ch, color);
+      }
+      this.highlightChildren(ch, color);
+    });
+  }
+
+  unhighlightChildren(mesh, color) {
+    let children = mesh.getChildren();
+    children.forEach(ch => {
+      if (ch.geometry) {
+        this.selectHighlight.removeMesh(ch, color);
+      }
+      this.unhighlightChildren(ch, color);
+    });
   }
 
   getHiglightColor(color) {
