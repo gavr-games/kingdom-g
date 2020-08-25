@@ -9,12 +9,22 @@ class UnitController {
     this.handleMoveObjectCallback = cmd => {
       this.handleMoveObject(cmd);
     };
+    this.handleAttackCallback = cmd => {
+      this.handleAttack(cmd);
+    };
     EventBus.$on("command-move-object", this.handleMoveObjectCallback);
+    EventBus.$on("command-attack", this.handleAttackCallback);
   }
 
   handleMoveObject(cmd) {
     if (cmd.object_id === this.state.id) {
       this.state.moveToPosition(cmd.position);
+    }
+  }
+
+  handleAttack(cmd) {
+    if (cmd.attacker_id === this.state.id) {
+      this.observer.attack(cmd);
     }
   }
 

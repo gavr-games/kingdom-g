@@ -149,6 +149,10 @@ class UnitObserver {
     this.state = null;
   }
 
+  attack() {
+    this.playAnimation("Attack", false);
+  }
+
   getHorizontalMeshCoordinate(coordinate) {
     return (
       coordinate * boardConfig.cellSize +
@@ -165,13 +169,14 @@ class UnitObserver {
     return meshCoordinate;
   }
 
-  playAnimation(name) {
+  playAnimation(name, loop = true) {
     if (this.container) {
       this.container.animationGroups.forEach(ag => {
         if (ag.name === name) {
-          ag.start(true);
+          ag.start(loop);
           this.currentAnimation = name;
         } else {
+          ag.reset();
           ag.stop();
         }
       });
