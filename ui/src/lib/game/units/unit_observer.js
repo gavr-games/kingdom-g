@@ -5,7 +5,7 @@ import Atlas from "@/lib/game/atlas/atlas";
 import { MOVING } from "@/lib/game/units/unit_state";
 import GameObserver from "@/lib/game/game_observer";
 
-const SPEED = 0.2;
+const SPEED = 0.1;
 const ANIMATED_UNITS = ["spearman"];
 
 class UnitObserver {
@@ -14,6 +14,7 @@ class UnitObserver {
     this.scene = null;
     this.mesh = null;
     this.meshRotation = Math.PI;
+    this.currentAnimation = null;
     this.sceneCreatedCallback = scene => {
       this.scene = scene;
       this.create();
@@ -30,11 +31,7 @@ class UnitObserver {
         this.state.type + "AnimatedUnit"
       ).instantiateModelsToScene();
       setTimeout(() => {
-        this.container.animationGroups.forEach(ag => {
-          if (ag.name == "Idle") {
-            ag.start(true);
-          }
-        });
+        this.playAnimation("Idle");
       }, Math.floor(Math.random() * Math.floor(2000)));
       mesh = this.container.rootNodes[0];
       this.meshRotation = 0;
@@ -76,6 +73,9 @@ class UnitObserver {
 
   update() {
     if (this.state.state == MOVING) {
+      if (this.currentAnimation !== "Move") {
+        this.playAnimation("Move");
+      }
       let speedX = SPEED;
       let speedY = SPEED;
       let speedZ = SPEED;
@@ -134,6 +134,7 @@ class UnitObserver {
         newZ == targetCoords.z
       ) {
         EventBus.$emit("move-unit-animation-finished", this);
+        this.playAnimation("Idle");
         this.state.stop();
       }
     }
@@ -162,6 +163,19 @@ class UnitObserver {
       meshCoordinate += boardConfig.cellSize;
     }
     return meshCoordinate;
+  }
+
+  playAnimation(name) {
+    if (this.container) {
+      this.container.animationGroups.forEach(ag => {
+        if (ag.name === name) {
+          ag.start(true);
+          this.currentAnimation = name;
+        } else {
+          ag.stop();
+        }
+      });
+    }
   }
 }
 
