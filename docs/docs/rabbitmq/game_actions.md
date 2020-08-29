@@ -23,6 +23,7 @@ Request for getting game state for a certain player:
 
 On player actions Site will send messages such as
 
+#### Move
 ```js
 {
     "action": "move",
@@ -34,6 +35,7 @@ On player actions Site will send messages such as
 }
 ```
 
+#### Attack
 ```js
 {
     "action": "attack",
@@ -41,6 +43,54 @@ On player actions Site will send messages such as
         "p":55,
         "obj-id":14,
         "target-id":15  // Object ID of the attack target
+    }
+}
+```
+
+#### Shoot
+```js
+{
+    "action": "shoot",
+    "parameters": {
+        "p":55,
+        "obj-id":14,
+        "target-id":15  // Object ID of the attack target
+    }
+}
+```
+
+#### Bind
+```js
+{
+    "action": "bind",
+    "parameters": {
+        "p":55,
+        "obj-id":14,
+        "target-id":15  // Object ID of the attack target
+    }
+}
+```
+
+#### Splash Attack
+```js
+{
+    "action": "splash-attack",
+    "parameters": {
+        "p":55,
+        "obj-id":14,
+        "attack-position":[3,10] // x y coordinates of spash attack
+    }
+}
+```
+
+#### Levelup
+```js
+{
+    "action": "levelup",
+    "parameters": {
+        "p":55,
+        "obj-id":14,
+        "stat":"attack" // "attack" "health" "moves"
     }
 }
 ```
