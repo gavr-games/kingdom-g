@@ -79,6 +79,10 @@ class UnitState {
     );
   }
 
+  get canLevelUp() {
+    return window.client.api.can_levelup(parseInt(this.id));
+  }
+
   moveToPosition(position) {
     this.targetPosition = position;
     this.state = MOVING;

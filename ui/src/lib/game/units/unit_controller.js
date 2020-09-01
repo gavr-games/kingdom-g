@@ -12,8 +12,13 @@ class UnitController {
     this.handleAttackCallback = cmd => {
       this.handleAttack(cmd);
     };
+    this.handleSetExperienceCallback = cmd => {
+      this.handleSetExperience(cmd);
+    };
     EventBus.$on("command-move-object", this.handleMoveObjectCallback);
     EventBus.$on("command-attack", this.handleAttackCallback);
+    EventBus.$on("command-set-experience", this.handleSetExperienceCallback);
+    EventBus.$on("command-set-level", this.handleSetExperienceCallback);
   }
 
   handleMoveObject(cmd) {
@@ -28,11 +33,20 @@ class UnitController {
     }
   }
 
+  handleSetExperience(cmd) {
+    if (cmd.object_id === this.state.id) {
+      this.observer.checkCanLevelUp();
+    }
+  }
+
   remove() {
     this.observer.remove();
     this.observer = null;
     this.state = null;
     EventBus.$off("command-move-object", this.handleMoveObjectCallback);
+    EventBus.$off("command-attack", this.handleAttackCallback);
+    EventBus.$off("command-set-experience", this.handleSetExperienceCallback);
+    EventBus.$off("command-set-level", this.handleSetExperienceCallback);
   }
 }
 

@@ -56,6 +56,14 @@ class UnitAttackAction {
       // Can't attack itself
       return;
     }
+    let attackOutcomes = window.client.api.attack_outcomes(
+      this.unitObserver.state.id,
+      unitObserver.state.id
+    );
+    if (attackOutcomes == null) {
+      // Can't attack target
+      return;
+    }
     this.target = unitObserver;
     GameObserver.highlight(unitObserver.mesh, "target");
   }
@@ -63,6 +71,7 @@ class UnitAttackAction {
   handlePointerOutUnit(unitObserver) {
     if (this.target !== null) {
       GameObserver.unhighlight(unitObserver.mesh, "target");
+      unitObserver.checkCanLevelUp();
     }
     this.target = null;
   }

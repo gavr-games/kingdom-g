@@ -160,6 +160,8 @@ class GameObserver {
         return BABYLON.Color3.Green();
       case "target":
         return BABYLON.Color3.Red();
+      case "levelup":
+        return BABYLON.Color3.White();
     }
     return BABYLON.Color3.Green();
   }

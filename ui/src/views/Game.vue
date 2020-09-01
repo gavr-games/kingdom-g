@@ -45,13 +45,46 @@
     </div>
     <div id="actions-panel-cont" v-if="showActionsPanel">
       <h3>Actions</h3>
-      <div class="action" v-for="action in selectedObjectState.actions" v-bind:key="action">
-        <a href="#" class="green-button" @click="handleAction(action)">
+      <div
+        class="action"
+        id="actions"
+        v-for="action in selectedObjectState.actions"
+        v-bind:key="action"
+      >
+        <a
+          href="#"
+          class="green-button"
+          @click="handleAction(action)"
+          v-if="showAction(action)"
+        >
           {{ action }}
         </a>
       </div>
       <div>
         <a href="#" class="red-button" @click="cancelAction">
+          {{ $t("common.cancel") }}
+        </a>
+      </div>
+    </div>
+    <div id="levelup-panel-cont" v-if="showLevelupPanel">
+      <h3>Levelup</h3>
+      <div>
+        <a href="#" class="green-button" @click="handleLevelup('attack')">
+          attack
+        </a>
+      </div>
+      <div>
+        <a href="#" class="green-button" @click="handleLevelup('health')">
+          health
+        </a>
+      </div>
+      <div>
+        <a href="#" class="green-button" @click="handleLevelup('moves')">
+          moves
+        </a>
+      </div>
+      <div>
+        <a href="#" class="red-button" @click="cancelLevelup">
           {{ $t("common.cancel") }}
         </a>
       </div>
@@ -76,7 +109,8 @@ export default {
       popupObject: null,
       showObjectPopup: true,
       selectedObjectState: null,
-      showActionsPanel: false
+      showActionsPanel: false,
+      showLevelupPanel: false
     };
   },
   created() {
@@ -89,6 +123,7 @@ export default {
     EventBus.$on("pointer-out-building", this.hidePopupObject);
     EventBus.$on("unit-selected", this.setActionsPanel);
     EventBus.$on("unit-deselected", this.hideActionsPanel);
+    EventBus.$on("click-action", this.handleClickAction);
   },
   mounted() {
     this.canvas = document.getElementById("game-canvas");
@@ -102,6 +137,7 @@ export default {
     EventBus.$off("pointer-out-building", this.hidePopupObject);
     EventBus.$off("unit-selected", this.setActionsPanel);
     EventBus.$off("unit-deselected", this.hideActionsPanel);
+    EventBus.$off("click-action", this.handleClickAction);
     if (this.currentGameId !== null) {
       EventBus.$off(
         `received-game:${this.currentGameId}-msg`,
@@ -171,6 +207,35 @@ export default {
     },
     cancelAction() {
       EventBus.$emit("cancel-action");
+    },
+    showAction(action) {
+      if (action != "levelup") {
+        return true;
+      }
+      return this.selectedObjectState.canLevelUp;
+    },
+    handleClickAction(action) {
+      if (action === "levelup") {
+        this.showLevelupPanel = true;
+      }
+    },
+    handleLevelup(stat) {
+      this.$WSClient.sendMsg(`game:${this.currentGameId}`, {
+        action: "perform_action",
+        data: [
+          {
+            action: "levelup",
+            parameters: {
+              "obj-id": this.selectedObjectState.id,
+              stat: stat
+            }
+          }
+        ]
+      });
+      this.cancelLevelup();
+    },
+    cancelLevelup() {
+      this.showLevelupPanel = false;
     }
   }
 };
@@ -227,7 +292,7 @@ export default {
     }
   }
 }
-#actions-panel-cont {
+#actions-panel-cont, #levelup-panel-cont {
   position: absolute;
   bottom: 10px;
   right: 10px;

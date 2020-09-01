@@ -71,6 +71,7 @@ class UnitShootAction {
   handlePointerOutUnit(unitObserver) {
     if (this.target !== null) {
       GameObserver.unhighlight(unitObserver.mesh, "target");
+      unitObserver.checkCanLevelUp();
     }
     this.target = null;
   }

@@ -19,7 +19,13 @@ class UnitObserver {
       this.scene = scene;
       this.create();
     };
+    this.checkLevelupCallback = unitObserver => {
+      if (unitObserver.state.id === this.state.id) {
+        this.checkCanLevelUp();
+      }
+    };
     EventBus.$on("scene-created", this.sceneCreatedCallback);
+    EventBus.$on("unit-deselected", this.checkLevelupCallback);
     GameObserver.addRenderObserver(`unit-${this.state.id}`, this);
   }
 
@@ -69,6 +75,7 @@ class UnitObserver {
     );
     mesh.setEnabled(true);
     this.mesh = mesh;
+    this.checkCanLevelUp();
   }
 
   update() {
@@ -144,6 +151,8 @@ class UnitObserver {
     EventBus.$emit("pointer-out-unit", this);
     GameObserver.removeRenderObserver(`unit-${this.state.id}`);
     EventBus.$off("scene-created", this.sceneCreatedCallback);
+    EventBus.$off("unit-deselected", this.checkLevelupCallback);
+    GameObserver.unhighlight(this.mesh, "levelup");
     this.mesh.dispose();
     this.mesh = null;
     this.state = null;
@@ -151,6 +160,14 @@ class UnitObserver {
 
   attack() {
     this.playAnimation("Attack", false);
+  }
+
+  checkCanLevelUp() {
+    if (this.state.canLevelUp) {
+      GameObserver.highlight(this.mesh, "levelup");
+    } else {
+      GameObserver.unhighlight(this.mesh, "levelup");
+    }
   }
 
   getHorizontalMeshCoordinate(coordinate) {
