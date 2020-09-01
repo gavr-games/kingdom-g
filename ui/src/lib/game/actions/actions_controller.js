@@ -1,7 +1,8 @@
 import { EventBus } from "@/lib/event_bus";
 import Chain from "@/lib/utils/chain";
-import MoveUnitAction from "@/lib/game/actions/move_unit_action";
+import UnitMoveAction from "@/lib/game/actions/unit_move_action";
 import UnitAttackAction from "@/lib/game/actions/unit_attack_action";
+import UnitShootAction from "@/lib/game/actions/unit_shoot_action";
 import GameState from "@/lib/game/game_state";
 import BoardController from "@/lib/game/board/board_controller";
 import WSClient from "@/lib/ws/wsclient";
@@ -61,7 +62,7 @@ class ActionsController {
 
   handleUnitClick(unitObserver) {
     this.cancelAction();
-    this.currentAction = new MoveUnitAction(unitObserver);
+    this.currentAction = new UnitMoveAction(unitObserver);
     return true;
   }
 
@@ -77,10 +78,13 @@ class ActionsController {
     if (objectObserver.state.objectClass === "unit") {
       switch (action) {
         case "move":
-          this.currentAction = new MoveUnitAction(objectObserver);
+          this.currentAction = new UnitMoveAction(objectObserver);
           break;
         case "attack":
           this.currentAction = new UnitAttackAction(objectObserver);
+          break;
+        case "shoot":
+          this.currentAction = new UnitShootAction(objectObserver);
           break;
       }
     }

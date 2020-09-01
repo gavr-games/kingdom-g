@@ -2,7 +2,7 @@ import { EventBus } from "@/lib/event_bus";
 import GameState from "@/lib/game/game_state";
 import GameObserver from "@/lib/game/game_observer";
 
-class MoveUnitAction {
+class UnitMoveAction {
   constructor(unitObserver) {
     this.unitObserver = unitObserver;
     this.path = null;
@@ -80,4 +80,4 @@ class MoveUnitAction {
   }
 }
 
-export default MoveUnitAction;
+export default UnitMoveAction;
