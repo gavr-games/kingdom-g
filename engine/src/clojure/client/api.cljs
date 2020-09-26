@@ -9,13 +9,21 @@
 
 (def game (atom {}))
 
+(defn- underscorify [kw]
+  "Turns kw into string and replaces minuses with underscores."
+  (clojure.string/replace (name kw) \- \_))
+
+(defn- clj->jsu
+  [x]
+  (clj->js x :keyword-fn underscorify))
+
 (defn ^:export init-test-game
   []
   (reset! game (ng/create-test-game)))
 
 (defn ^:export get-game-data
   []
-  (clj->js @game))
+  (clj->jsu @game))
 
 (defn ^:export init-game
   "Initialises a local game from `game-edn` string."
@@ -38,29 +46,29 @@
 (defn ^:export get-object-ids
   "Returns a map of object IDs to objects."
   []
-  (clj->js (keys (:objects @game))))
+  (clj->jsu (keys (:objects @game))))
 
 (defn ^:export get-object
   [obj-id]
   (let [obj (get-in @game [:objects obj-id])]
-    (clj->js (clean-object obj))))
+    (clj->jsu (clean-object obj))))
 
 (defn ^:export get-all-coords
   "Returns an array of all valid coordinates."
   []
   (let [coords (sort (keys (:board @game)))]
-    (clj->js coords)))
+    (clj->jsu coords)))
 
 (defn ^:export find-path
   [obj-id coord-js]
-  (clj->js
+  (clj->jsu
    (pf/find-path @game obj-id (js->clj coord-js))))
 
 (defn ^:export attack-outcomes
   [obj-id target-id]
   (let [obj (get-in @game [:objects obj-id])
         target (get-in @game [:objects target-id])]
-    (clj->js
+    (clj->jsu
      (attack/get-attack-possibilities obj target))))
 
 (defn ^:export shoot-outcomes
@@ -68,7 +76,7 @@
   (let [obj (get-in @game [:objects obj-id])
         target (get-in @game [:objects target-id])
         d (core/obj-distance obj target)]
-    (clj->js
+    (clj->jsu
      (attack/get-shot-possibilities obj target d))))
 
 (defn ^:export can-levelup
@@ -78,13 +86,13 @@
 (defn ^:export get-player-ids
   "Gets a list of player ids in the order of their turns."
   []
-  (clj->js (:turn-order @game)))
+  (clj->jsu (:turn-order @game)))
 
 (defn ^:export get-player
   [p]
-  (clj->js (get-in @game [:players p])))
+  (clj->jsu (get-in @game [:players p])))
 
 (defn ^:export get-active-player
   "Returns id of the active player."
   []
-  (clj->js (:active-player @game)))
+  (clj->jsu (:active-player @game)))
