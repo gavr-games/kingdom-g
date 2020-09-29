@@ -171,7 +171,9 @@
       (assoc obj :max-shield (obj :shield))
       obj)
     (if (unit? obj)
-      (update obj :actions set/union default-unit-actions)
+      (-> obj
+          (update :actions set/union default-unit-actions)
+          (assoc :previous-position nil))
       obj)
     (if (:levelup (:actions obj))
       (assoc obj

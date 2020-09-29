@@ -17,6 +17,7 @@
 (defn- create-empty-game []
   {:board
    (create-empty-board board-size-x board-size-y)
+   :middle-coord [(/ board-size-x 2) (/ board-size-y 2)] ; For board quarters.
    :players {}
    :turn-order []
    :active-player nil

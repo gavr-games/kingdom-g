@@ -360,3 +360,14 @@
 
     (is (= (inc (:attack sp))
            (get-in g-leveled-a [:objects sp-id :attack])))))
+
+(deftest previous-position-test
+  (let [g (-> (create-test-game))
+        sp1-id (get-object-id-at g [2 0])
+        sp2-id (get-object-id-at g [19 17])
+        g1 (act g 0 :move {:obj-id sp1-id :new-position [1 1]})
+        g2 (act g1 0 :move {:obj-id sp1-id :new-position [2 2]})]
+    (is (= [1 -1] (get-in g [:objects sp1-id :previous-position])))
+    (is (= [20 18] (get-in g [:objects sp2-id :previous-position])))
+    (is (= [2 0] (get-in g1 [:objects sp1-id :previous-position])))
+    (is (= [1 1] (get-in g2 [:objects sp1-id :previous-position])))))

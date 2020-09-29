@@ -185,6 +185,16 @@
       (assoc-in [:objects obj-id] obj)
       (place-object-on-board obj-id)))
 
+(defn set-default-previous-position
+  "Sets :previous-position in obj to look in the direction of the board centre.
+  This is done for the aesthetical purposes for turning the object in the UI."
+  [g obj]
+  (let [[mid-x mid-y] (:middle-coord g)
+        [pos-x pos-y] (:position obj)
+        prev-x (if (< pos-x mid-x) (dec pos-x) (inc pos-x))
+        prev-y (if (< pos-y mid-y) (dec pos-y) (inc pos-y))]
+    (assoc obj :previous-position [prev-x prev-y])))
+
 (defn add-new-object
   "Adds a new object to the game.
   Assumes that the placement is valid."
@@ -195,8 +205,12 @@
   ([g p obj position]
    (add-new-object g p obj position nil nil))
   ([g p obj position flip rotation]
-   (let [owned-obj (if p (assoc obj :player p) obj)
-         new-obj (set-object-placement owned-obj position flip rotation)
+   (let [new-obj (as-> obj $
+                   (if p (assoc $ :player p) $)
+                   (set-object-placement $ position flip rotation)
+                   (if (contains? $ :previous-position)
+                     (set-default-previous-position g $)
+                     $))
          new-obj-id (inc (g :last-added-object-id))]
      (-> g
          (add-object new-obj-id new-obj)
@@ -264,7 +278,10 @@
   Does not run handlers or add commands, just moves."
   [g obj-id position flip rotation]
   (let [obj (get-in g [:objects obj-id])
-        moved-obj (set-object-placement obj position flip rotation)]
+        prev-position (:position obj)
+        moved-obj (-> obj
+                      (set-object-placement position flip rotation)
+                      (assoc :previous-position prev-position))]
     (-> g
         (remove-object-coords obj-id)
         (assert-can-place-object moved-obj)
