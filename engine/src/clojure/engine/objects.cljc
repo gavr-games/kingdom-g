@@ -136,7 +136,7 @@
  (let [p-lost (get-in g [:objects obj-id :player])
        remaining-players (dissoc (g :players) p-lost)
        remaining-teams
-       (set (map :team (filter
+       (set (map :team (filter ;; TODO not count NPC teams
                         #(= :active (% :status))
                         (vals remaining-players))))
        p-won (if (= 1 (count remaining-teams))

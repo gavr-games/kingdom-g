@@ -28,13 +28,10 @@
 
 
 (defn auto-end-turn
-  "Ends turn if p is active and does not have active objects."
-  [g p]
-  (if
-      (and
-       (= p (g :active-player))
-       (not (core/has-active-objects? g p)))
-    (core/set-next-player-active g)
+  "Ends turn if active players have no active objects."
+  [g]
+  (if (not-any? #(core/has-active-objects? g %) (:active-players g))
+    (core/switch-turn g)
     g))
 
 
@@ -66,7 +63,7 @@
             invalid-action (invalid-result? g-after)]
         (if invalid-action
           g-after
-          (auto-end-turn g-after p)))))))
+          (auto-end-turn g-after)))))))
 
 
 (defn check
@@ -83,8 +80,8 @@
 (create-action
  :end-turn
  [g p]
- (if (not= p (g :active-player))
+ (if (not (core/player-active? g p))
    :not-your-turn
    (-> g
       (cmd/add-command (cmd/end-turn p))
-      (core/set-next-player-active))))
+      (core/deactivate-player-objects p))))

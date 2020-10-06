@@ -59,9 +59,9 @@
   (let [obj-id (:object_id cmd)]
     (update-in g [:objects obj-id] assoc :level (:level cmd))))
 
-(defmethod run-command :set-active-player
+(defmethod run-command :set-active-players
   [g cmd]
-  (assoc g :active-player (:player cmd)))
+  (assoc g :active-players (set (:players cmd))))
 
 (defmethod run-command :change-gold
   [g cmd]

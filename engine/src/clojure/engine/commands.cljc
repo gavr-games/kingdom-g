@@ -55,9 +55,9 @@
   ([obj-id obj]
    {:command :set-level :object_id obj-id :level (obj :level)}))
 
-(defn set-active-player
-  [p]
-  {:command :set-active-player :player p})
+(defn set-active-players
+  [ps]
+  {:command :set-active-players :players (vec ps)})
 
 (defn end-turn
   [p]

@@ -62,11 +62,11 @@
 
 (defn add-player
   "Adds a player with given player id and player data.
-  In the turn order the new player will be placed after (game :active-player)."
+  In the turn order the new player will be placed after current active-players."
   [g p player-data]
   (-> g
       (assoc-in [:players p] player-data)
-      (update :turn-order insert-after p (g :active-player))))
+      (update :turn-order insert-after #{p} (g :active-players))))
 
 (defn add-npc
   "Adds an NPC player with auto-generated player id."
@@ -335,31 +335,33 @@
    g
    (keys (get-objects g pred))))
 
-
-(defn set-active-player
-  "Sets turn to player p and activetes all their objects."
+(defn deactivate-player-objects
   [g p]
-  (let [belongs-to-p? (partial obj/belongs-to? p)]
+  (update-objects g #(obj/belongs-to? p %) obj/deactivate cmd/set-moves))
+
+(defn set-active-players
+  "Sets turn to players ps and activates all their objects."
+  [g ps]
+  (let [belongs-to-ps? #(ps (:player %))]
     (-> g
-        (assoc :active-player p)
-        (update-objects (complement belongs-to-p?) obj/deactivate cmd/set-moves)
-        (update-objects belongs-to-p? obj/activate cmd/set-moves)
+        (assoc :active-players ps)
+        (update-objects belongs-to-ps? obj/activate cmd/set-moves)
         ;; TODO income, building effects etc.
-        (cmd/add-command (cmd/set-active-player p)))))
+        (cmd/add-command (cmd/set-active-players ps)))))
 
-(defn get-next-player
-  "Returns player number whose turn is after p."
-  [g p]
-  (let [player-pos (.indexOf (g :turn-order) p)
-        next-pos (mod (inc player-pos) (count (g :turn-order)))]
-    (assert (>= player-pos 0))
+(defn get-next-players
+  "Returns set of players whose turn is after given players."
+  [g ps]
+  (let [players-pos (.indexOf (g :turn-order) ps)
+        next-pos (mod (inc players-pos) (count (g :turn-order)))]
+    (assert (>= players-pos 0))
     (get-in g [:turn-order next-pos])))
 
-(defn set-next-player-active
+(defn switch-turn
   [g]
-  (let [p (g :active-player)
-        next-p (get-next-player g p)]
-    (set-active-player g next-p)))
+  (let [ps (g :active-players)
+        next-ps (get-next-players g ps)]
+    (set-active-players g next-ps)))
 
 (defn has-active-objects?
   [g p]
@@ -474,3 +476,9 @@
 (defn get-state-for-player
   [g p]
   (clean-game g))
+
+(defn player-active?
+  "Checks that the player is active and has active objects."
+  [g p]
+  (and (contains? (:active-players g) p)
+       (has-active-objects? g p)))

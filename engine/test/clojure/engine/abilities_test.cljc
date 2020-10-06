@@ -2,7 +2,7 @@
   (:require [engine.actions :refer [act check]]
             [engine.abilities]
             [engine.core :as core :refer [get-object-id-at update-object]]
-            [engine.newgame :refer [create-test-game]]
+            [engine.newgame :refer [create-test-game create-game]]
             [engine.objects :refer [add-new-object add-new-active-object get-new-object]]
             [engine.object-utils :as obj]
             #?(:clj  [clojure.test :refer [deftest is]]
@@ -16,7 +16,7 @@
         g-attacked (act g-moved 0 :attack {:obj-id sp2-id :target-id sp1-id})]
     (is (= [1 1] (get-in g-moved [:objects sp1-id :position])))
     (is (nil? (get-in g-attacked [:objects sp1-id])))
-    (is (= 1 (g-attacked :active-player)))))
+    (is (= #{1} (g-attacked :active-players)))))
 
 (deftest test-invalid-actions
   (let [g (create-test-game)]
@@ -371,3 +371,39 @@
     (is (= [20 18] (get-in g [:objects sp2-id :previous-position])))
     (is (= [2 0] (get-in g1 [:objects sp1-id :previous-position])))
     (is (= [1 1] (get-in g2 [:objects sp1-id :previous-position])))))
+
+(deftest team-simultaneously-active-test
+  (let [players [{:id 0 :team 0 :quarter 0}
+                 {:id 1 :team 1 :quarter 1}
+                 {:id 2 :team 0 :quarter 2}
+                 {:id 3 :team 1 :quarter 3}]
+        g (create-game players)
+        g1 (act g 0 :end-turn {})
+        g2 (act g1 2 :end-turn {})
+        sp0-id (get-object-id-at g [2 0])
+        sp1-id (get-object-id-at g [17 0])
+        sp2-id (get-object-id-at g [19 17])]
+
+    (is (not (check g 0 :move {:obj-id sp0-id :new-position [1 1]})))
+    (is (not (check g 2 :move {:obj-id sp2-id :new-position [18 18]})))
+    (is (check g 1 :move {:obj-id sp1-id :new-position [18 1]}))
+
+    (is (not (check g 0 :end-turn {})))
+    (is (not (check g 2 :end-turn {})))
+    (is (check g 1 :end-turn {}))
+
+    (is (check g1 0 :move {:obj-id sp0-id :new-position [1 1]}))
+    (is (not (check g1 2 :move {:obj-id sp2-id :new-position [18 18]})))
+    (is (check g1 1 :move {:obj-id sp1-id :new-position [18 1]}))
+
+    (is (check g1 0 :end-turn {}))
+    (is (not (check g1 2 :end-turn {})))
+    (is (check g1 1 :end-turn {}))
+
+    (is (check g2 0 :move {:obj-id sp0-id :new-position [1 1]}))
+    (is (check g2 2 :move {:obj-id sp2-id :new-position [18 18]}))
+    (is (not (check g2 1 :move {:obj-id sp1-id :new-position [18 1]})))
+
+    (is (check g2 0 :end-turn {}))
+    (is (check g2 2 :end-turn {}))
+    (is (not (check g2 1 :end-turn {})))))

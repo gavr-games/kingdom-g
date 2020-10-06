@@ -1,8 +1,8 @@
 (ns engine.newgame
   (:require [engine.core :refer [add-player
                                  create-player
-                                 set-active-player
-                                 set-player-main-object]]
+                                 set-player-main-object
+                                 set-active-players]]
             [engine.objects :refer [add-new-object]]))
 
 (def board-size-x 20)
@@ -20,7 +20,7 @@
    :middle-coord [(/ board-size-x 2) (/ board-size-y 2)] ; For board quarters.
    :players {}
    :turn-order []
-   :active-player nil
+   :active-players nil
    :objects {}
    :actions []
    :commands []
@@ -59,6 +59,27 @@
       (add-player id (create-player team initial-gold))
       (add-initial-player-objects id quarter)))
 
+(defn get-team-player-sets
+  "Returns a vector of teams. Every team is a set of players.
+  Teams are ordered by first appearence in the given seq."
+  [players]
+  (let [teams (distinct (map :team players))
+        grouped-players (group-by :team players)
+        player-sets (reduce-kv #(assoc %1 %2 (set (map :id %3)))
+                               {}
+                               grouped-players)]
+    (mapv #(player-sets %) teams)))
+
+(defn overwrite-turn-order
+  "Overwrites default turn order with simultaneously active players by teams."
+  [g players]
+  (assoc g :turn-order (get-team-player-sets players)))
+
+(defn set-first-team-active
+  [g]
+  (let [first-team (first (:turn-order g))]
+    (set-active-players g first-team)))
+
 (defn create-game
   "Creates a game with players specified in a seq of player data maps.
   Example player data: {:id 6 :team 0 :quarter 1}.
@@ -66,7 +87,8 @@
   Player move order is the same as in the seq."
   [players]
   (-> (reduce add-player-and-objects (create-empty-game) players)
-      (set-active-player (:id (first players)))))
+      (overwrite-turn-order players)
+      set-first-team-active))
 
 (defn create-test-game []
   (create-game [{:id 0 :team 0 :quarter 0}
