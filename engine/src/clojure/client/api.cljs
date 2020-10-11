@@ -92,7 +92,7 @@
   [p]
   (clj->jsu (get-in @game [:players p])))
 
-(defn ^:export get-active-player
-  "Returns id of the active player."
+(defn ^:export get-active-players
+  "Returns ids of active players."
   []
-  (clj->jsu (:active-player @game)))
+  (clj->jsu (:active-players @game)))

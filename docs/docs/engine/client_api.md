@@ -154,6 +154,6 @@ Returns an array of player id's in the order of their turns.
 
 Returns player data as a js object.
 
-### `client.api.get_active_player()`
+### `client.api.get_active_players()`
 
-Returns the id of the currently active player.
+Returns an array with id's of the currently active players.
