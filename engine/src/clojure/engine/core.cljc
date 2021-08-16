@@ -20,7 +20,7 @@
 
 (defn- pass
   "Dummy handler that does nothing and returns first argument."
-  [g & more]
+  [g & _]
   g)
 
 (defn- chain-handlers
@@ -369,7 +369,7 @@
    (get-objects g #(and (obj/belongs-to? p %) (obj/active? %)))))
 
 (defn filled-cell?
-  [[coord properties]]
+  [[_coord properties]]
   (not (#{:floor :bridge :water} (properties :fill))))
 
 
@@ -395,8 +395,7 @@
   [g coord]
   (let [obj-ids (keys (filter filled-cell? (get-in g [:board coord])))]
     (assert (<= 0 (count obj-ids) 1))
-    (first obj-ids))
-  )
+    (first obj-ids)))
 
 (defn get-object-at
   "Gets object at a given coordinate."
@@ -439,17 +438,6 @@
       (assoc :status :over)
       (cmd/add-command (cmd/game-over))))
 
-(defn belongs-to?
-  "Checks if obj belongs to player p."
-  [p obj]
-  (= p (obj :player)))
-
-(defn set-health
-  "Sets health."
-  [obj health]
-  {:pre [(pos? health)]}
-  (assoc obj :health health))
-
 
 (defn add-experience
   "Adds experience to the object."
@@ -474,7 +462,7 @@
       (update :commands #(mapv clean-command %))))
 
 (defn get-state-for-player
-  [g p]
+  [g _p]
   (clean-game g))
 
 (defn player-active?
