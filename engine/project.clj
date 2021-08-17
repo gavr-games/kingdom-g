@@ -6,9 +6,9 @@
                  [cheshire "5.9.0"]
                  [com.taoensso/carmine "2.19.1"]]
   :main ^:skip-aot server.core
-  :source-paths ["src/clojure"]
+  :source-paths ["src"]
   :java-source-paths ["src/java"]
-  :test-paths ["test/clojure"]
+  :test-paths ["test"]
   :target-path "target/%s"
 
   :profiles {:uberjar {:aot :all}
@@ -18,7 +18,7 @@
                                     [lein-doo "0.1.11"]]
 
                           :cljsbuild {
-                                      :builds {:compile {:source-paths ["src/clojure"]
+                                      :builds {:compile {:source-paths ["src"]
                                                          :compiler {:output-to
                                                                     "resources/engine.js"
                                                                     :optimizations :advanced}}
