@@ -5,13 +5,15 @@
             [engine.attack :as attack]
             [engine.newgame :as ng]
             [engine.checks :as check]
-            [cljs.reader]))
+            [cljs.reader]
+            [clojure.string :as string]))
 
 (def game (atom {}))
 
-(defn- underscorify [kw]
+(defn- underscorify
   "Turns kw into string and replaces minuses with underscores."
-  (clojure.string/replace (name kw) \- \_))
+  [kw]
+  (string/replace (name kw) \- \_))
 
 (defn- clj->jsu
   [x]
