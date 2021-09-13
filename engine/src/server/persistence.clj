@@ -1,5 +1,5 @@
 (ns server.persistence
-  (:require [taoensso.carmine :as car :refer (wcar)]))
+  (:require [taoensso.carmine :as car]))
 
 (def redis-conn {:pool {} :spec {:uri (System/getenv "REDIS_URL")}})
 (defmacro wcar* [& body] `(car/wcar redis-conn ~@body))
@@ -24,14 +24,16 @@
   [game-key]
   (wcar* (car/get game-key)))
 
-(defn save-games [games]
+(defn save-games
   "Saves the passed games to redis db.
   Games is a dictionary from game id to game object."
+  [games]
   (doall
    (map #(apply save-game %) games)))
 
 
-(defn load-games []
+(defn load-games
   "Loads all games from redis, returns a dictionary from game id to game object."
+  []
   (let [game-keys (wcar* (car/keys (str game-key-prefix "*")))]
     (into {} (for [k game-keys] [(key-to-game-id k) (load-game k)]))))
