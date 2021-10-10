@@ -7,7 +7,6 @@
                  [com.taoensso/carmine "2.19.1"]]
   :main ^:skip-aot server.core
   :source-paths ["src"]
-  :java-source-paths ["src/java"]
   :test-paths ["test"]
   :target-path "target/%s"
 
