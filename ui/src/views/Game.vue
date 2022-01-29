@@ -1,69 +1,86 @@
 <template>
   <div id="game-cont">
     <div id="fps">0</div>
-    <div id="playerslist-cont">
-      <h3>Players</h3>
-      <div class="player" v-for="player in players" v-bind:key="player.user_id">
-        <p v-bind:class="{ active: player.active }">
-          {{ player.username }} ({{ player.gold }})
-        </p>
-      </div>
-    </div>
-    <div id="object-popup-cont" v-show="showObjectPopup">
-      <canvas id="object-popup-canvas"></canvas>
-      <table v-if="popupObject !== null && popupObject.objectClass == 'unit'">
-        <tr>
-          <td>Type</td>
-          <td>{{ popupObject.type }}</td>
-        </tr>
-        <tr>
-          <td>Level</td>
-          <td>{{ popupObject.level }}</td>
-        </tr>
-        <tr>
-          <td>Health</td>
-          <td>{{ popupObject.health }}/{{ popupObject.maxHealth }}</td>
-        </tr>
-        <tr>
-          <td>Moves</td>
-          <td>{{ popupObject.moves }}/{{ popupObject.maxMoves }}</td>
-        </tr>
-      </table>
-
-      <table
-        v-if="popupObject !== null && popupObject.objectClass == 'building'"
-      >
-        <tr>
-          <td>Type</td>
-          <td>{{ popupObject.type }}</td>
-        </tr>
-        <tr>
-          <td>Health</td>
-          <td>{{ popupObject.health }}/{{ popupObject.maxHealth }}</td>
-        </tr>
-      </table>
-    </div>
-    <div id="actions-panel-cont" v-if="showActionsPanel">
-      <h3>Actions</h3>
-      <div
-        class="action"
-        id="actions"
-        v-for="action in selectedObjectState.actions"
-        v-bind:key="action"
-      >
-        <a
-          href="#"
-          class="green-button"
-          @click="handleAction(action)"
-          v-if="showAction(action)"
+    <div id="playerslist-cont" class="rpgui-container framed-golden-2">
+      <div class="rpgui-content">
+        <h3>Players</h3>
+        <div
+          class="player"
+          v-for="player in players"
+          v-bind:key="player.user_id"
         >
-          {{ action }}
-        </a>
+          <p v-bind:class="{ active: player.active }">
+            {{ player.username }} ({{ player.gold }})
+          </p>
+        </div>
       </div>
-      <div>
-        <a href="#" class="red-button" @click="cancelAction">
-          {{ $t("common.cancel") }}
-        </a>
+    </div>
+    <div
+      id="object-popup-cont"
+      v-show="showObjectPopup"
+      class="rpgui-container framed-golden-2"
+    >
+      <div class="rpgui-content">
+        <canvas id="object-popup-canvas"></canvas>
+        <table v-if="popupObject !== null && popupObject.objectClass == 'unit'">
+          <tr>
+            <td>Type</td>
+            <td>{{ popupObject.type }}</td>
+          </tr>
+          <tr>
+            <td>Level</td>
+            <td>{{ popupObject.level }}</td>
+          </tr>
+          <tr>
+            <td>Health</td>
+            <td>{{ popupObject.health }}/{{ popupObject.maxHealth }}</td>
+          </tr>
+          <tr>
+            <td>Moves</td>
+            <td>{{ popupObject.moves }}/{{ popupObject.maxMoves }}</td>
+          </tr>
+        </table>
+
+        <table
+          v-if="popupObject !== null && popupObject.objectClass == 'building'"
+        >
+          <tr>
+            <td>Type</td>
+            <td>{{ popupObject.type }}</td>
+          </tr>
+          <tr>
+            <td>Health</td>
+            <td>{{ popupObject.health }}/{{ popupObject.maxHealth }}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div
+      id="actions-panel-cont"
+      v-if="showActionsPanel"
+      class="rpgui-container framed-golden-2"
+    >
+      <div class="rpgui-content">
+        <h3>Actions</h3>
+        <div
+          class="action"
+          v-for="action in selectedObjectState.actions"
+          v-bind:key="action"
+        >
+          <button
+            type="button"
+            class="rpgui-button"
+            @click="handleAction(action)"
+            v-if="showAction(action)"
+          >
+            <p>{{ action }}</p>
+          </button>
+        </div>
+        <div>
+          <button type="button" class="rpgui-button down" @click="cancelAction">
+            <p>{{ $t("common.cancel") }}</p>
+          </button>
+        </div>
       </div>
     </div>
     <div id="levelup-panel-cont" v-if="showLevelupPanel">
@@ -116,7 +133,7 @@ export default {
   created() {
     this.getGame();
     EventBus.$on(`received-user:${getId()}-msg`, this.handleUserMsg);
-    EventBus.$on("command-set-active-player", this.setPlayers);
+    EventBus.$on("command-set-active-players", this.setPlayers);
     EventBus.$on("pointer-over-unit", this.setPopupObject);
     EventBus.$on("pointer-out-unit", this.hidePopupObject);
     EventBus.$on("pointer-over-building", this.setPopupObject);
@@ -130,7 +147,7 @@ export default {
   },
   beforeDestroy() {
     EventBus.$off(`received-user:${getId()}-msg`, this.handleUserMsg);
-    EventBus.$off("command-set-active-player", this.setPlayers);
+    EventBus.$off("command-set-active-players", this.setPlayers);
     EventBus.$off("pointer-over-unit", this.setPopupObject);
     EventBus.$off("pointer-out-unit", this.hidePopupObject);
     EventBus.$off("pointer-over-building", this.setPopupObject);
@@ -266,41 +283,44 @@ export default {
   justify-self: center;
 }
 #object-popup-cont {
+  font-family: "Press Start 2P", cursive;
+  font-size: 12px;
   position: absolute;
   left: 10px;
   bottom: 10px;
-  padding: 20px;
-  background: rgba(0, 0, 0, 0.7);
-  color: white;
+  color: #fff;
+  text-shadow: -2px 0 #000, 0 2px #000, 2px 0 #000, 0 -2px #000;
+  font-size: 1em;
   #object-popup-canvas {
     width: 100px;
     height: 100px;
   }
 }
 #playerslist-cont {
+  font-family: "Press Start 2P", cursive;
+  font-size: 12px;
   position: absolute;
   top: 10px;
   left: 10px;
-  background: rgba(0, 0, 0, 0.7);
-  padding: 20px;
   h3 {
     color: white;
   }
   .player {
-    color: grey;
     .active {
-      color: white;
+      color: #ff0;
     }
   }
 }
-#actions-panel-cont, #levelup-panel-cont {
+#actions-panel-cont,
+#levelup-panel-cont {
   position: absolute;
   bottom: 10px;
   right: 10px;
-  background: rgba(0, 0, 0, 0.7);
-  padding: 20px;
   h3 {
     color: white;
+  }
+  button {
+    width: 100%;
   }
 }
 </style>

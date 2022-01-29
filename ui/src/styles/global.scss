@@ -1,3 +1,5 @@
+@import "./vendor/rpgui.min";
+
 @import "font";
 @import "./portal/links";
 @import "./portal/inputs";
@@ -8,6 +10,7 @@
 @import "./arena/buttons";
 
 @import "./game/buttons";
+@import "./game/rpgui";
 
 html, body, #app {
   width: 100%;

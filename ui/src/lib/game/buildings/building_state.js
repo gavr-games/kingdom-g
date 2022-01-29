@@ -32,7 +32,7 @@ class BuildingState {
 
   get maxHealth() {
     let obj = window.client.api.get_object(parseInt(this.id));
-    return obj["max-health"];
+    return obj["max_health"];
   }
 }
 

@@ -54,7 +54,7 @@ class UnitState {
 
   get maxHealth() {
     let obj = window.client.api.get_object(parseInt(this.id));
-    return obj["max-health"];
+    return obj["max_health"];
   }
 
   get level() {
@@ -69,7 +69,7 @@ class UnitState {
 
   get maxMoves() {
     let obj = window.client.api.get_object(parseInt(this.id));
-    return obj["max-moves"];
+    return obj["max_moves"];
   }
 
   get size() {
