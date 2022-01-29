@@ -50,6 +50,25 @@ class UnitObserver {
     mesh.position.z = this.getHorizontalMeshCoordinate(coords.z);
     mesh.metadata = this.state;
 
+    // Set initial rotation
+    if (this.state.previousPosition !== null) {
+      let previousCoords = {
+        x: this.getHorizontalMeshCoordinate(this.state.previousPosition[0]),
+        z: this.getHorizontalMeshCoordinate(this.state.previousPosition[1]),
+        y: this.getVerticalMeshCoordinate(0)
+      };
+
+      let rotationAngle = Math.atan2(
+        mesh.position.z - previousCoords.z,
+        mesh.position.x - previousCoords.x
+      );
+      let rotationDelta = this.meshRotation - rotationAngle;
+      if (rotationDelta != 0) {
+        this.meshRotation = rotationAngle;
+        mesh.rotate(BABYLON.Axis.Y, rotationDelta);
+      }
+    }
+
     mesh.actionManager = new BABYLON.ActionManager(this.scene);
     mesh.actionManager.isRecursive = true;
     mesh.actionManager.registerAction(

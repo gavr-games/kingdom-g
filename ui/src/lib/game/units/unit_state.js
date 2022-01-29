@@ -19,6 +19,7 @@ class UnitState {
 
   get type() {
     let obj = window.client.api.get_object(parseInt(this.id));
+    console.log(obj);
     return obj.type;
   }
 
@@ -81,6 +82,11 @@ class UnitState {
 
   get canLevelUp() {
     return window.client.api.can_levelup(parseInt(this.id));
+  }
+
+  get previousPosition() {
+    let obj = window.client.api.get_object(parseInt(this.id));
+    return obj["previous_position"];
   }
 
   moveToPosition(position) {
