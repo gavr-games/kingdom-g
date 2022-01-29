@@ -8,6 +8,3 @@ WORKDIR /app
 COPY . .
 
 EXPOSE 4000
-
-# Initial setup
-RUN mix deps.get

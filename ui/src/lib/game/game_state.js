@@ -12,7 +12,9 @@ class GameState {
   }
 
   isMyTurn() {
-    return this.getMyPlayerId() == window.client.api.get_active_player();
+    return window.client.api
+      .get_active_players()
+      .includes(this.getMyPlayerId());
   }
 
   get players() {

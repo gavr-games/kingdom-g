@@ -24,7 +24,7 @@ Next steps
 Once you have all of those installed you should:
 - Checkout latest Lords code from GitHub. You should see `docker-compose.yml` file in the root defining all services.
 - cd to project's root folder and run `docker-compose build`. It will build all Dockerfiles and create images for containers.
-- run `docker-compose up -d` to start all services.
+- run `docker-compose up -d` to start all services. You may experience "first run troubles", in that case execute `docker-compose restart`
 - Now you should have a running set of docker containers. Check all of them are working using `docker-compose ps` command. The game should be available via https://kingdom-g.localhost
 - RabbitMQ admin panel [http://localhost:15672](http://localhost:15672) guest/guest
 - Docs [http://localhost:8080](http://localhost:8080)

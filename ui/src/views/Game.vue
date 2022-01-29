@@ -176,9 +176,10 @@ export default {
     },
     setPlayers() {
       this.players = window.client.api.get_player_ids().map(id => {
+        id = id[0];
         let enginePlayer = window.client.api.get_player(id);
-        let activePlayerId = window.client.api.get_active_player();
-        enginePlayer.active = id === activePlayerId;
+        let activePlayerIds = window.client.api.get_active_players();
+        enginePlayer.active = activePlayerIds.includes(id);
         let gamePlayer = this.game.players.find(p => p.id === id);
         return {
           ...enginePlayer,
