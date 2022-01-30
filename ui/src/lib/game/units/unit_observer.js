@@ -7,6 +7,9 @@ import GameObserver from "@/lib/game/game_observer";
 
 const SPEED = 0.1;
 const ANIMATED_UNITS = ["spearman"];
+const POSITION_CORRECTION = {
+  dragon: 1
+};
 
 class UnitObserver {
   constructor(state) {
@@ -190,10 +193,15 @@ class UnitObserver {
   }
 
   getHorizontalMeshCoordinate(coordinate) {
+    let positionCorrection = 0;
+    if (POSITION_CORRECTION.hasOwnProperty(this.state.type)) {
+      positionCorrection = POSITION_CORRECTION[this.state.type];
+    }
     return (
       coordinate * boardConfig.cellSize +
       boardConfig.cellSize / 2 -
-      ((this.state.size - 1) * boardConfig.cellSize) / 2
+      ((this.state.size - 1) * boardConfig.cellSize) / 2 +
+      positionCorrection * boardConfig.cellSize
     );
   }
 

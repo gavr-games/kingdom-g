@@ -19,7 +19,6 @@ class UnitState {
 
   get type() {
     let obj = window.client.api.get_object(parseInt(this.id));
-    console.log(obj);
     return obj.type;
   }
 
