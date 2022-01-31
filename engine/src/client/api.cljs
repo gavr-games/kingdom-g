@@ -21,7 +21,8 @@
 
 (defn ^:export init-test-game
   []
-  (reset! game (ng/create-test-game)))
+  (reset! game (-> (ng/create-test-game)
+                   (ng/add-test-objects))))
 
 (defn ^:export get-game-data
   []
