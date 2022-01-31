@@ -156,7 +156,7 @@
         (add-new-object :puddle [4 1])
         (add-new-object :puddle [4 2])
         (add-new-object :puddle [3 2])
-        (add-new-object :bridge [3 2]))))
+        (add-new-object :bridge [4 2]))))
 
 (defn create-game-shuffled-players
   [players]
