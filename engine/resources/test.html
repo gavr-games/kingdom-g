@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Engine Test</title>
+    <script src="engine.js"></script>
+</head>
+
+<body>
+    <textarea id="gamedata" rows="20" cols="70"></textarea>
+    <textarea id="command" rows="20" cols="70"></textarea>
+    <button type="button" id="command_button">Apply command</button>
+    <script>
+        client.api.init_test_game()
+
+        function load_game() {
+            const game = client.api.get_game_data()
+            document.getElementById("gamedata").value = JSON.stringify(game, undefined, 4)
+        }
+
+        load_game()
+
+        const defaultCommand = { "command": "move-object", "object_id": 1, "position": [2, 2] }
+        document.getElementById("command").value = JSON.stringify(defaultCommand, undefined, 4)
+
+        function apply_command() {
+            const command = JSON.parse(document.getElementById("command").value)
+            console.log(command)
+            client.api.apply_command(command)
+            load_game()
+        }
+
+        document.getElementById("command_button").onclick = apply_command
+    </script>
+</body>
+
+</html>
