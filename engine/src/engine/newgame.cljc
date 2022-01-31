@@ -161,4 +161,4 @@
 (defn create-game-shuffled-players
   [players]
   (-> (create-game (sort-by :quarter (shuffle-players players)))
-      add-test-objects))
+      (add-test-objects)))
