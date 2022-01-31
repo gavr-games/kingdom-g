@@ -12,7 +12,7 @@ const COLORS = [
   BABYLON.Color3.Black()
 ];
 export default class Color {
-  static getFromColorsMap(number) {
+  static getColorFromMap(number) {
     return COLORS[number % 10];
   }
 }

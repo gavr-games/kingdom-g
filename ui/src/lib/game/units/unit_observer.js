@@ -4,7 +4,7 @@ import boardConfig from "@/lib/game/board/config";
 import Atlas from "@/lib/game/atlas/atlas";
 import { MOVING } from "@/lib/game/units/unit_state";
 import GameObserver from "@/lib/game/game_observer";
-//import ColorUtils from "@/lib/utils/color";
+import ColorUtils from "@/lib/utils/color";
 
 const SPEED = 0.1;
 const ANIMATED_UNITS = ["archer", "dragon", "spearman"];
@@ -19,6 +19,7 @@ class UnitObserver {
     this.mesh = null;
     this.meshRotation = Math.PI;
     this.currentAnimation = null;
+    this.playerTorus = null;
     this.sceneCreatedCallback = scene => {
       this.scene = scene;
       this.create();
@@ -53,6 +54,25 @@ class UnitObserver {
     mesh.position.y = this.getVerticalMeshCoordinate(coords.y);
     mesh.position.z = this.getHorizontalMeshCoordinate(coords.z);
     mesh.metadata = this.state;
+
+    // Player torus
+    this.playerTorus = BABYLON.Mesh.CreateTorus(
+      "torus",
+      boardConfig.cellSize * this.state.size,
+      0.1,
+      100,
+      this.scene
+    );
+    this.playerTorus.position.x = this.getHorizontalMeshCoordinate(coords.x);
+    this.playerTorus.position.y = this.getVerticalMeshCoordinate(coords.y);
+    this.playerTorus.position.z = this.getHorizontalMeshCoordinate(coords.z);
+    const torusMaterial = new BABYLON.StandardMaterial(
+      "playerTorusMaterial",
+      this.scene
+    );
+    torusMaterial.diffuseColor = ColorUtils.getColorFromMap(this.state.player);
+    torusMaterial.emissiveColor = ColorUtils.getColorFromMap(this.state.player);
+    this.playerTorus.material = torusMaterial;
 
     // Set initial rotation
     if (this.state.previousPosition !== null) {
@@ -158,6 +178,9 @@ class UnitObserver {
       this.mesh.position.x = newX;
       this.mesh.position.y = newY;
       this.mesh.position.z = newZ;
+      this.playerTorus.position.x = newX;
+      this.playerTorus.position.y = newY;
+      this.playerTorus.position.z = newZ;
       if (
         newX == targetCoords.x &&
         newY == targetCoords.y &&
@@ -177,7 +200,9 @@ class UnitObserver {
     EventBus.$off("unit-deselected", this.checkLevelupCallback);
     GameObserver.unhighlight(this.mesh, "levelup");
     this.mesh.dispose();
+    this.playerTorus.dispose();
     this.mesh = null;
+    this.playerTorus = null;
     this.state = null;
   }
 

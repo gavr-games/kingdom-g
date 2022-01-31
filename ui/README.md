@@ -8,6 +8,6 @@
 - units idle animations
 - complex default action to move + hit + shoot
 - rotate initial camera to the player's castle
-- paint units and building into different colors
+- higlight buildings with player color
 - rotate unit to attacked object
 - chain animations for unit (animation chain)
