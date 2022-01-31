@@ -11,6 +11,7 @@ import Atlas from "@/lib/game/atlas/atlas";
 class GameObserver {
   constructor() {
     this.selectHighlight = null;
+    this.glowLayer = null;
     this.canvas = null;
     this.engine = null;
     this.scene = null;
@@ -41,6 +42,9 @@ class GameObserver {
     this.scene = new BABYLON.Scene(this.engine);
     this.scene.actionManager = new BABYLON.ActionManager(this.scene);
     this.registerActions(this.scene);
+
+    this.glowLayer = new BABYLON.GlowLayer("glow", this.scene);
+    this.glowLayer.intensity = 0.5;
 
     this.loader = new Loader(
       this.scene,

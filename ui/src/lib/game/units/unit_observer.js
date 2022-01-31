@@ -4,9 +4,10 @@ import boardConfig from "@/lib/game/board/config";
 import Atlas from "@/lib/game/atlas/atlas";
 import { MOVING } from "@/lib/game/units/unit_state";
 import GameObserver from "@/lib/game/game_observer";
+//import ColorUtils from "@/lib/utils/color";
 
 const SPEED = 0.1;
-const ANIMATED_UNITS = ["spearman"];
+const ANIMATED_UNITS = ["archer", "dragon", "spearman"];
 const POSITION_CORRECTION = {
   dragon: 1
 };

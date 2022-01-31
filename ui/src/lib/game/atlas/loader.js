@@ -176,7 +176,7 @@ class Loader {
         this.atlas.set(unit + "Unit", mesh);
       };
     });
-    let unitsGltf = ["spearman"];
+    let unitsGltf = ["archer", "dragon", "spearman"];
     unitsGltf.forEach(unit => {
       let task = this.assetsManager.addContainerTask(
         unit,

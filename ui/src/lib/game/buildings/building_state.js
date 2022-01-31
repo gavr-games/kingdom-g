@@ -34,6 +34,11 @@ class BuildingState {
     let obj = window.client.api.get_object(parseInt(this.id));
     return obj["max_health"];
   }
+
+  get player() {
+    let obj = window.client.api.get_object(parseInt(this.id));
+    return obj.player;
+  }
 }
 
 export default BuildingState;
