@@ -11,6 +11,5 @@ pom.xml.asc
 /.nrepl-port
 /.calva
 /.lsp
-.hgignore
-.hg/
+/.clj-kondo/.cache/
 /resources/engine.js
