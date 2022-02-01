@@ -11,3 +11,4 @@
 - higlight buildings with player color
 - rotate unit to attacked object
 - chain animations for unit (animation chain)
+- figure out how to highlight cell under puddle for unit to move

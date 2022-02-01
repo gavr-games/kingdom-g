@@ -4,7 +4,7 @@ import boardConfig from "../board/config";
 import Atlas from "../atlas/atlas";
 //import ColorUtils from "@/lib/utils/color";
 
-const ANIMATED_BUILDINGS = ["castle"];
+const ANIMATED_BUILDINGS = ["bridge", "castle", "puddle", "tree"];
 
 class BuildingObserver {
   constructor(state) {

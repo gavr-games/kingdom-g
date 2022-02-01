@@ -152,7 +152,7 @@ class Loader {
         this.atlas.set(building + "Building", mesh);
       };
     });
-    let buildingsGltf = ["castle"];
+    let buildingsGltf = ["bridge", "castle", "puddle", "tree"];
     buildingsGltf.forEach(building => {
       let task = this.assetsManager.addContainerTask(
         building,
