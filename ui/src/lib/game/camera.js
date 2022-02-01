@@ -13,7 +13,7 @@ class Camera {
       "MainCamera",
       Math.PI / 2,
       Math.PI / 4,
-      60,
+      80,
       new BABYLON.Vector3(
         boardConfig.cellSize * 10,
         -5,
