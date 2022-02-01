@@ -9,6 +9,7 @@
 <body>
     <textarea id="gamedata" rows="20" cols="70"></textarea>
     <textarea id="command" rows="20" cols="70"></textarea>
+    <select id="commands"></select>
     <button type="button" id="command_button">Apply command</button>
     <script>
         client.api.init_test_game()
@@ -20,12 +21,29 @@
 
         load_game()
 
-        const defaultCommand = { "command": "move-object", "object_id": 1, "position": [2, 2] }
-        document.getElementById("command").value = JSON.stringify(defaultCommand, undefined, 4)
+        const defaultCommands = [
+            { "command": "move-object", "object_id": 1, "position": [2, 2] },
+            { "command": "change-gold", "player": 1, "amount": 10 },
+            { "command": "set-experience", "object_id": 1, "experience": 10 }
+        ]
+
+        for (let i = 0; i < defaultCommands.length; i++) {
+            let opt = document.createElement("option");
+            opt.value = i;
+            opt.innerHTML = defaultCommands[i].command
+            document.getElementById("commands").appendChild(opt);
+        }
+
+        function select_command() {
+            const i = document.getElementById("commands").value
+            const cmd = defaultCommands[i]
+            document.getElementById("command").value = JSON.stringify(cmd, undefined, 4)
+        }
+
+        document.getElementById("commands").onchange = select_command
 
         function apply_command() {
             const command = JSON.parse(document.getElementById("command").value)
-            console.log(command)
             client.api.apply_command(command)
             load_game()
         }
