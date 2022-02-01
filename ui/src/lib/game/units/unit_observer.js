@@ -20,6 +20,7 @@ class UnitObserver {
     this.meshRotation = Math.PI;
     this.currentAnimation = null;
     this.playerTorus = null;
+    this.container = null;
     this.sceneCreatedCallback = scene => {
       this.scene = scene;
       this.create();
@@ -37,6 +38,7 @@ class UnitObserver {
   create() {
     let coords = this.state.coords;
     let mesh = null;
+
     if (ANIMATED_UNITS.includes(this.state.type)) {
       this.container = Atlas.get(
         this.state.type + "AnimatedUnit"

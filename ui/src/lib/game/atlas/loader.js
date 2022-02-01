@@ -1,5 +1,4 @@
 import * as BABYLON from "babylonjs";
-import boardConfig from "../board/config";
 
 /**
  * Creates a new ContainerAssetTask
@@ -101,19 +100,27 @@ class Loader {
   }
 
   load() {
-    let task = this.assetsManager.addMeshTask(
-      "solidFill",
-      "solidFill",
-      "/game_assets/fills/",
-      "solid.obj"
-    );
-    task.onSuccess = task => {
-      task.loadedMeshes[0].setEnabled(false);
-      this.atlas.set("solidFill", task.loadedMeshes[0]);
-    };
+    this.loadFills();
     this.loadUnits();
     this.loadBuildings();
     this.assetsManager.load();
+  }
+
+  loadFills() {
+    let fills = ["solid"];
+    fills.forEach(fill => {
+      let task = this.assetsManager.addMeshTask(
+        fill,
+        fill,
+        "/game_assets/fills/",
+        fill + ".obj"
+      );
+      task.onSuccess = task => {
+        let mesh = task.loadedMeshes[0];
+        mesh.setEnabled(false);
+        this.atlas.set(fill + "Fill", mesh);
+      };
+    });
   }
 
   loadBuildings() {
@@ -125,8 +132,10 @@ class Loader {
       "healing_temple",
       "magic_tower",
       "mountains",
+      "puddle",
       "scarecrow",
       "teleport",
+      "tree",
       "wall_closed",
       "wall_opened"
     ];
@@ -139,24 +148,37 @@ class Loader {
       );
       task.onSuccess = task => {
         let mesh = task.loadedMeshes[0];
-        let pivotDiff = boardConfig.cellSize;
-        mesh.setPivotPoint(
-          new BABYLON.Vector3(pivotDiff + pivotDiff / 2, 0, -pivotDiff / 2)
-        );
         mesh.setEnabled(false);
         this.atlas.set(building + "Building", mesh);
+      };
+    });
+    let buildingsGltf = ["castle"];
+    buildingsGltf.forEach(building => {
+      let task = this.assetsManager.addContainerTask(
+        building,
+        "",
+        "/game_assets/buildings/",
+        building + ".gltf"
+      );
+      task.onSuccess = task => {
+        task.loadedContainer.meshes[0].scaling = new BABYLON.Vector3(
+          0.1,
+          0.1,
+          0.1
+        );
+        this.atlas.set(building + "AnimatedBuilding", task.loadedContainer);
       };
     });
   }
 
   loadUnits() {
     let unitsObj = [
-      "arbalester",
       "archer",
       "catapult",
+      "chevalier",
       "dragon",
-      "knight_with_horse",
       "knight",
+      "marksman",
       "ninja",
       "ram",
       "spearman",
