@@ -169,7 +169,7 @@
   []
   (Thread/setDefaultUncaughtExceptionHandler
    (reify Thread$UncaughtExceptionHandler
-     (uncaughtException [_ thread ex]
+     (uncaughtException [_ _thread ex]
        (println ex))))
   (println "Game engine server starting"
            (str (java.time.LocalDateTime/now)))
@@ -186,7 +186,7 @@
 
 
 (defn -main
-  [& args]
+  [& _args]
   (start-game-server)
   (while true
       (Thread/sleep 60000)))

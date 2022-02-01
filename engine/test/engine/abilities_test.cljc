@@ -3,7 +3,7 @@
             [engine.abilities]
             [engine.core :as core :refer [get-object-id-at update-object]]
             [engine.newgame :refer [create-test-game create-game]]
-            [engine.objects :refer [add-new-object add-new-active-object get-new-object]]
+            [engine.objects :refer [add-new-object add-new-active-object]]
             [engine.object-utils :as obj]
             #?(:clj  [clojure.test :refer [deftest is]]
                :cljs [cljs.test :refer-macros [deftest is]])))

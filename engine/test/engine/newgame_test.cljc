@@ -2,8 +2,8 @@
   (:require [engine.core :as core :refer [get-object-id-at]]
             [engine.newgame :refer [create-game create-test-game]]
             [engine.transformations :refer [translate rotate]]
-            #?(:clj  [clojure.test :refer [deftest is are]]
-               :cljs [cljs.test :refer-macros [deftest is are]])))
+            #?(:clj  [clojure.test :refer [deftest is]]
+               :cljs [cljs.test :refer-macros [deftest is]])))
 
 (defn castle-coord
   "Returns the coordinate of the castle of the given quarter."
