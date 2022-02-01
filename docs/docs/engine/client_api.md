@@ -10,11 +10,11 @@ Initialises the game from the string with edn game state.
 
 ### `client.api.init_test_game()`
 
-Initialises a test game with two players (for debugging).
+Initialises a test game with two players and some test objects.
 
 ### `client.api.get_game_data()`
 
-Returns all game data as js object (for debugging).
+Returns all game data as js object.
 
 ### `client.api.get_all_coords()`
 
@@ -113,6 +113,15 @@ client.api.find_path(1, [2, 3])
 > null  // not enough moves
 ```
 
+### `client.api.can_be_placed_at(object_id, position)`
+
+Checks if an object can be moved to the given position (preserving flip and rotation), and not drown.
+
+```js
+client.api.can_be_placed_at(1, [1, 1])
+> true
+```
+
 ### `client.api.attack_outcomes(object_id, target_id)`
 
 Returns an array of possible outcomes if the object would attack the target.
@@ -141,6 +150,46 @@ Takes into account the distance between objects.
 Outcomes are returned in the same way as `attack_outcomes`.
 
 If target is too far or too close, returns null, if the object cannot shoot this target, returns empty array.
+
+### `client.api.get_default_shoot_parameters(object_id)`
+
+Returns an object with the default shoot outcomes depending on the distance. For non-shooting objects throws an error.
+
+Example:
+```json
+{
+    "2": [
+        {
+            "weight": 1,
+            "damage": 2,
+            "outcome": "hit"
+        }
+    ],
+    "3": [
+        {
+            "weight": 1,
+            "damage": 2,
+            "outcome": "hit"
+        },
+        {
+            "weight": 1,
+            "damage": 1,
+            "outcome": "hit"
+        }
+    ],
+    "4": [
+        {
+            "weight": 1,
+            "damage": 1,
+            "outcome": "hit"
+        },
+        {
+            "weight": 1,
+            "outcome": "miss"
+        }
+    ]
+}
+```
 
 ### `client.api.can_levelup(object_id)`
 

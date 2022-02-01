@@ -67,6 +67,13 @@
   (clj->jsu
    (pf/find-path @game obj-id (js->clj coord-js))))
 
+(defn ^:export can-be-placed-at
+  "Checks if object can be moved to the given coordinate.
+   Preserves rotation and flip.
+   If the object can be placed, but would drown, returns false."
+  [obj-id coord-js]
+  (pf/can-move-object-without-drowning? @game obj-id (js->clj coord-js)))
+
 (defn ^:export attack-outcomes
   [obj-id target-id]
   (let [obj (get-in @game [:objects obj-id])
@@ -81,6 +88,13 @@
         d (core/obj-distance obj target)]
     (clj->jsu
      (attack/get-shot-possibilities obj target d))))
+
+(defn ^:export get-default-shoot-parameters
+  "Returns map distance->[possibilities]."
+  [obj-id]
+  (let [obj (get-in @game [:objects obj-id])]
+    (clj->jsu
+     (attack/default-shot-possibilities obj))))
 
 (defn ^:export can-levelup
   [obj-id]
