@@ -37,7 +37,7 @@
 
 (defn unknown-action?
   [action-code]
-  (if (nil? (get-method action action-code))
+  (when-not (get-method action action-code)
     :unknown-action))
 
 

@@ -6,10 +6,10 @@
 
 (defmulti run-command
   "Changes the game state according to the passed command."
-  (fn [g cmd] (:command cmd)))
+  (fn [_g cmd] (:command cmd)))
 
 (defmethod run-command :default
-  [g cmd]
+  [g _cmd]
   g)
 
 (defn apply-command
@@ -76,7 +76,7 @@
   (assoc-in g [:players (:player cmd) :status] :won))
 
 (defmethod run-command :game-over
-  [g cmd]
+  [g _cmd]
   (assoc g :status :over))
 
 

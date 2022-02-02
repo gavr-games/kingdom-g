@@ -45,59 +45,59 @@
 (defn coord-one-step-away
   [obj coord]
   (let [pos (:position obj)]
-    (if (or
-         (and (obj :chess-knight)
-              (not (chess-knight-reachable? pos coord)))
-         (and (not (obj :chess-knight))
-              (not (one-step-reachable? pos coord))))
+    (when (or
+           (and (obj :chess-knight)
+                (not (chess-knight-reachable? pos coord)))
+           (and (not (obj :chess-knight))
+                (not (one-step-reachable? pos coord))))
       :target-coord-not-reachable)))
 
 
 (defn obj-one-step-away
   "Checks that o1 can step on o2 in one step."
   [o1 o2]
-  (if (or
-       (and (o1 :chess-knight)
-            (not-any? #(apply chess-knight-reachable? %)
-                      (core/all-filled-coord-pairs o1 o2)))
-       (and (not (o1 :chess-knight))
-            (not= 1 (core/obj-distance o1 o2))))
+  (when (or
+         (and (o1 :chess-knight)
+              (not-any? #(apply chess-knight-reachable? %)
+                        (core/all-filled-coord-pairs o1 o2)))
+         (and (not (o1 :chess-knight))
+              (not= 1 (core/obj-distance o1 o2))))
     :target-object-is-not-reachable))
 
 
 (defn valid-coord
   [g coord]
-  (if (not (core/valid-coord? g coord))
+  (when-not (core/valid-coord? g coord)
     :invalid-coord))
 
 
 (defn can-move-to
   [g obj-id position]
-  (if (not (core/can-move-object? g obj-id position))
+  (when-not (core/can-move-object? g obj-id position)
     :place-occupied))
 
 
 (defn valid-attack-target
   [g target-id]
-  (if (not (get-in g [:objects target-id :health]))
+  (when-not (get-in g [:objects target-id :health])
     :invalid-attack-target))
 
 
 (defn is-unit
   [g target-id]
-  (if (not (unit? (get-in g [:objects target-id])))
+  (when-not (unit? (get-in g [:objects target-id]))
     :target-should-be-a-unit))
 
 
 (defn objects-near
   "Checks that o1 is near o2 (distance between them is 1)."
   [o1 o2]
-  (if (not= 1 (core/obj-distance o1 o2))
+  (when (not= 1 (core/obj-distance o1 o2))
     :target-object-is-not-reachable))
 
 (defn splash-attack-any-targets
   [targets]
-  (if (empty? targets)
+  (when (empty? targets)
     :no-objects-to-attack))
 
 (defn shooting-distance-in-range
@@ -107,17 +107,17 @@
 
 (defn shooting-valid-outcome
   [params]
-  (if (nil? params)
+  (when (nil? params)
     :shooting-target-not-applicable))
 
 (defn can-fly-distance
   [obj dist]
-  (if (> dist (obj :moves))
+  (when (> dist (obj :moves))
     :target-coord-not-reachable))
 
 (defn valid-levelup-stat
   [stat]
-  (if (not (#{"attack" "health" "moves"} stat))
+  (when-not (#{"attack" "health" "moves"} stat)
     :invalid-levelup-stat))
 
 

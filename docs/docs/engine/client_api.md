@@ -115,12 +115,16 @@ client.api.find_path(1, [2, 3])
 
 ### `client.api.can_be_placed_at(object_id, position)`
 
-Checks if an object can be moved to the given position (preserving flip and rotation), and not drown.
+Checks if an object can be moved to the given position (preserving flip and rotation).
 
 ```js
 client.api.can_be_placed_at(1, [1, 1])
 > true
 ```
+
+### `client.api.can_be_safely_placed_at(object_id, position)`
+
+Same as `client.api.can_be_placed_at`, but additionally checks that the object wouldn't drown.
 
 ### `client.api.attack_outcomes(object_id, target_id)`
 

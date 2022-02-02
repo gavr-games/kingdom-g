@@ -5,11 +5,11 @@
 
 (defmulti attacks-modifier
   "Modifier of attack parameters from the attacking unit."
-  (fn [attack-params attacker target] (:type attacker)))
+  (fn [_attack-params attacker _target] (:type attacker)))
 
 (defmulti attacked-modifier
   "Modifier of attack parameters from the attacked unit."
-  (fn [attack-params attacker target] (:type target)))
+  (fn [_attack-params _attacker target] (:type target)))
 
 
 (defmethod attacks-modifier :default
@@ -22,7 +22,7 @@
 (defn- damage-bonus-against
   "Returns attack modifier that adds bonus to damage for target of given type."
   [target-type bonus]
-  (fn [attack-params attacker target]
+  (fn [attack-params _attacker target]
     (if (is-type? target target-type)
       (map #(update % :damage + bonus) attack-params)
       attack-params)))
@@ -38,7 +38,7 @@
 
 
 (defmethod attacks-modifier :ram
-  [attack-params attacker target]
+  [attack-params _attacker target]
   (if (unit? target)
     (map #(assoc % :damage 0) attack-params)
     attack-params))
@@ -58,11 +58,10 @@
       (attacked-modifier attacker target)))
 
 (defn get-attack-params
-  "Picks an random attack outcome and return its params."
+  "Picks a random attack outcome and returns its params."
   [attacker target]
   (let [possibilities (get-attack-possibilities attacker target)]
-    (if (seq possibilities)
-      (weighted-random-choice possibilities))))
+    (weighted-random-choice possibilities)))
 
 
 

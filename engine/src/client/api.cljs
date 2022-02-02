@@ -69,8 +69,13 @@
 
 (defn ^:export can-be-placed-at
   "Checks if object can be moved to the given coordinate.
-   Preserves rotation and flip.
-   If the object can be placed, but would drown, returns false."
+   Preserves rotation and flip."
+  [obj-id coord-js]
+  (core/can-move-object? @game obj-id (js->clj coord-js)))
+
+(defn ^:export can-be-safely-placed-at
+  "Checks if object can be moved to the given coordinate and not drown.
+   Preserves rotation and flip."
   [obj-id coord-js]
   (pf/can-move-object-without-drowning? @game obj-id (js->clj coord-js)))
 

@@ -60,8 +60,7 @@
 (defn attack
   "Performs attack actions for both melee attack or shooting."
   [g p obj-id target-id attack-params]
-  (let [obj (get-in g [:objects obj-id])
-        target (get-in g [:objects target-id])]
+  (let [target (get-in g [:objects target-id])]
     (as-> g game
         (core/update-object game obj-id obj-utils/deactivate cmd/set-moves)
         (cmd/add-command game (cmd/attack obj-id target-id attack-params))
