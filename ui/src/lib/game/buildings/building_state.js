@@ -6,37 +6,58 @@ class BuildingState {
   }
 
   get type() {
-    let obj = window.client.api.get_object(parseInt(this.id));
+    const obj = window.client.api.get_object(parseInt(this.id));
     return obj.type;
   }
 
   get objectClass() {
-    let obj = window.client.api.get_object(parseInt(this.id));
+    const obj = window.client.api.get_object(parseInt(this.id));
     return obj.class;
   }
 
   get coords() {
-    let obj = window.client.api.get_object(parseInt(this.id));
+    const obj = window.client.api.get_object(parseInt(this.id));
     return Coords.parsePosition(obj.position);
   }
 
+  get allCoords() {
+    //TODO: take flip into account
+    const obj = window.client.api.get_object(parseInt(this.id));
+    const baseCoords = Coords.parsePosition(obj.position);
+    let coords = [];
+    for (const [key] of Object.entries(obj.coords)) {
+      const rotation = this.rotation || 0;
+      coords.push(
+        Coords.sum(
+          baseCoords,
+          Coords.rotate(
+            { x: 0, y: 0, z: 0 },
+            Coords.parse(key),
+            (rotation * Math.PI) / 2
+          )
+        )
+      );
+    }
+    return coords;
+  }
+
   get rotation() {
-    let obj = window.client.api.get_object(parseInt(this.id));
+    const obj = window.client.api.get_object(parseInt(this.id));
     return obj.rotation;
   }
 
   get health() {
-    let obj = window.client.api.get_object(parseInt(this.id));
+    const obj = window.client.api.get_object(parseInt(this.id));
     return obj.health;
   }
 
   get maxHealth() {
-    let obj = window.client.api.get_object(parseInt(this.id));
+    const obj = window.client.api.get_object(parseInt(this.id));
     return obj["max_health"];
   }
 
   get player() {
-    let obj = window.client.api.get_object(parseInt(this.id));
+    const obj = window.client.api.get_object(parseInt(this.id));
     return obj.player;
   }
 }

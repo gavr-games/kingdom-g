@@ -3,7 +3,7 @@ import { EventBus } from "@/lib/event_bus";
 import boardConfig from "../board/config";
 import Atlas from "../atlas/atlas";
 import GameState from "@/lib/game/game_state";
-//import ColorUtils from "@/lib/utils/color";
+import ColorUtils from "@/lib/utils/color";
 
 const ANIMATED_BUILDINGS = ["bridge", "castle", "puddle", "tree"];
 
@@ -14,6 +14,7 @@ class BuildingObserver {
     this.mesh = null;
     this.currentAnimation = null;
     this.container = null;
+    this.playerToruses = [];
     EventBus.$on("scene-created", scene => {
       this.scene = scene;
       this.create();
@@ -50,6 +51,10 @@ class BuildingObserver {
     mesh.position.y = this.getVerticalMeshCoordinate(coords.y);
     mesh.position.z = this.getHorizontalMeshCoordinate(coords.z);
 
+    if (this.state.player !== undefined) {
+      this.createPlayerToruses();
+    }
+
     mesh.actionManager = new BABYLON.ActionManager(this.scene);
     mesh.actionManager.isRecursive = true;
     mesh.actionManager.registerAction(
@@ -85,6 +90,36 @@ class BuildingObserver {
     mesh.setEnabled(true);
     mesh.metadata = this.state;
     this.mesh = mesh;
+  }
+
+  createPlayerToruses() {
+    this.state.allCoords.forEach(coords => {
+      let playerTorus = BABYLON.Mesh.CreateTorus(
+        "torus",
+        boardConfig.cellSize + boardConfig.cellSize / 3,
+        0.1,
+        4,
+        this.scene
+      );
+      playerTorus.position.x = this.getHorizontalMeshCoordinate(coords.x);
+      playerTorus.position.y = this.getVerticalMeshCoordinate(coords.y);
+      playerTorus.position.z = this.getHorizontalMeshCoordinate(coords.z);
+      const torusMaterial = new BABYLON.StandardMaterial(
+        "playerTorusMaterial",
+        this.scene
+      );
+      torusMaterial.diffuseColor = ColorUtils.getColorFromMap(
+        this.state.player
+      );
+      torusMaterial.emissiveColor = ColorUtils.getColorFromMap(
+        this.state.player
+      );
+      playerTorus.material = torusMaterial;
+      const axis = new BABYLON.Vector3(0, 1, 0);
+      const quaternion = new BABYLON.Quaternion.RotationAxis(axis, Math.PI / 4);
+      playerTorus.rotationQuaternion = quaternion;
+      this.playerToruses.push(playerTorus);
+    });
   }
 
   getHorizontalMeshCoordinate(coordinate) {

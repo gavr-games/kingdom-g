@@ -36,7 +36,7 @@ class UnitObserver {
   }
 
   create() {
-    let coords = this.state.coords;
+    const coords = this.state.coords;
     let mesh = null;
 
     if (ANIMATED_UNITS.includes(this.state.type)) {
@@ -57,24 +57,7 @@ class UnitObserver {
     mesh.position.z = this.getHorizontalMeshCoordinate(coords.z);
     mesh.metadata = this.state;
 
-    // Player torus
-    this.playerTorus = BABYLON.Mesh.CreateTorus(
-      "torus",
-      boardConfig.cellSize * this.state.size,
-      0.1,
-      100,
-      this.scene
-    );
-    this.playerTorus.position.x = this.getHorizontalMeshCoordinate(coords.x);
-    this.playerTorus.position.y = this.getVerticalMeshCoordinate(coords.y);
-    this.playerTorus.position.z = this.getHorizontalMeshCoordinate(coords.z);
-    const torusMaterial = new BABYLON.StandardMaterial(
-      "playerTorusMaterial",
-      this.scene
-    );
-    torusMaterial.diffuseColor = ColorUtils.getColorFromMap(this.state.player);
-    torusMaterial.emissiveColor = ColorUtils.getColorFromMap(this.state.player);
-    this.playerTorus.material = torusMaterial;
+    this.createPlayerTorus();
 
     // Set initial rotation
     if (this.state.previousPosition !== null) {
@@ -121,6 +104,27 @@ class UnitObserver {
     mesh.setEnabled(true);
     this.mesh = mesh;
     this.checkCanLevelUp();
+  }
+
+  createPlayerTorus() {
+    const coords = this.state.coords;
+    this.playerTorus = BABYLON.Mesh.CreateTorus(
+      "torus",
+      boardConfig.cellSize * this.state.size,
+      0.1,
+      100,
+      this.scene
+    );
+    this.playerTorus.position.x = this.getHorizontalMeshCoordinate(coords.x);
+    this.playerTorus.position.y = this.getVerticalMeshCoordinate(coords.y);
+    this.playerTorus.position.z = this.getHorizontalMeshCoordinate(coords.z);
+    const torusMaterial = new BABYLON.StandardMaterial(
+      "playerTorusMaterial",
+      this.scene
+    );
+    torusMaterial.diffuseColor = ColorUtils.getColorFromMap(this.state.player);
+    torusMaterial.emissiveColor = ColorUtils.getColorFromMap(this.state.player);
+    this.playerTorus.material = torusMaterial;
   }
 
   update() {
