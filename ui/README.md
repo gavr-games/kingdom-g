@@ -1,14 +1,17 @@
 # UI
 
 ## TODO:
-- fix dragon movement highlighting and coords selection
-- units shooting
-- units movement animation
-- units hit animation
-- units idle animations
-- complex default action to move + hit + shoot
-- rotate initial camera to the player's castle
 - higlight buildings with player color
-- rotate unit to attacked object
+- units idle animations
+- units move animation
+- use can_be_placed_at on move
 - chain animations for unit (animation chain)
+- units shooting
+- fix dragon movement highlighting and coords selection
+- units hit animation
+- units attack animations
+- units take damage animations
+- units die animations
+- complex default action to move + hit + shoot
+- rotate unit to attacked object
 - figure out how to highlight cell under puddle for unit to move

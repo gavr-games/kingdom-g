@@ -2,6 +2,7 @@ import * as BABYLON from "babylonjs";
 import { EventBus } from "@/lib/event_bus";
 import boardConfig from "../board/config";
 import Atlas from "../atlas/atlas";
+import GameState from "@/lib/game/game_state";
 //import ColorUtils from "@/lib/utils/color";
 
 const ANIMATED_BUILDINGS = ["bridge", "castle", "puddle", "tree"];
@@ -72,6 +73,14 @@ class BuildingObserver {
         }
       )
     );
+
+    // This will allow to correctly position camera according to players castle
+    if (
+      this.state.type === "castle" &&
+      this.state.player === GameState.getMyPlayerId()
+    ) {
+      EventBus.$emit("my-castle-found", this.state);
+    }
 
     mesh.setEnabled(true);
     mesh.metadata = this.state;
