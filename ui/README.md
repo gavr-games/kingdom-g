@@ -3,6 +3,7 @@
 ## TODO:
 - units idle animations
 - units move animation
+- fix `bridge` model to use 3 cells
 - use can_be_placed_at on move
 - chain animations for unit (animation chain)
 - units shooting

@@ -7,7 +7,7 @@ import GameObserver from "@/lib/game/game_observer";
 import ColorUtils from "@/lib/utils/color";
 
 const SPEED = 0.1;
-const ANIMATED_UNITS = ["archer", "dragon", "spearman"];
+const ANIMATED_UNITS = ["archer", "catapult", "dragon", "ram", "spearman"];
 const POSITION_CORRECTION = {
   dragon: 1
 };
