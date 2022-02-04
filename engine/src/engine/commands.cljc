@@ -26,7 +26,7 @@
   {:command :drown-object :object_id obj-id})
 
 (defn move-obj
-  [obj-id old-obj new-obj]
+  [obj-id new-obj old-obj]
   (cond-> {:command :move-object
            :object_id obj-id
            :position (:position new-obj)}
@@ -36,24 +36,20 @@
           (:flip new-obj)) (assoc :flip (:flip new-obj))))
 
 (defn set-moves
-  ([obj-id old-obj obj] (set-moves obj-id obj))
-  ([obj-id obj]
-   {:command :set-moves :object_id obj-id :moves (obj :moves)}))
+  [obj-id obj]
+  {:command :set-moves :object_id obj-id :moves (obj :moves)})
 
 (defn set-health
-  ([obj-id old-obj obj] (set-health obj-id obj))
-  ([obj-id obj]
-   {:command :set-health :object_id obj-id :health (obj :health)}))
+  [obj-id obj]
+  {:command :set-health :object_id obj-id :health (obj :health)})
 
 (defn set-experience
-  ([obj-id old-obj obj] (set-experience obj-id obj))
-  ([obj-id obj]
-   {:command :set-experience :object_id obj-id :experience (obj :experience)}))
+  [obj-id obj]
+  {:command :set-experience :object_id obj-id :experience (obj :experience)})
 
 (defn set-level
-  ([obj-id old-obj obj] (set-level obj-id obj))
-  ([obj-id obj]
-   {:command :set-level :object_id obj-id :level (obj :level)}))
+  [obj-id obj]
+  {:command :set-level :object_id obj-id :level (obj :level)})
 
 (defn set-active-players
   [ps]
@@ -65,7 +61,7 @@
 
 (defn change-gold
   "Change player's gold by given amount.
-  If obj-id is given, it indicates reward for destroying this object."
+  If obj-id is given, it indicates change associated with this object."
   ([p amount] (change-gold p amount nil))
   ([p amount obj-id]
    (cond-> {:command :change-gold :player p :amount amount}
@@ -96,23 +92,19 @@
   {:command :unbinds :object_id obj-id :target_id target-id})
 
 (defn set-shield
-  ([obj-id old-obj obj] (set-shield obj-id obj))
-  ([obj-id obj]
-   {:command :set-shield :object_id obj-id :shield (obj :shield)}))
+  [obj-id obj]
+  {:command :set-shield :object_id obj-id :shield (obj :shield)})
 
 (defn set-max-moves
-  ([obj-id old-obj obj] (set-max-moves obj-id obj))
-  ([obj-id obj]
-   {:command :set-max-moves :object_id obj-id :max-moves (obj :max-moves)}))
+  [obj-id obj]
+  {:command :set-max-moves :object_id obj-id :max-moves (obj :max-moves)})
 
 (defn set-max-health
-  ([obj-id old-obj obj] (set-max-health obj-id obj))
-  ([obj-id obj]
-   {:command :set-max-health :object_id obj-id :max-health (obj :max-health)}))
+  [obj-id obj]
+  {:command :set-max-health :object_id obj-id :max-health (obj :max-health)})
 
 (defn set-attack
-  ([obj-id old-obj obj] (set-attack obj-id obj))
-  ([obj-id obj]
-   {:command :set-attack :object_id obj-id :attack (obj :attack)}))
+  [obj-id obj]
+  {:command :set-attack :object_id obj-id :attack (obj :attack)})
 
 ;;;; Every command that changes game state should have a corresponding runner

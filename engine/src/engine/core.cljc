@@ -298,7 +298,7 @@
          g-moved (move-object-on-board g obj-id position flip rotation)
          new-obj (get-in g-moved [:objects obj-id])]
      (-> g-moved
-         (cmd/add-command (cmd/move-obj obj-id old-obj new-obj))
+         (cmd/add-command (cmd/move-obj obj-id new-obj old-obj))
          (handle obj-id :after-moved
                  (:position old-obj) position
                  (:flip old-obj) flip
@@ -312,7 +312,7 @@
 
 (defn update-object
   "Performs function f on object and optionally adds a command created by cmd-f.
-  Function cmd-f should have signature [obj-id obj-old obj-new]."
+  Function cmd-f should have signature [obj-id obj-new]."
   ([g obj-id f] (update-object g obj-id f nil))
   ([g obj-id f cmd-f]
    (let [obj (get-in g [:objects obj-id])
@@ -321,13 +321,13 @@
        (as-> g game
          (assoc-in game [:objects obj-id] updated-obj)
          (if cmd-f
-           (cmd/add-command game (cmd-f obj-id obj updated-obj))
+           (cmd/add-command game (cmd-f obj-id updated-obj))
            game))
        g))))
 
 (defn update-objects
   "Performs function f on every object in the game that satisfies pred.
-  For every update also adds a command (cmd-f obj-id obj-old obj-new)."
+  For every update also adds a command (cmd-f obj-id obj-new)."
   [g pred f cmd-f]
   (reduce
    (fn [game obj-id]
