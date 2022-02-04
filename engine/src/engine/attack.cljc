@@ -146,5 +146,4 @@
   "Picks an random attack outcome and return its params."
   [shooter target distance]
   (let [possibilities (get-shot-possibilities shooter target distance)]
-    (if (seq possibilities)
-      (weighted-random-choice possibilities))))
+    (and (seq possibilities) (weighted-random-choice possibilities))))

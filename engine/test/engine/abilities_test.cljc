@@ -175,9 +175,12 @@
         marksman-id (get-object-id-at g [3 0])
         g-after (act g 0 :shoot {:obj-id marksman-id :target-id sp2-id})]
     (is (not (get-in g-after [:objects sp2-id])))
-    (is (check g 0 :shoot {:obj-id marksman-id :target-id sp1-id}))
-    (is (check g 0 :shoot {:obj-id marksman-id :target-id sp3-id}))
-    (is (check g 0 :shoot {:obj-id marksman-id :target-id castle-id}))))
+    (is (= :target-too-close
+           (check g 0 :shoot {:obj-id marksman-id :target-id sp1-id})))
+    (is (= :target-too-far
+           (check g 0 :shoot {:obj-id marksman-id :target-id sp3-id})))
+    (is (= :shooting-target-not-applicable
+           (check g 0 :shoot {:obj-id marksman-id :target-id castle-id})))))
 
 
 (deftest test-shoot-tree
