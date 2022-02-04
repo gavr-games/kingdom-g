@@ -7,7 +7,6 @@ import GameObserver from "@/lib/game/game_observer";
 import ColorUtils from "@/lib/utils/color";
 
 const SPEED = 0.1;
-const ANIMATED_UNITS = ["archer", "catapult", "dragon", "ram", "spearman"];
 const POSITION_CORRECTION = {
   dragon: 1
 };
@@ -39,18 +38,14 @@ class UnitObserver {
     const coords = this.state.coords;
     let mesh = null;
 
-    if (ANIMATED_UNITS.includes(this.state.type)) {
-      this.container = Atlas.get(
-        this.state.type + "AnimatedUnit"
-      ).instantiateModelsToScene();
-      setTimeout(() => {
-        this.playAnimation("Idle");
-      }, Math.floor(Math.random() * Math.floor(2000)));
-      mesh = this.container.rootNodes[0];
-      this.meshRotation = 0;
-    } else {
-      mesh = Atlas.get(this.state.type + "Unit").clone();
-    }
+    this.container = Atlas.get(
+      this.state.type + "AnimatedUnit"
+    ).instantiateModelsToScene();
+    setTimeout(() => {
+      this.playAnimation("Idle");
+    }, Math.floor(Math.random() * Math.floor(2000)));
+    mesh = this.container.rootNodes[0];
+    this.meshRotation = 0;
     mesh.enablePointerMoveEvents = true;
     mesh.position.x = this.getHorizontalMeshCoordinate(coords.x);
     mesh.position.y = this.getVerticalMeshCoordinate(coords.y);
@@ -210,6 +205,7 @@ class UnitObserver {
     this.mesh = null;
     this.playerTorus = null;
     this.state = null;
+    this.container = null;
   }
 
   attack() {
@@ -238,11 +234,7 @@ class UnitObserver {
   }
 
   getVerticalMeshCoordinate(coordinate) {
-    let meshCoordinate = coordinate * boardConfig.cellSize;
-    if (ANIMATED_UNITS.includes(this.state.type)) {
-      meshCoordinate += boardConfig.cellSize;
-    }
-    return meshCoordinate;
+    return coordinate * boardConfig.cellSize + boardConfig.cellSize;
   }
 
   playAnimation(name, loop = true) {

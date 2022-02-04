@@ -4,6 +4,7 @@ import Loader from "@/lib/game/atlas/loader";
 import ObjectPopupAtlas from "@/lib/game/atlas/object_popup_atlas";
 
 const ROTATION_SPEED = Math.PI / 84;
+const CAMERA_RADIUS = 6;
 
 class ObjectPopupObserver {
   init() {
@@ -37,8 +38,8 @@ class ObjectPopupObserver {
       "MainCamera",
       (Math.PI * 3) / 4,
       Math.PI / 2,
-      5,
-      new BABYLON.Vector3(0, 3.5, 0),
+      CAMERA_RADIUS,
+      new BABYLON.Vector3(0, 1.5, 0),
       this.scene
     );
 
@@ -69,21 +70,22 @@ class ObjectPopupObserver {
   }
 
   showObject(object) {
-    switch (object.objectClass) {
-      case "unit":
-        this.mesh = ObjectPopupAtlas.get(object.type + "Unit").createInstance();
-        this.mesh.setEnabled(true);
-        break;
-      case "building":
-        this.mesh = ObjectPopupAtlas.get(object.type + "Building").createInstance();
-        this.mesh.setEnabled(true);
-        break;
+    this.mesh = ObjectPopupAtlas.get(
+      object.type + "Animated" + this.capitalizeFirstLetter(object.objectClass)
+    ).instantiateModelsToScene().rootNodes[0];
+    this.mesh.setEnabled(true);
+
+    if (object.objectClass == "unit") {
+      this.camera.radius = CAMERA_RADIUS + object.size - 1;
+    } else {
+      this.camera.radius = CAMERA_RADIUS;
     }
   }
 
   hideObject() {
     if (this.mesh !== null) {
       this.scene.removeMesh(this.mesh);
+      this.mesh.dispose();
       this.mesh = null;
     }
   }
@@ -92,6 +94,10 @@ class ObjectPopupObserver {
     if (this.mesh !== null) {
       this.mesh.rotate(BABYLON.Axis.Y, ROTATION_SPEED);
     }
+  }
+
+  capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
   }
 }
 
