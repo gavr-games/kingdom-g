@@ -8,10 +8,10 @@
     (update-in g [:commands] conj cmd-with-action)))
 
 (defn add-obj
+  "Add a new object.
+  All object data is passed as an edn string."
   [obj-id obj]
-  {:command :add-object
-   :object_id obj-id
-   :object_edn (prn-str obj)})
+  {:command :add-object :object_id obj-id :object_edn (prn-str obj)})
 
 (defn remove-obj
   [obj-id]
@@ -26,6 +26,8 @@
   {:command :drown-object :object_id obj-id})
 
 (defn move-obj
+  "Move an object to a new position.
+   Rotation and flip are included if they are changed."
   [obj-id new-obj old-obj]
   (cond-> {:command :move-object
            :object_id obj-id
