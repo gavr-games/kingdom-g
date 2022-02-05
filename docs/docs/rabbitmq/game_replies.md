@@ -26,6 +26,8 @@ Engine will send a following message on a successfully performed game action
 }
 ```
 
+All commands and their fields can be looked up in [commands.cljc](https://github.com/gavr-games/kingdom-g/blob/master/engine/src/engine/commands.cljc)
+
 TODO: How to specify command visibility? Inside the commands?
 
 ### Error replies
