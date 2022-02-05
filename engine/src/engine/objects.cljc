@@ -1,8 +1,9 @@
 (ns engine.objects
-  (:require [engine.core :as core :refer [create-handler]]
+  (:require [engine.core :as core]
+            [engine.handlers :refer [create-handler]]
             [engine.object-utils :refer [unit? is-type?]]
             [clojure.set :as set])
-  #?(:cljs (:require-macros [engine.core :refer [create-handler]])))
+  #?(:cljs (:require-macros [engine.handlers :refer [create-handler]])))
 
 
 (def default-unit-actions #{:move :levelup})

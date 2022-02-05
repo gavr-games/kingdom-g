@@ -2,6 +2,7 @@
   (:require [engine.actions :refer [create-action]]
             [engine.checks :as check]
             [engine.core :as core]
+            [engine.handlers :as handlers]
             [engine.object-utils :as obj-utils]
             [engine.commands :as cmd]
             [engine.attack :refer [get-attack-params
@@ -50,7 +51,7 @@
         (check/coord-one-step-away obj new-position))
 
       (-> g
-          (core/handle obj-id :before-walks new-position)
+          (handlers/handle obj-id :before-walks new-position)
           (core/update-object obj-id
                          #(update % :moves (fn [x] (- x dist)))
                          cmd/set-moves)
@@ -68,7 +69,7 @@
           (-> game
             (core/damage-obj p target-id (attack-params :damage))
             (add-attack-experience obj-id target-id target)
-            (core/handle obj-id :after-successfully-attacks target-id p))
+            (handlers/handle obj-id :after-successfully-attacks target-id p))
           game))))
 
 
@@ -79,7 +80,7 @@
         target (get-in g [:objects target-id])
         attack-params (assoc (get-attack-params obj target) :type :melee)]
     (-> g
-        (core/handle obj-id :before-melee-attacks target-id)
+        (handlers/handle obj-id :before-melee-attacks target-id)
         (attack p obj-id target-id attack-params))))
 
 
@@ -135,12 +136,12 @@
        (cmd/add-command (cmd/binds obj-id target-id))
        (core/update-object obj-id #(assoc % :binding-to target-id))
        (core/update-object target-id #(assoc % :binding-from obj-id))
-       (core/add-handler target-id :after-moved :binding-drag)
-       (core/add-handler obj-id :after-moved :binding-unbind-if-not-near)
-       (core/add-handler obj-id :before-walks :binding-unbind)
-       (core/add-handler obj-id :before-melee-attacks :binding-unbind)
-       (core/add-handler obj-id :before-destruction :binding-unbind)
-       (core/add-handler target-id :before-destruction :binding-get-unbound))))
+       (handlers/add-handler target-id :after-moved :binding-drag)
+       (handlers/add-handler obj-id :after-moved :binding-unbind-if-not-near)
+       (handlers/add-handler obj-id :before-walks :binding-unbind)
+       (handlers/add-handler obj-id :before-melee-attacks :binding-unbind)
+       (handlers/add-handler obj-id :before-destruction :binding-unbind)
+       (handlers/add-handler target-id :before-destruction :binding-get-unbound))))
 
 (defn unbind
   [g obj-id]
@@ -149,24 +150,24 @@
         (cmd/add-command (cmd/unbinds obj-id target-id))
         (core/update-object obj-id #(dissoc % :binding-to))
         (core/update-object target-id #(dissoc % :binding-from))
-        (core/remove-handler target-id :after-moved :binding-drag)
-        (core/remove-handler obj-id :after-moved :binding-unbind-if-not-near)
-        (core/remove-handler obj-id :before-walks :binding-unbind)
-        (core/remove-handler obj-id :before-melee-attacks :binding-unbind)
-        (core/remove-handler obj-id :before-destruction :binding-unbind)
-        (core/remove-handler target-id :before-destruction :binding-get-unbound))))
+        (handlers/remove-handler target-id :after-moved :binding-drag)
+        (handlers/remove-handler obj-id :after-moved :binding-unbind-if-not-near)
+        (handlers/remove-handler obj-id :before-walks :binding-unbind)
+        (handlers/remove-handler obj-id :before-melee-attacks :binding-unbind)
+        (handlers/remove-handler obj-id :before-destruction :binding-unbind)
+        (handlers/remove-handler target-id :before-destruction :binding-get-unbound))))
 
 (defn get-unbound
   [g obj-id]
   (let [binding-obj-id (get-in g [:objects obj-id :binding-from])]
    (unbind g binding-obj-id)))
 
-(core/create-handler
+(handlers/create-handler
  :binding-unbind
  [g obj-id & _]
  (unbind g obj-id))
 
-(core/create-handler
+(handlers/create-handler
  :binding-get-unbound
  [g obj-id & _]
  (get-unbound g obj-id))
@@ -192,7 +193,7 @@
    (object-filled-coords obj)))
 
 
-(core/create-handler
+(handlers/create-handler
  :binding-drag
  [g obj-id old-position new-position & _]
  (let [dist (distance old-position new-position)]
@@ -207,7 +208,7 @@
                                 freed-coords)]
        (core/move-object g (obj :player) dragged-obj-id closest-coord)))))
 
-(core/create-handler
+(handlers/create-handler
  :binding-unbind-if-not-near
  [g obj-id & _]
  (let [obj (get-in g [:objects obj-id])
@@ -289,7 +290,7 @@
               (core/move-object g-cleared p obj-id new-pos))))))))
 
 
-(core/create-handler
+(handlers/create-handler
  :push-unit
  [g obj-id target-id p]
  (let [target (get-in g [:objects target-id])]

@@ -1,2 +1,2 @@
 {:lint-as {engine.actions/create-action clojure.core/defn
-           engine.core/create-handler clojure.core/defn}}
+           engine.handlers/create-handler clojure.core/defn}}
