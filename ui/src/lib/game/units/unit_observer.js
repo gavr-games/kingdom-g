@@ -187,29 +187,34 @@ class UnitObserver {
         newY == targetCoords.y &&
         newZ == targetCoords.z
       ) {
-        EventBus.$emit("move-unit-animation-finished", this);
         this.playAnimation("Idle");
         this.state.stop();
+        EventBus.$emit("animation-finished");
       }
     }
   }
 
   remove() {
-    EventBus.$emit("pointer-out-unit", this);
-    GameObserver.removeRenderObserver(`unit-${this.state.id}`);
-    EventBus.$off("scene-created", this.sceneCreatedCallback);
-    EventBus.$off("unit-deselected", this.checkLevelupCallback);
-    GameObserver.unhighlight(this.mesh, "levelup");
-    this.mesh.dispose();
-    this.playerTorus.dispose();
-    this.mesh = null;
-    this.playerTorus = null;
-    this.state = null;
-    this.container = null;
+    this.playAnimation("Die", false, () => {
+      EventBus.$emit("pointer-out-unit", this);
+      GameObserver.removeRenderObserver(`unit-${this.state.id}`);
+      EventBus.$off("scene-created", this.sceneCreatedCallback);
+      EventBus.$off("unit-deselected", this.checkLevelupCallback);
+      GameObserver.unhighlight(this.mesh, "levelup");
+      this.mesh.dispose();
+      this.playerTorus.dispose();
+      this.mesh = null;
+      this.playerTorus = null;
+      this.state = null;
+      this.container = null;
+      EventBus.$emit("animation-finished");
+    });
   }
 
   attack() {
-    this.playAnimation("Attack", false);
+    this.playAnimation("Attack", false, () => {
+      EventBus.$emit("animation-finished");
+    });
   }
 
   checkCanLevelUp() {
@@ -237,10 +242,15 @@ class UnitObserver {
     return coordinate * boardConfig.cellSize + boardConfig.cellSize;
   }
 
-  playAnimation(name, loop = true) {
+  playAnimation(name, loop = true, endCallback = false) {
     if (this.container) {
       this.container.animationGroups.forEach(ag => {
         if (ag.name === name) {
+          if (endCallback) {
+            ag.onAnimationGroupEndObservable.addOnce(() => {
+              endCallback();
+            });
+          }
           ag.start(loop);
           this.currentAnimation = name;
         } else {
@@ -248,6 +258,10 @@ class UnitObserver {
           ag.stop();
         }
       });
+      // If animation for this unit does not exist
+      if (this.currentAnimation != name && endCallback) {
+        endCallback();
+      }
     }
   }
 }

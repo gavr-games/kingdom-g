@@ -130,10 +130,31 @@ class BuildingObserver {
     return coordinate * boardConfig.cellSize + boardConfig.cellSize;
   }
 
-  playAnimation(name, loop = true) {
+  remove() {
+    this.playAnimation("Die", false, () => {
+      EventBus.$emit("pointer-out-building", this);
+      EventBus.$off("scene-created", this.sceneCreatedCallback);
+      this.mesh.dispose();
+      this.playerToruses.forEach(torus => {
+        torus.dispose();
+      });
+      this.playerToruses = null;
+      this.mesh = null;
+      this.state = null;
+      this.container = null;
+      EventBus.$emit("animation-finished");
+    });
+  }
+
+  playAnimation(name, loop = true, endCallback = false) {
     if (this.container) {
       this.container.animationGroups.forEach(ag => {
         if (ag.name === name) {
+          if (endCallback) {
+            ag.onAnimationGroupEndObservable.addOnce(() => {
+              endCallback();
+            });
+          }
           ag.start(loop);
           this.currentAnimation = name;
         } else {
@@ -141,6 +162,10 @@ class BuildingObserver {
           ag.stop();
         }
       });
+      // If animation for this building does not exist
+      if (this.currentAnimation != name && endCallback) {
+        endCallback();
+      }
     }
   }
 }

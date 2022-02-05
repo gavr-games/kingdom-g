@@ -1,5 +1,4 @@
 import Coords from "@/lib/utils/coords";
-import { EventBus } from "@/lib/event_bus";
 
 const STOPPED = 0,
   MOVING = 1;
@@ -9,12 +8,6 @@ class UnitState {
     this.id = parseInt(id);
     this.state = STOPPED;
     this.targetPosition = null; //where to move (animation)
-    EventBus.$on("move-unit-animation-finished", unitObserver => {
-      if (this.id === unitObserver.state.id) {
-        this.state = STOPPED;
-        this.targetCoords = null;
-      }
-    });
   }
 
   get type() {
@@ -70,6 +63,11 @@ class UnitState {
   get maxMoves() {
     let obj = window.client.api.get_object(parseInt(this.id));
     return obj["max_moves"];
+  }
+
+  get shield() {
+    let obj = window.client.api.get_object(parseInt(this.id));
+    return obj["shield"];
   }
 
   get size() {

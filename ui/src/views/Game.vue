@@ -31,6 +31,14 @@
             <td>Level</td>
             <td>{{ popupObject.level }}</td>
           </tr>
+          <tr v-if="popupObject.shield !== undefined">
+            <td>Shield</td>
+            <td>{{ popupObject.shield }}</td>
+          </tr>
+          <tr>
+            <td>Attack</td>
+            <td>{{ popupObject.attack }}</td>
+          </tr>
           <tr>
             <td>Health</td>
             <td>{{ popupObject.health }}/{{ popupObject.maxHealth }}</td>
@@ -83,27 +91,49 @@
         </div>
       </div>
     </div>
-    <div id="levelup-panel-cont" v-if="showLevelupPanel">
-      <h3>Levelup</h3>
-      <div>
-        <a href="#" class="green-button" @click="handleLevelup('attack')">
-          attack
-        </a>
-      </div>
-      <div>
-        <a href="#" class="green-button" @click="handleLevelup('health')">
-          health
-        </a>
-      </div>
-      <div>
-        <a href="#" class="green-button" @click="handleLevelup('moves')">
-          moves
-        </a>
-      </div>
-      <div>
-        <a href="#" class="red-button" @click="cancelLevelup">
-          {{ $t("common.cancel") }}
-        </a>
+    <div
+      id="levelup-panel-cont"
+      v-if="showLevelupPanel"
+      class="rpgui-container framed-golden-2"
+    >
+      <div class="rpgui-content">
+        <h3>Levelup</h3>
+        <div>
+          <button
+            type="button"
+            class="rpgui-button"
+            @click="handleLevelup('attack')"
+          >
+            <p>Attack</p>
+          </button>
+        </div>
+        <div>
+          <button
+            type="button"
+            class="rpgui-button"
+            @click="handleLevelup('health')"
+          >
+            <p>Health</p>
+          </button>
+        </div>
+        <div>
+          <button
+            type="button"
+            class="rpgui-button"
+            @click="handleLevelup('moves')"
+          >
+            <p>Moves</p>
+          </button>
+        </div>
+        <div>
+          <button
+            type="button"
+            class="rpgui-button down"
+            @click="cancelLevelup"
+          >
+            <p>{{ $t("common.cancel") }}</p>
+          </button>
+        </div>
       </div>
     </div>
     <canvas id="game-canvas"></canvas>

@@ -6,6 +6,12 @@ class BuildingController {
     this.state = new BuildingState(id);
     this.observer = new BuildingObserver(this.state);
   }
+
+  remove() {
+    this.observer.remove();
+    this.observer = null;
+    this.state = null;
+  }
 }
 
 export default BuildingController;
