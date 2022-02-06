@@ -14,4 +14,3 @@
 - take `flip` into account during building placement
 - player lost/won game over
 - binds / unbinds
-- set_shield command + shield visualization

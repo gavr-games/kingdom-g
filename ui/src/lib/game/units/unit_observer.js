@@ -18,6 +18,7 @@ class UnitObserver {
     this.mesh = null;
     this.meshRotation = Math.PI;
     this.currentAnimation = null;
+    this.shieldMesh = null;
     this.playerTorus = null;
     this.container = null;
     this.sceneCreatedCallback = scene => {
@@ -53,6 +54,7 @@ class UnitObserver {
     mesh.metadata = this.state;
 
     this.createPlayerTorus();
+    this.setShield();
 
     // Set initial rotation
     if (this.state.previousPosition !== null) {
@@ -73,29 +75,7 @@ class UnitObserver {
       }
     }
 
-    mesh.actionManager = new BABYLON.ActionManager(this.scene);
-    mesh.actionManager.isRecursive = true;
-    mesh.actionManager.registerAction(
-      new BABYLON.ExecuteCodeAction(
-        BABYLON.ActionManager.OnPointerOverTrigger,
-        () => {
-          EventBus.$emit("pointer-over-unit", this);
-        }
-      )
-    );
-    mesh.actionManager.registerAction(
-      new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, () => {
-        EventBus.$emit("click-unit", this);
-      })
-    );
-    mesh.actionManager.registerAction(
-      new BABYLON.ExecuteCodeAction(
-        BABYLON.ActionManager.OnPointerOutTrigger,
-        () => {
-          EventBus.$emit("pointer-out-unit", this);
-        }
-      )
-    );
+    mesh.actionManager = this.createActionManager();
     mesh.setEnabled(true);
     this.mesh = mesh;
     this.checkCanLevelUp();
@@ -120,6 +100,60 @@ class UnitObserver {
     torusMaterial.diffuseColor = ColorUtils.getColorFromMap(this.state.player);
     torusMaterial.emissiveColor = ColorUtils.getColorFromMap(this.state.player);
     this.playerTorus.material = torusMaterial;
+  }
+
+  setShield() {
+    if (
+      (this.state.shield === undefined ||
+        this.state.shield === null ||
+        this.state.shield === 0) &&
+      this.shieldMesh !== null
+    ) {
+      this.shieldMesh.dispose();
+      this.shieldMesh = null;
+    } else if (this.state.shield > 0 && this.shieldMesh === null) {
+      const coords = this.state.coords;
+      this.shieldMesh = BABYLON.MeshBuilder.CreateSphere(
+        `shield-${this.state.id}`,
+        { diameter: boardConfig.cellSize * this.state.size },
+        this.scene
+      );
+      let mat = new BABYLON.StandardMaterial("shieldMat", this.scene);
+      mat.ambientColor = BABYLON.Color3.White();
+      mat.alpha = 0.5;
+      this.shieldMesh.material = mat;
+      this.shieldMesh.position.x = this.getHorizontalMeshCoordinate(coords.x);
+      this.shieldMesh.position.y = this.getVerticalMeshCoordinate(coords.y);
+      this.shieldMesh.position.z = this.getHorizontalMeshCoordinate(coords.z);
+      this.shieldMesh.actionManager = this.createActionManager();
+    }
+  }
+
+  createActionManager() {
+    let actionManager = new BABYLON.ActionManager(this.scene);
+    actionManager.isRecursive = true;
+    actionManager.registerAction(
+      new BABYLON.ExecuteCodeAction(
+        BABYLON.ActionManager.OnPointerOverTrigger,
+        () => {
+          EventBus.$emit("pointer-over-unit", this);
+        }
+      )
+    );
+    actionManager.registerAction(
+      new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, () => {
+        EventBus.$emit("click-unit", this);
+      })
+    );
+    actionManager.registerAction(
+      new BABYLON.ExecuteCodeAction(
+        BABYLON.ActionManager.OnPointerOutTrigger,
+        () => {
+          EventBus.$emit("pointer-out-unit", this);
+        }
+      )
+    );
+    return actionManager;
   }
 
   update() {
@@ -182,6 +216,11 @@ class UnitObserver {
       this.playerTorus.position.x = newX;
       this.playerTorus.position.y = newY;
       this.playerTorus.position.z = newZ;
+      if (this.shieldMesh !== null) {
+        this.shieldMesh.position.x = newX;
+        this.shieldMesh.position.y = newY;
+        this.shieldMesh.position.z = newZ;
+      }
       if (
         newX == targetCoords.x &&
         newY == targetCoords.y &&
