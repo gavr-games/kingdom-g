@@ -1,7 +1,6 @@
 # UI
 
 ## TODO:
-- fix `bridge` model to use 3 cells
 - use can_be_placed_at on move
 - units shooting
 - fix dragon movement highlighting and coords selection
@@ -14,3 +13,4 @@
 - take `flip` into account during building placement
 - player lost/won game over
 - binds / unbinds
+- logout
