@@ -5,6 +5,7 @@ import Atlas from "@/lib/game/atlas/atlas";
 import { MOVING } from "@/lib/game/units/unit_state";
 import GameObserver from "@/lib/game/game_observer";
 import ColorUtils from "@/lib/utils/color";
+import ActionController from "@/lib/game/actions/actions_controller";
 
 const SPEED = 0.1;
 const POSITION_CORRECTION = {
@@ -20,18 +21,28 @@ class UnitObserver {
     this.currentAnimation = null;
     this.shieldMesh = null;
     this.playerTorus = null;
+    this.shootAreaMeshes = [];
     this.container = null;
     this.sceneCreatedCallback = scene => {
       this.scene = scene;
       this.create();
     };
-    this.checkLevelupCallback = unitObserver => {
+    this.unitSelectedCallback = unitObserver => {
       if (unitObserver.state.id === this.state.id) {
+        if (ActionController.currentActionName == "unit_shoot") {
+          this.showShootingParams();
+        }
+      }
+    };
+    this.unitDeselectedCallback = unitObserver => {
+      if (unitObserver.state.id === this.state.id) {
+        this.hideShootingParams();
         this.checkCanLevelUp();
       }
     };
     EventBus.$on("scene-created", this.sceneCreatedCallback);
-    EventBus.$on("unit-deselected", this.checkLevelupCallback);
+    EventBus.$on("unit-selected", this.unitSelectedCallback);
+    EventBus.$on("unit-deselected", this.unitDeselectedCallback);
     GameObserver.addRenderObserver(`unit-${this.state.id}`, this);
   }
 
@@ -119,7 +130,7 @@ class UnitObserver {
         this.scene
       );
       let mat = new BABYLON.StandardMaterial("shieldMat", this.scene);
-      mat.ambientColor = BABYLON.Color3.White();
+      mat.diffuseColor = BABYLON.Color3.White();
       mat.alpha = 0.5;
       this.shieldMesh.material = mat;
       this.shieldMesh.position.x = this.getHorizontalMeshCoordinate(coords.x);
@@ -233,12 +244,106 @@ class UnitObserver {
     }
   }
 
+  showShootingParams() {
+    const params = this.state.defaultShootParams;
+    const coords = this.state.coords;
+    Object.keys(params).forEach(distance => {
+      const color = this.shootHitProbabilityColor(params[distance]);
+      for (let x = coords.x - distance; x <= coords.x + distance; x++) {
+        distance = parseInt(distance);
+        let z = coords.z - distance;
+        if (x >= 0 && x <= 19 && z >= 0 && z <= 19) {
+          const mesh = this.createGroundArea(
+            { x: x, y: coords.y + 0.01, z: z },
+            color
+          );
+          this.shootAreaMeshes.push(mesh);
+        }
+        z = coords.z + distance;
+        if (x >= 0 && x <= 19 && z >= 0 && z <= 19) {
+          const mesh = this.createGroundArea(
+            { x: x, y: coords.y + 0.01, z: z },
+            color
+          );
+          this.shootAreaMeshes.push(mesh);
+        }
+      }
+      for (let z = coords.z - distance + 1; z <= coords.z + distance - 1; z++) {
+        distance = parseInt(distance);
+        let x = coords.x - distance;
+        if (x >= 0 && x <= 19 && z >= 0 && z <= 19) {
+          const mesh = this.createGroundArea(
+            { x: x, y: coords.y + 0.01, z: z },
+            color
+          );
+          this.shootAreaMeshes.push(mesh);
+        }
+        x = coords.x + distance;
+        if (x >= 0 && x <= 19 && z >= 0 && z <= 19) {
+          const mesh = this.createGroundArea(
+            { x: x, y: coords.y + 0.01, z: z },
+            color
+          );
+          this.shootAreaMeshes.push(mesh);
+        }
+      }
+    });
+  }
+
+  createGroundArea(coords, color) {
+    let mesh = BABYLON.MeshBuilder.CreateGround(
+      `shooting-${this.state.id}`,
+      { width: boardConfig.cellSize, height: boardConfig.cellSize },
+      this.scene
+    );
+    let mat = new BABYLON.StandardMaterial(
+      `shootingMat-unit-${this.state.id}`,
+      this.scene
+    );
+    mat.diffuseColor = color;
+    mat.alpha = 0.3;
+    mesh.material = mat;
+    mesh.position.x = this.getHorizontalMeshCoordinate(coords.x);
+    mesh.position.y = this.getVerticalMeshCoordinate(coords.y);
+    mesh.position.z = this.getHorizontalMeshCoordinate(coords.z);
+    return mesh;
+  }
+
+  shootHitProbabilityColor(params) {
+    const hit = params.find(p => p.outcome == "hit");
+    const miss = params.find(p => p.outcome == "miss");
+    let hitProbability = 1;
+    if (miss !== undefined) {
+      hitProbability = hitProbability / (hit["weight"] + miss["weight"]);
+    }
+    if (hitProbability == 1) {
+      return BABYLON.Color3.Green();
+    } else if (hitProbability < 1 && hitProbability >= 0.75) {
+      return BABYLON.Color3.Teal();
+    } else if (hitProbability < 0.75 && hitProbability >= 0.5) {
+      return BABYLON.Color3.Yellow();
+    } else if (hitProbability < 0.5 && hitProbability >= 0.25) {
+      return BABYLON.Color3.Red();
+    } else if (hitProbability < 0.25) {
+      return BABYLON.Color3.Black();
+    }
+    return BABYLON.Color3.Black();
+  }
+
+  hideShootingParams() {
+    this.shootAreaMeshes.forEach(mesh => {
+      mesh.dispose();
+    });
+    this.shootAreaMeshes = [];
+  }
+
   remove() {
     this.playAnimation("Die", false, () => {
       EventBus.$emit("pointer-out-unit", this);
       GameObserver.removeRenderObserver(`unit-${this.state.id}`);
       EventBus.$off("scene-created", this.sceneCreatedCallback);
-      EventBus.$off("unit-deselected", this.checkLevelupCallback);
+      EventBus.$off("unit-selected", this.unitSelectedCallback);
+      EventBus.$off("unit-deselected", this.unitDeselectedCallback);
       GameObserver.unhighlight(this.mesh, "levelup");
       this.mesh.dispose();
       this.playerTorus.dispose();

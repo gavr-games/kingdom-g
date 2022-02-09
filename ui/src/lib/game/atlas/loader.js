@@ -124,34 +124,6 @@ class Loader {
   }
 
   loadBuildings() {
-    let buildings = [
-      "barracks",
-      "bridge",
-      "castle",
-      "coin_factory",
-      "healing_temple",
-      "magic_tower",
-      "mountains",
-      "puddle",
-      "scarecrow",
-      "teleport",
-      "tree",
-      "wall_closed",
-      "wall_opened"
-    ];
-    buildings.forEach(building => {
-      let task = this.assetsManager.addMeshTask(
-        building,
-        building,
-        "/game_assets/buildings/",
-        building + ".obj"
-      );
-      task.onSuccess = task => {
-        let mesh = task.loadedMeshes[0];
-        mesh.setEnabled(false);
-        this.atlas.set(building + "Building", mesh);
-      };
-    });
     let buildingsGltf = ["bridge", "castle", "puddle", "tree"];
     buildingsGltf.forEach(building => {
       let task = this.assetsManager.addContainerTask(

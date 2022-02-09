@@ -5,8 +5,6 @@ import Atlas from "../atlas/atlas";
 import GameState from "@/lib/game/game_state";
 import ColorUtils from "@/lib/utils/color";
 
-const ANIMATED_BUILDINGS = ["bridge", "castle", "puddle", "tree"];
-
 class BuildingObserver {
   constructor(state) {
     this.scene = null;
@@ -24,18 +22,14 @@ class BuildingObserver {
   create() {
     let coords = this.state.coords;
     let mesh = null;
-    if (ANIMATED_BUILDINGS.includes(this.state.type)) {
-      this.container = Atlas.get(
-        this.state.type + "AnimatedBuilding"
-      ).instantiateModelsToScene();
-      setTimeout(() => {
-        this.playAnimation("Idle");
-      }, Math.floor(Math.random() * Math.floor(2000)));
-      mesh = this.container.rootNodes[0];
-      this.meshRotation = 0;
-    } else {
-      mesh = Atlas.get(this.state.type + "Building").clone();
-    }
+    this.container = Atlas.get(
+      this.state.type + "AnimatedBuilding"
+    ).instantiateModelsToScene();
+    setTimeout(() => {
+      this.playAnimation("Idle");
+    }, Math.floor(Math.random() * Math.floor(2000)));
+    mesh = this.container.rootNodes[0];
+    this.meshRotation = 0;
 
     if (this.state.rotation !== undefined) {
       let axis = new BABYLON.Vector3(0, 1, 0);

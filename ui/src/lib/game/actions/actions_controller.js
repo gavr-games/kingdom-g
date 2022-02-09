@@ -10,6 +10,7 @@ import WSClient from "@/lib/ws/wsclient";
 class ActionsController {
   init() {
     this.currentAction = null;
+    this.currentActionName = null;
     this.unitClickChain = new Chain();
     this.unitClickChain.insert({
       id: "default-unit-click",
@@ -29,7 +30,7 @@ class ActionsController {
       this.buildingClickChain.execute(buildingObserver);
     });
     EventBus.$on("abort-action", () => {
-      this.currentAction = null;
+      this.cancelAction();
     });
     EventBus.$on("perform-action", actionParams => {
       this.performAction(actionParams);
@@ -52,8 +53,7 @@ class ActionsController {
   }
 
   performAction(actionParams) {
-    this.currentAction.cancel();
-    this.currentAction = null;
+    this.cancelAction();
     WSClient.sendMsg(`game:${GameState.gameData.id}`, {
       action: "perform_action",
       data: actionParams
@@ -76,6 +76,7 @@ class ActionsController {
     this.cancelAction();
     // Handle unit actions
     if (objectObserver.state.objectClass === "unit") {
+      this.currentActionName = `unit_${action}`;
       switch (action) {
         case "move":
           this.currentAction = new UnitMoveAction(objectObserver);
@@ -93,8 +94,9 @@ class ActionsController {
   cancelAction() {
     if (this.currentAction !== null) {
       this.currentAction.cancel();
-      this.currentAction = null;
     }
+    this.currentAction = null;
+    this.currentActionName = null;
   }
 }
 const actionsController = new ActionsController();

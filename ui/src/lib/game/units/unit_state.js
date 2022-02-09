@@ -86,6 +86,10 @@ class UnitState {
     return obj["previous_position"];
   }
 
+  get defaultShootParams() {
+    return window.client.api.get_default_shoot_parameters(parseInt(this.id));
+  }
+
   moveToPosition(position) {
     this.targetPosition = position;
     this.state = MOVING;

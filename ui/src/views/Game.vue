@@ -24,8 +24,8 @@
         <canvas id="object-popup-canvas"></canvas>
         <table v-if="popupObject !== null && popupObject.objectClass == 'unit'">
           <tr>
-            <td>Type</td>
             <td>{{ popupObject.type }}</td>
+            <td></td>
           </tr>
           <tr>
             <td>Level</td>
@@ -53,10 +53,10 @@
           v-if="popupObject !== null && popupObject.objectClass == 'building'"
         >
           <tr>
-            <td>Type</td>
             <td>{{ popupObject.type }}</td>
+            <td></td>
           </tr>
-          <tr>
+          <tr v-if="popupObject.health !== undefined">
             <td>Health</td>
             <td>{{ popupObject.health }}/{{ popupObject.maxHealth }}</td>
           </tr>
