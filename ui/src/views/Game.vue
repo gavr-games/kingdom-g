@@ -136,6 +136,21 @@
         </div>
       </div>
     </div>
+    <div id="menu" class="rpgui-container framed-golden-2">
+      <div class="rpgui-content">
+        <div
+          :class="
+            showMenu
+              ? 'rpgui-icon exclamation rpgui-cursor-point'
+              : 'rpgui-icon exclamation rpgui-cursor-point rpgui-disabled'
+          "
+          @click="toggleMenu"
+        ></div>
+        <div v-if="showMenu">
+          <a @click="logout">Logout</a>
+        </div>
+      </div>
+    </div>
     <canvas id="game-canvas"></canvas>
   </div>
 </template>
@@ -144,6 +159,7 @@
 import GameController from "@/lib/game/game_controller";
 import { EventBus } from "@/lib/event_bus";
 import getId from "@/lib/concepts/user/operations/get_id";
+import logoutUser from "@/lib/concepts/user/operations/logout";
 
 export default {
   name: "game",
@@ -157,7 +173,8 @@ export default {
       showObjectPopup: true,
       selectedObjectState: null,
       showActionsPanel: false,
-      showLevelupPanel: false
+      showLevelupPanel: false,
+      showMenu: false
     };
   },
   created() {
@@ -284,6 +301,17 @@ export default {
     },
     cancelLevelup() {
       this.showLevelupPanel = false;
+    },
+    logout() {
+      logoutUser();
+      this.$router.push("/");
+    },
+    toggleMenu() {
+      if (this.showMenu) {
+        this.showMenu = false;
+      } else {
+        this.showMenu = true;
+      }
     }
   }
 };
@@ -298,7 +326,7 @@ export default {
   font-size: 16px;
   color: white;
   top: 15px;
-  right: 10px;
+  left: 180px;
   width: 60px;
   height: 20px;
 }
@@ -351,6 +379,19 @@ export default {
   }
   button {
     width: 100%;
+  }
+}
+#menu {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  padding: 0px;
+  border-width: 10px;
+  text-align: right;
+  .rpgui-icon {
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
   }
 }
 </style>
