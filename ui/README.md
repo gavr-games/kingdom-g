@@ -1,6 +1,7 @@
 # UI
 
 ## TODO:
+- firefox fps issue
 - player lost/won game over
 - fix dragon movement highlighting and coords selection
 - use can_be_placed_at on move

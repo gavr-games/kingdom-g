@@ -1,5 +1,5 @@
 <template>
-  <div id="game-cont">
+  <div id="game-cont" class="rpgui-cursor-default">
     <div id="fps">0</div>
     <div id="playerslist-cont" class="rpgui-container framed-golden-2">
       <div class="rpgui-content">
@@ -151,7 +151,7 @@
         </div>
       </div>
     </div>
-    <canvas id="game-canvas"></canvas>
+    <canvas id="game-canvas" class="rpgui-cursor-default"></canvas>
   </div>
 </template>
 
