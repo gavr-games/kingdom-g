@@ -13,6 +13,14 @@
             {{ player.username }} ({{ player.gold }})
           </p>
         </div>
+        <button
+          type="button"
+          class="rpgui-button"
+          v-if="myTurn"
+          @click="endTurn"
+        >
+          <p>{{ $t("game.end_turn") }}</p>
+        </button>
       </div>
     </div>
     <div
@@ -169,6 +177,7 @@ export default {
       game: {},
       canvas: null,
       players: [],
+      myTurn: false,
       popupObject: null,
       showObjectPopup: true,
       selectedObjectState: null,
@@ -250,6 +259,8 @@ export default {
           ...gamePlayer
         };
       });
+      this.myTurn =
+        this.players.filter(p => p.active && p.id == getId()).length > 0;
     },
     setPopupObject(object) {
       this.popupObject = object.state;
@@ -312,6 +323,17 @@ export default {
       } else {
         this.showMenu = true;
       }
+    },
+    endTurn() {
+      this.$WSClient.sendMsg(`game:${this.currentGameId}`, {
+        action: "perform_action",
+        data: [
+          {
+            action: "end-turn",
+            parameters: {}
+          }
+        ]
+      });
     }
   }
 };
@@ -326,7 +348,7 @@ export default {
   font-size: 16px;
   color: white;
   top: 15px;
-  left: 180px;
+  left: 220px;
   width: 60px;
   height: 20px;
 }

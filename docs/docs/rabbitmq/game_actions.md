@@ -94,3 +94,12 @@ On player actions Site will send messages such as
     }
 }
 ```
+
+### End Turn
+```json
+{
+    "action": "end-turn",
+    "parameters": {
+        "p":55
+    }
+}

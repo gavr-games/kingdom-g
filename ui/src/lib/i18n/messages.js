@@ -101,6 +101,9 @@ const messages = {
         nickname: "Nickname"
       }
     },
+    game: {
+      end_turn: "End turn"
+    },
     errors: {
       1: "Server error",
       2: "Record not found",
@@ -217,6 +220,9 @@ const messages = {
         level: "Уровень",
         nickname: "Имя игрока"
       }
+    },
+    game: {
+      end_turn: "Закончить ход"
     },
     errors: {
       1: "Ошибка сервера",
