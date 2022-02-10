@@ -2,14 +2,12 @@ version: '3.5'
 
 services:
   caddy:
-    image: abiosoft/caddy:0.10.14
+    image: caddy:2.4.6-alpine
     volumes:
-      - ./caddy/Caddyfile:/etc/Caddyfile:cached
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:cached
     ports:
       - 80:80
       - 443:443
-    environment:
-      - ACME_AGREE=true
   
   ui:
     build: ./ui
