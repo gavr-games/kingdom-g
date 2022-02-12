@@ -5,6 +5,7 @@
             [engine.attack :as attack]
             [engine.newgame :as ng]
             [engine.checks :as check]
+            [engine.actions :refer [get-action-result]]
             [cljs.reader]
             [clojure.string :as string]))
 
@@ -40,6 +41,13 @@
         cmd (assoc cmd :command (keyword (:command cmd)))]
     (swap! game cr/apply-command cmd)))
 
+(defn ^:export emulate-action
+  "Emulates running an action and returns the result."
+  [p action-code parameters-js]
+  (let [action (keyword action-code)
+        parameters (js->clj parameters-js :keywordize-keys true)
+        [_g-after result] (get-action-result @game p action parameters)]
+    (clj->jsu result)))
 
 (defn clean-object
   "Removes irrelevant information for the client from the given object."

@@ -10,11 +10,37 @@ Initialises the game from the string with edn game state.
 
 ### `client.api.init_test_game()`
 
-Initialises a test game with two players and some test objects.
+Initialises a test game with two players and some test objects (for testing purpose).
 
 ### `client.api.get_game_data()`
 
-Returns all game data as js object.
+Returns all game data as js object (for testing purpose).
+
+### `client.api.emulate_action(player, action, parameters)`
+
+Emulates an action and returns its expected result. Does not change the internal game state.
+
+```js
+client.api.emulate_action(0, "move", {"obj-id":1, "new-position":[10, 10]})
+> {"success": false, "error": "target_coord_not_reachable"}
+
+client.api.emulate_action(0, "move", {"obj-id":1, "new-position":[1, 1]})
+> {
+    "success": true,
+    "commands": [
+        {
+            "command": "set_moves",
+            "object_id": 1,
+            "moves": 1
+        },
+        {
+            "command": "move_object",
+            "object_id": 1,
+            "position": [1, 1]
+        }
+    ]
+}
+```
 
 ### `client.api.get_all_coords()`
 
