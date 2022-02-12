@@ -108,7 +108,7 @@
 (defn bfs-build-path
   [prevs destination]
   (loop [p [destination]]
-    (let [cur (last p)
+    (let [cur (peek p)
           prev (prevs cur)]
       (if (= :start (prevs prev))
         (reverse p)
