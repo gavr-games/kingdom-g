@@ -159,3 +159,10 @@
         dr-id (get-object-id-at g [5 5])]
     (is (= nil (find-path g sp-id [3 3])))
     (is (= nil (find-path g dr-id [5 5])))))
+
+(deftest long-path-performance-test
+  (let [g (-> (create-test-game)
+              (add-new-object 0 :spearman [1 1] nil nil {:moves 20}))
+        sp-id (get-object-id-at g [1 1])]
+    (println "Pathfinding long path time")
+    (dotimes [_ 10] (time (find-path g sp-id [19 19])))))

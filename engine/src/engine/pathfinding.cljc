@@ -39,8 +39,7 @@
   "Quicker check for objects of size 1."
   [g fill position]
   (let [fills (core/get-fills-in-cell g position)]
-    (and
-     (core/can-add-fill? fill fills))))
+    (core/can-add-fill? fill fills)))
 ;; +++++++++++++++++++
 (defn can-add-fill-without-drowning?
   "Quicker check for objects of size 1."
@@ -101,13 +100,15 @@
                               (filter #(core/valid-coord? g %)))
                       added-paths (map n->p ns)
                       new-paths (apply conj rest-paths added-paths)]
-                  (recur new-paths new-visited))))
-            (recur rest-paths new-visited)))))))
+                  (recur new-paths new-visited)))
+              nil)
+            (recur rest-paths new-visited)))
+        nil))))
 
 (defn bfs-build-path
   [prevs destination]
   (loop [p [destination]]
-    (let [cur (last p)
+    (let [cur (peek p)
           prev (prevs cur)]
       (if (= :start (prevs prev))
         (reverse p)
@@ -138,8 +139,10 @@
                       new-prevs (reduce #(assoc %1 %2 cur-pos) prevs neibs)
                       new-q (reduce #(conj %1 [%2 (inc steps)])
                                     (subvec q 1) neibs)]
-                  (recur new-q new-prevs))))
-            (recur (subvec q 1) prevs)))))))
+                  (recur new-q new-prevs)))
+              nil)
+            (recur (subvec q 1) prevs)))
+        nil))))
 
 (defn find-path
   "Searches for a path for the object with given id to the given destination.
@@ -163,6 +166,7 @@
 
       (and (:flying obj)
            (not (:chess-knight obj))) (if (can-move-object? g obj-id destination)
-                                        [destination])
+                                        [destination]
+                                        nil)
 
       :else (bfs g obj-id destination))))
