@@ -45,17 +45,12 @@
   (let [action (keyword action)]
     (dosync
      (let [g (@games g-id)
-           action-result (action/act g p action params)]
-       (if (keyword? action-result)
-         {:success false :error action-result}
-         (let [g-after action-result
-               new-commands (subvec (g-after :commands) (count (g :commands)))
-               cleaned-commands (map core/clean-command new-commands)
-               over (= :over (g-after :status))]
-           (if over
-             (alter games dissoc g-id)
-             (alter games assoc g-id g-after))
-           {:success true :commands cleaned-commands}))))))
+           [g-after result] (action/get-action-result g p action params)]
+       (when (:success result)
+         (if (= :over (g-after :status))
+           (alter games dissoc g-id)
+           (alter games assoc g-id g-after)))
+       result))))
 
 (defn send-game-message
   [game-id p ch routing-key message request-meta]

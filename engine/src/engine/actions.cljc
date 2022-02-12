@@ -85,3 +85,18 @@
    (-> g
       (cmd/add-command (cmd/end-turn p))
       (core/deactivate-player-objects p))))
+
+
+(defn get-action-result
+  "Performs action and returns [g-after result].
+   Result is either {:success false :error :error-type}
+   or {:success true :commands [commands from action]}.
+   If success is false, g-after is g."
+  [g p action-code params]
+  (let [action-result (act g p action-code params)]
+    (if (keyword? action-result)
+      [g {:success false :error action-result}]
+      (let [g-after action-result
+            new-commands (subvec (g-after :commands) (count (g :commands)))
+            cleaned-commands (map core/clean-command new-commands)]
+        [g-after {:success true :commands cleaned-commands}]))))
