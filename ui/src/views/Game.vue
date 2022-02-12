@@ -155,7 +155,8 @@
           @click="toggleMenu"
         ></div>
         <div v-if="showMenu">
-          <a @click="logout">Logout</a>
+          <a @click="logout">Logout</a><br />
+          <a @click="showInspector">Inspector</a>
         </div>
       </div>
     </div>
@@ -334,6 +335,9 @@ export default {
           }
         ]
       });
+    },
+    showInspector() {
+      EventBus.$emit("show-inspector");
     }
   }
 };

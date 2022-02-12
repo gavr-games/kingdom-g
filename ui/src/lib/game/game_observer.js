@@ -22,6 +22,9 @@ class GameObserver {
     this.renderObservers = [];
     this.showGrid = false;
     this.fpsEl = null;
+    EventBus.$on("show-inspector", () => {
+      this.scene.debugLayer.show();
+    });
   }
 
   init() {
