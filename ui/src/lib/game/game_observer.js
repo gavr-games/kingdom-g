@@ -44,6 +44,7 @@ class GameObserver {
   createScene() {
     this.scene = new BABYLON.Scene(this.engine);
     this.scene.actionManager = new BABYLON.ActionManager(this.scene);
+    this.scene.autoClear = false;
     this.registerActions(this.scene);
 
     this.glowLayer = new BABYLON.GlowLayer("glow", this.scene);

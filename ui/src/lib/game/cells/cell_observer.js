@@ -64,6 +64,8 @@ class CellObserver {
     mesh.setEnabled(true);
     mesh.freezeWorldMatrix();
     mesh.doNotSyncBoundingInfo = true;
+    mesh.cullingStrategy =
+      BABYLON.AbstractMesh.CULLINGSTRATEGY_OPTIMISTIC_INCLUSION_THEN_BSPHERE_ONLY;
     this.mesh = mesh;
   }
 }

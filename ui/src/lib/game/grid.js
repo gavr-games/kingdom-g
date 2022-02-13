@@ -66,6 +66,7 @@ class Grid {
     plane.material.backFaceCulling = false;
     plane.material.specularColor = new BABYLON.Color3(0, 0, 0);
     plane.material.diffuseTexture = dynamicTexture;
+    plane.material.freeze();
     return plane;
   }
 

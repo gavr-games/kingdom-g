@@ -83,6 +83,9 @@ class BuildingObserver {
 
     mesh.setEnabled(true);
     mesh.metadata = this.state;
+    mesh.freezeWorldMatrix();
+    mesh.cullingStrategy =
+      BABYLON.AbstractMesh.CULLINGSTRATEGY_OPTIMISTIC_INCLUSION_THEN_BSPHERE_ONLY;
     this.mesh = mesh;
   }
 
@@ -108,6 +111,7 @@ class BuildingObserver {
       torusMaterial.emissiveColor = ColorUtils.getColorFromMap(
         this.state.player
       );
+      torusMaterial.freeze();
       playerTorus.material = torusMaterial;
       const axis = new BABYLON.Vector3(0, 1, 0);
       const quaternion = new BABYLON.Quaternion.RotationAxis(axis, Math.PI / 4);

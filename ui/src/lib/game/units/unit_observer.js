@@ -88,6 +88,9 @@ class UnitObserver {
 
     mesh.actionManager = this.createActionManager();
     mesh.setEnabled(true);
+    mesh.freezeWorldMatrix();
+    mesh.cullingStrategy =
+      BABYLON.AbstractMesh.CULLINGSTRATEGY_OPTIMISTIC_INCLUSION_THEN_BSPHERE_ONLY;
     this.mesh = mesh;
     this.checkCanLevelUp();
   }
@@ -110,6 +113,7 @@ class UnitObserver {
     );
     torusMaterial.diffuseColor = ColorUtils.getColorFromMap(this.state.player);
     torusMaterial.emissiveColor = ColorUtils.getColorFromMap(this.state.player);
+    torusMaterial.freeze();
     this.playerTorus.material = torusMaterial;
   }
 
@@ -132,6 +136,7 @@ class UnitObserver {
       let mat = new BABYLON.StandardMaterial("shieldMat", this.scene);
       mat.diffuseColor = BABYLON.Color3.White();
       mat.alpha = 0.5;
+      mat.freeze();
       this.shieldMesh.material = mat;
       this.shieldMesh.position.x = this.getHorizontalMeshCoordinate(coords.x);
       this.shieldMesh.position.y = this.getVerticalMeshCoordinate(coords.y);
@@ -169,6 +174,7 @@ class UnitObserver {
 
   update() {
     if (this.state.state == MOVING) {
+      this.mesh.unfreezeWorldMatrix();
       if (this.currentAnimation !== "Move") {
         this.playAnimation("Move");
       }
@@ -239,6 +245,7 @@ class UnitObserver {
       ) {
         this.playAnimation("Idle");
         this.state.stop();
+        this.mesh.freezeWorldMatrix();
         EventBus.$emit("animation-finished");
       }
     }
