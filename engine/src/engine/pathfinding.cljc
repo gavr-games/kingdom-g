@@ -111,18 +111,21 @@
     (let [cur (peek p)
           prev (prevs cur)]
       (if (= :start (prevs prev))
-        (reverse p)
+        (vec (reverse p))
         (recur (conj p prev))))))
 
 (defn bfs
-  [g obj-id destination]
+  "Traverses all positions object can reach with its moves.
+   For every reachable destination (including initial position)
+   runs (f-destination? pos steps-to-pos), and if it is true,
+   returns [path-to-position nil].
+   Otherwise returns [nil all-reachable-positions].
+   all-reachable-positions is a dictionary {pos prev-pos ... init-pos :start}."
+  [g obj-id f-destination?]
   (let [obj (get-in g [:objects obj-id])
         neighbours (if (:chess-knight obj)
                      neighbours-knight
                      neighbours-normal)
-        reachable? (if (:chess-knight obj)
-                     #(check/chess-knight-reachable? % destination)
-                     #(check/one-step-reachable? % destination))
         moves (:moves obj)
         valid-pos? (get-valid-pos-fn g obj-id)
         pos (:position obj)]
@@ -131,18 +134,34 @@
       (if (seq q)
         (let [[cur-pos steps] (first q)]
           (if (valid-pos? cur-pos)
-            (if (< steps moves)
-              (if (reachable? cur-pos)
-                (bfs-build-path (assoc prevs destination cur-pos) destination)
+            (if (<= steps moves)
+              (if (f-destination? cur-pos steps)
+                [(bfs-build-path prevs cur-pos) nil]
                 (let [neibs (filter #(core/valid-coord? g %)
                                     (remove prevs (neighbours cur-pos)))
                       new-prevs (reduce #(assoc %1 %2 cur-pos) prevs neibs)
                       new-q (reduce #(conj %1 [%2 (inc steps)])
                                     (subvec q 1) neibs)]
                   (recur new-q new-prevs)))
-              nil)
+              [nil prevs])
             (recur (subvec q 1) prevs)))
-        nil))))
+        [nil prevs]))))
+
+(defn bfs-for-client
+  "Pathfinding supposed to be used in find-path for client.
+   Destination can be a "
+  [g obj-id destination]
+  (let [obj (get-in g [:objects obj-id])
+        reachable? (if (:chess-knight obj)
+                     #(check/chess-knight-reachable? % destination)
+                     #(check/one-step-reachable? % destination))
+        before-destination? (fn [pos dist] (and (< dist (:moves obj))
+                                                (reachable? pos)))
+        [path _] (bfs g obj-id before-destination?)]
+    (if path
+      (conj path destination)
+      nil)))
+
 
 (defn find-path
   "Searches for a path for the object with given id to the given destination.
@@ -169,4 +188,4 @@
                                         [destination]
                                         nil)
 
-      :else (bfs g obj-id destination))))
+      :else (bfs-for-client g obj-id destination))))
