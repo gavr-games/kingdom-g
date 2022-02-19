@@ -164,5 +164,7 @@
   (let [g (-> (create-test-game)
               (add-new-object 0 :spearman [1 1] nil nil {:moves 20}))
         sp-id (get-object-id-at g [1 1])]
+    (println "Pathfinding short path time")
+    (dotimes [_ 10] (time (find-path g sp-id [3 3])))
     (println "Pathfinding long path time")
     (dotimes [_ 10] (time (find-path g sp-id [19 19])))))
