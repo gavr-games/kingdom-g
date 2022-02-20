@@ -167,4 +167,6 @@
     (println "Pathfinding short path time")
     (dotimes [_ 10] (time (find-path g sp-id [3 3])))
     (println "Pathfinding long path time")
-    (dotimes [_ 10] (time (find-path g sp-id [19 19])))))
+    (dotimes [_ 10] (time (find-path g sp-id [19 19])))
+    ;(time (dotimes [_ 1000] (find-path g sp-id [19 19])))
+    ))
